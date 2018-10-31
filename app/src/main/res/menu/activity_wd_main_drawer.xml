@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_my"
+            android:icon="@drawable/ic_action_name_login"
+            android:title="@string/my" />
+        <item
+            android:id="@+id/nav_brown"
+            android:icon="@drawable/ic_action_name_brown"
+            android:title="我的借阅"
+            />
+
+        <item
+            android:id="@+id/nav_history"
+            android:icon="@drawable/ic_action_name_history"
+            android:title="历史借阅" />
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/ic_action_name_search"
+            android:title="搜索图书" />
+
+    </group>
+
+    <item android:title="其它">
+        <menu>
+
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_action_name_about"
+                android:title="关于应用" />
+
+        </menu>
+    </item>
+
+</menu>
