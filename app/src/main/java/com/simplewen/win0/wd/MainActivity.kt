@@ -17,58 +17,44 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
-    //var mycontext = applicationContext
+
     var ass = AnimationSet(false)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        var login_img = findViewById<ImageView>(R.id.login_img)//获取首页login
+       requestWindowFeature(Window.FEATURE_NO_TITLE)
+      // window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         setContentView(R.layout.activity_main)
-        startAni()
-        iniNext()
-
-    }
-
-
-    fun startAni() {
-
-        val sa = ScaleAnimation(
-                1f, 1f, 1.1f, 1.1f,
-                Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF, 0.5f)
-
-        sa.duration = 2200
-        sa.fillAfter = true
-        ass.addAnimation(sa)
-        login_img.startAnimation(ass)//启动动画
-    }
-
-
-    fun iniNext() {
+        val login_img = findViewById<ImageView>(R.id.login_img)//获取首页login
+        startAni(login_img)
         ass.setAnimationListener(object: Animation.AnimationListener {
-
-
-            override fun onAnimationStart(Ani:Animation) {
-                //Snackbar.make(mycontext,"欢迎使用",Snackbar.LENGTH_LONG).show()
-               // Toast.makeText(this@MainActivity,"欢迎使用",Toast.LENGTH_LONG).show()
-
-            }
-
-
-         override fun onAnimationRepeat(ani:Animation) {
-
-            }
-
+            override fun onAnimationStart(Ani:Animation) {}
+            override fun onAnimationRepeat(ani:Animation) {}
             //监听动画播放完
-
-           override fun onAnimationEnd(ani:Animation){
-               var intent=Intent(this@MainActivity,WDMain::class.java)
-                startActivity(intent);//主界面
+            override fun onAnimationEnd(ani:Animation){
+                val intent=Intent(this@MainActivity,WDMain::class.java)
+                startActivity(intent)//主界面
                 finish()
             }
         })
+
     }
+
+
+    fun startAni(img:View) {
+
+        val sa = ScaleAnimation(
+                1f, 1.1f, 1.0f, 1.1f,
+                Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f)
+
+        sa.duration = 2500
+        sa.fillAfter = true
+        ass.addAnimation(sa)
+        img.startAnimation(ass)//启动动画
+    }
+
+
+
 }
 
 

@@ -32,21 +32,19 @@ class requestManage(val context: Context) {
         }
     }//自定义cookieJar
     var contextThis: Context = context
-    val logUrl = "http://172.16.1.43/dzjs/login.asp"//登录url
-    val myBrowUrl = "http://172.16.1.43/dzjs/jhcx.asp"//我的借阅
-    val myContinueUrl = "http://172.16.1.43/dzxj/dzxj.asp"//我的图书续借
-    val myHiStoryUrl = "http://172.16.1.43/dzjs/dztj.asp"//我的借阅历史
-    val myLikeUrl = ""//我的书架
-    val bookSearchUrl = "http://172.16.1.43/wxjs/tmjs.asp"//搜索地址
-    val isWdLogin = Regex(".*?http:172.16.1.101:80/portalowa.*?")//判断是否校园网
-    val isFailLogin = Regex(".*window.history.back.*")//判断是否失败
-    val isSuccLogin = Regex(".*dzjs.login_form.*")//判断是否成功
-    val b_info = arrayOf("b_name", "b_last", "b_next", "b_continue","b_id")
+   private val logUrl = "http://172.16.1.43/dzjs/login.asp"//登录url
+   private val myBrowUrl = "http://172.16.1.43/dzjs/jhcx.asp"//我的借阅
+   private val myContinueUrl = "http://172.16.1.43/dzxj/dzxj.asp"//我的图书续借
+   private val myHiStoryUrl = "http://172.16.1.43/dzjs/dztj.asp"//我的借阅历史
+   private val bookInfoUrl = "http://172.16.1.43/showmarc/table.asp?nTmpKzh="//图书详情信息
+
+    private val bookSearchUrl = "http://172.16.1.43/wxjs/tmjs.asp"//搜索地址
     val b_id = intArrayOf(R.id.b_name, R.id.b_last, R.id.b_next, R.id.b_continue,R.id.b_id)
     val client = OkHttpClient.Builder().cookieJar(cookieJar).build() //初始化请求
     var books = ArrayList<Map<String, Any>>()
     var h_books = ArrayList<Map<String, Any>>()
     var s_books = ArrayList<Map<String, Any>>()
+    var bookInfo = ""//存放图书详情
     var loginFlag: Int = 0
 
 
@@ -58,17 +56,17 @@ class requestManage(val context: Context) {
 
 
             thread {
-                var request = Request.Builder().url(this.myBrowUrl).build()
+                val request = Request.Builder().url(this.myBrowUrl).build()
                 var response = this.client.newCall(request).enqueue(object : Callback {
                     override fun onResponse(call: Call, response: Response) {
                         res = response.body()?.string()
                         tem_res = res//临时存放string
-                        var doc2 = Jsoup.parse(tem_res)
-                        var temText = doc2.select("table[width=\"98%\"] tbody tr:not(table[width=\"98%\"] tbody tr:first-child)")
-                        var bname: String = ""
-                        var blast: String = ""
-                        var bnext: String = ""
-                        var bid: String = ""//图书续借id
+                        val doc2 = Jsoup.parse(tem_res)
+                        val temText = doc2.select("table[width=\"98%\"] tbody tr:not(table[width=\"98%\"] tbody tr:first-child)")
+                        var bname = ""
+                        var blast = ""
+                        var bnext = ""
+                        var bid= ""//图书续借id
 
                         Log.d("返回：", temText.toString())
 
@@ -89,13 +87,13 @@ class requestManage(val context: Context) {
 
 
                         }
-                        var msg = Message()
+                        val msg = Message()
                         msg.what = 6
                         hand.sendMessage(msg)
                     }
 
                     override fun onFailure(call: Call, e: IOException) {
-                        var msg = Message()
+                        val msg = Message()
                         msg.what = 3
                         hand.sendMessage(msg)
                     }
@@ -113,7 +111,7 @@ class requestManage(val context: Context) {
         var tem_res: String? = ""
         thread {
 
-            var request = Request.Builder().url(this.myHiStoryUrl).build()
+            val request = Request.Builder().url(this.myHiStoryUrl).build()
             var response = this.client.newCall(request).execute()
 
             res = response.body()?.string()
@@ -133,7 +131,7 @@ class requestManage(val context: Context) {
             }
             this.h_books.removeAt(0)
             this.h_books.removeAt(h_books.size - 1)
-            var msg: Message = Message()
+            val msg: Message = Message()
             msg.what = 6
             hand.sendMessage(msg)
 
@@ -164,7 +162,7 @@ class requestManage(val context: Context) {
                         .add("imageField.X", "0")
                         .build()
                 //构建请求
-                var request = Request.Builder().url(this.logUrl).post(myinfo).build()
+                val request = Request.Builder().url(this.logUrl).post(myinfo).build()
 
 
                 var response = this.client.newCall(request).enqueue(object : Callback {
@@ -176,28 +174,28 @@ class requestManage(val context: Context) {
                         res = doc.getElementsByTag("script").html().toString()
                         if (isSuccLogin.containsMatchIn(res)) {
 
-                            var msg: Message = Message()
+                            val msg: Message = Message()
                             msg.what = 1
-                            var temData = Bundle()
+                            val temData = Bundle()
                             temData.putString("user", user)
                             temData.putString("pw", pw)
                             msg.data = temData
                             hand.sendMessage(msg)
 
                         } else if (isFailLogin.containsMatchIn(res)) {
-                            var msg: Message = Message()
+                            val msg: Message = Message()
                             msg.what = 2
                             hand.sendMessage(msg)
 
 
                         } else if (isWdLogin.containsMatchIn(res)) {
-                            var msg: Message = Message()
+                            val msg: Message = Message()
                             msg.what = 3
                             hand.sendMessage(msg)
 
 
                         } else {
-                            var msg: Message = Message()
+                            val msg: Message = Message()
                             msg.what = 6
                             hand.sendMessage(msg)
                             Log.d("re:", res)
@@ -206,7 +204,7 @@ class requestManage(val context: Context) {
                     }
 
                     override fun onFailure(call: Call, e: IOException) {
-                        var msg: Message = Message()
+                        val msg: Message = Message()
                         msg.what = 3
                         hand.sendMessage(msg)
                     }
@@ -217,7 +215,7 @@ class requestManage(val context: Context) {
 
 
         } else {
-            var msg: Message = Message()
+            val msg: Message = Message()
             msg.what = 5
             hand.sendMessage(msg)
         }
@@ -225,7 +223,8 @@ class requestManage(val context: Context) {
 
     }
 
-    fun mySearch(hand: Handler, bname: String) {
+    fun mySearch(hand: Handler, bname: String,mode:String,sort:String) {
+
         if (this.loginFlag == 0) {
 
             thread {
@@ -236,10 +235,10 @@ class requestManage(val context: Context) {
                         .add("txtPY:", "HZ")
                         .add("txtTm", bname)
                         .add("txtLx", "%")
-                        .add("txtSearchType", "2")
+                        .add("txtSearchType", mode)
                         .add("nMaxCount", "5000")
                         .add("nSetPageSize", "50")
-                        .add("cSortFld", "正题名")
+                        .add("cSortFld", sort)
                         .add("B1", "检索")
                         .build()
                 //构建请求
@@ -251,16 +250,20 @@ class requestManage(val context: Context) {
                 var temDoc = doc3.select("table[width=\"98%\"] tbody tr:not(table[width=\"98%\"] tbody tr:first-child)")
 
                 Log.d("con", temDoc.toString())
-                var s_name: String = ""
-                var s_number: String = ""
-                var s_author: String = ""
-                var s_time: String = ""
+                var s_name: String = ""//图书名
+                var s_number: String = ""//图书借阅编号
+                var s_author: String = ""//图书作者
+                var s_time: String = ""//图书出版时间
+                var s_id = ""//图书借阅id
                 for (item: Element in temDoc) {
                     s_name = item.select("td:nth-of-type(3) a").html().toString()
                     s_time = item.select("td:nth-of-type(6)").html().toString()
                     s_author = item.select("td:nth-of-type(4)").html().toString()
                     s_number = item.select("td:nth-of-type(2)").html().toString()
+                    s_id = item.select("td:nth-of-type(7) a").attr("href").toString()
+                    s_id = s_id.replace("../dzyy/default.asp?nTmpKzh=","")//分离出id
                     val tem = LinkedHashMap<String, Any>()
+                    tem.put("search_b_id",s_id)
                     tem.put("search_b_name", s_name.replace("&nbsp;", "", false))
                     tem.put("search_b_time", "出版:" + s_time.replace("&nbsp;", "", false))
                     tem.put("search_b_author", "作者：" + s_author.replace("&nbsp;", "", false))
@@ -285,8 +288,8 @@ class requestManage(val context: Context) {
         val isOk=Regex("..")
         thread {
 
-            var request3 = Request.Builder().get().url("${this.myContinueUrl}?nbsl=${b_id}").build()
-            var response = this.client.newCall(request3).execute()
+            val request3 = Request.Builder().get().url("${this.myContinueUrl}?nbsl=${b_id}").build()
+            val response = this.client.newCall(request3).execute()
             var resText = response.body()?.string()
             var temResText: String? = resText
             var doc3 = Jsoup.parse(temResText)
@@ -309,7 +312,50 @@ class requestManage(val context: Context) {
 
 
         }
-    }
+    }//续借
+
+
+   fun bookInfo(id:String,hand:Handler){
+       val _this = this
+        Log.d("bookid",id)
+       thread {
+           val request = Request.Builder().url("$bookInfoUrl$id").build()
+           var response = this.client.newCall(request).enqueue(object : Callback {
+               override fun onResponse(call: Call, response: Response) {
+                 val  res = response.body()?.string()
+                   Log.d("res",res)
+
+                 val  tem_res = res//临时存放string
+                   val doc2 = Jsoup.parse(tem_res)
+                   Log.d("doc",doc2.toString())
+                   val temText = doc2.select(".panelContentContainer div:nth-of-type(3) table tr:nth-of-type(7)")
+                   _this.bookInfo  =   temText.toString().replace("&nbsp;","").replace("<td>","")
+                           .replace("</td>","").replace("<tr>","")
+                           .replace("</tr>","")
+                           .replace(" ","")//移除空格编码
+                   Log.d("books.Info",_this.bookInfo)
+                   val msg = Message()
+                   Log.d("length",_this.bookInfo.length.toString())
+                   if(_this.bookInfo.length < 5){
+                       msg.what = 1
+
+                   }else{
+                       msg.what = 2
+                   }
+                   Log.d("返回：", temText.toString())
+                   hand.sendMessage(msg)
+               }
+
+               override fun onFailure(call: Call, e: IOException) {
+                   val msg = Message()
+                   msg.what = 0
+                   hand.sendMessage(msg)
+               }
+           })
+
+       }
+
+   }
 
 
 }

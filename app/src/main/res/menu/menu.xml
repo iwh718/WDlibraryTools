@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_my"
+        app:showAsAction="never"
+        android:title="登录管理" />
+    <item
+        android:id="@+id/menu_brown"
+        app:showAsAction="always|withText"
+        android:title="在借"
+        />
+
+    <item
+        android:id="@+id/menu_history"
+        app:showAsAction="always"
+        android:title="历史" />
+
+    <item
+        app:showAsAction="never"
+        android:id="@+id/menu_about"
+        android:title="关于" />
+</menu>

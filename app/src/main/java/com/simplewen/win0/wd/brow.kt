@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import android.util.Log
@@ -18,7 +19,6 @@ import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.SimpleAdapter
 import android.widget.Toast
-import kotlinx.android.synthetic.main.app_bar_wd_main.*
 import request.requestManage
 
 
@@ -39,10 +39,11 @@ class brow : AppCompatActivity() {
         val tv_booklist = findViewById<ListView>(R.id.brow_list)//引用listview的书列表
         var listadapter = SimpleAdapter(this,books, R.layout.booklist, b_info, b_id)
         tv_booklist.adapter = listadapter //listview适配器
+        val refresh = findViewById<SwipeRefreshLayout>(R.id.refresh)//下拉刷新组件
+        refresh.setColorSchemeResources(R.color.colorAccent)
 
 
-
-        var hand: Handler = object : Handler(Looper.getMainLooper()) {
+        val hand: Handler = object : Handler(Looper.getMainLooper()) {
 
             override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
@@ -52,18 +53,27 @@ class brow : AppCompatActivity() {
                     }
 
                     6 -> {
-                        Toast.makeText(this@brow,"请求成功",Toast.LENGTH_SHORT).show()
+                        //Toast.makeText(this@brow,"请求成功",Toast.LENGTH_SHORT).show()
                         listadapter.notifyDataSetChanged()
 
                     }
                     7->{
-                        Toast.makeText(this@brow,"续借成功，重新进入界面刷新日期",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@brow,"续借成功，下拉刷新",Toast.LENGTH_SHORT).show()
                     }
-                    8->Toast.makeText(this@brow,"续借失败，你已经续借过！",Toast.LENGTH_SHORT).show()
+                    8-> {Toast.makeText(this@brow,"续借失败，你已经续借过！",Toast.LENGTH_SHORT).show()}
+                    9 -> {
+                        books.clear()
+                        request.myBrow(this,listadapter)
+                        listadapter.notifyDataSetChanged()
+                        refresh.isRefreshing = false
+                        Toast.makeText(this@brow,"刷新完成",Toast.LENGTH_SHORT).show()
+                    }
                 }
+
             }
 
         }
+
         tv_booklist.onItemClickListener = object: AdapterView.OnItemClickListener{
             override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 var book_id:String=books[position].get("bid").toString()
@@ -83,8 +93,15 @@ class brow : AppCompatActivity() {
         }
 
         request.myBrow(hand,listadapter)
+        refresh.setOnRefreshListener {
+            val msg = Message()
+            msg.what = 9
+            hand.sendMessage(msg)
+
+        }
 
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when(item?.itemId){
