@@ -46,6 +46,7 @@ class requestManage(val context: Context) {
     var s_books = ArrayList<Map<String, Any>>()
     var bookInfo = ""//存放图书详情
     var loginFlag: Int = 0
+    var userName = ""
 
 
 
@@ -164,7 +165,7 @@ class requestManage(val context: Context) {
                 //构建请求
                 val request = Request.Builder().url(this.logUrl).post(myinfo).build()
 
-
+                val _this = this
                 var response = this.client.newCall(request).enqueue(object : Callback {
                     override fun onResponse(call: Call, response: Response) {
 
@@ -172,9 +173,19 @@ class requestManage(val context: Context) {
                         var temResText: String? = resText
                         var doc = Jsoup.parse(temResText)
                         res = doc.getElementsByTag("script").html().toString()
+
                         if (isSuccLogin.containsMatchIn(res)) {
 
-                            val msg: Message = Message()
+
+                            res =  res.replace("，欢迎您登录！\\n离开时,不要忘记安全退出！\");","")
+                                    .replace("window.alert(\"","")
+                                    .replace("window.location=\"../dzjs/login_form.asp\";","")
+                                    .replace("\$nbsp;","")
+                                    .replace(" ","")
+
+                            _this.userName = res
+                            Log.d("login:", res)
+                            val msg = Message()
                             msg.what = 1
                             val temData = Bundle()
                             temData.putString("user", user)

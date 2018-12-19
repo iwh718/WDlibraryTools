@@ -1,12 +1,10 @@
 package com.simplewen.win0.wd
 
-import android.app.ActionBar
+
 import android.app.Activity
-import android.app.ProgressDialog
-import android.content.DialogInterface
+
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
-import android.util.Log
+
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,7 +12,7 @@ import android.os.Message
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
 import android.support.v4.view.GravityCompat
-import android.support.v4.view.MenuItemCompat
+
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -29,7 +27,7 @@ import android.net.Uri
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TextInputEditText
 import android.support.v7.widget.CardView
-import kotlinx.android.synthetic.main.activity_about.*
+import kotlinx.android.synthetic.main.app_bar_main.*
 
 
 //author:bore初夏
@@ -37,7 +35,7 @@ import kotlinx.android.synthetic.main.activity_about.*
 //time:18.09.02
 //校园工具，非盈利项目，非礼勿扰
 //喜欢那个文，2018.09.20
-class WDMain : AppCompatActivity(){
+class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     var request = requestManage(this@WDMain)//实例化请求对象
     var b_id = request.b_id//listview id
@@ -46,6 +44,7 @@ class WDMain : AppCompatActivity(){
     private var bore_pw: String = ""
     var tem_dialog:AlertDialog? = null//临时dialog对象，用来调用dismiss
     var tem_load:AlertDialog? =null //临时加载
+    var userNameText:TextView? = null
     //handler接收网络线程数据
     val hand: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message?) {
@@ -57,7 +56,8 @@ class WDMain : AppCompatActivity(){
                 }
                 1 -> {
                     tem_dialog?.dismiss()
-                    Toast.makeText(this@WDMain, "登录成功，欢迎您", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@WDMain, "登录成功，欢迎您:${request.userName}", Toast.LENGTH_SHORT).show()
+                    userNameText?.text = "欢迎你,${request.userName}"
                     tem_load?.dismiss()//移除加载
                     request.loginFlag = 1
                     logined = 1
@@ -177,8 +177,12 @@ class WDMain : AppCompatActivity(){
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_wd_main)
-        setSupportActionBar(toolbar_one)
-        toolbar_one.setTitleTextColor(Color.WHITE)
+        setSupportActionBar(toolbar)
+        toolbar.setTitleTextColor(Color.WHITE)
+        userNameText = findViewById<NavigationView>(R.id.nav_view)//获取导航
+                .getHeaderView(0)//获取头部
+                .findViewById<LinearLayout>(R.id.nav_header)//获取头部布局
+                .findViewById(R.id.userName)//获取登录名
         var search_mode:String = "1"//默认搜索模式
         var search_sort:String = "正题名"//默认排列
         val search_btn = findViewById<SearchView>(R.id.search_btn)//搜索按钮
@@ -188,6 +192,12 @@ class WDMain : AppCompatActivity(){
         val sort_group = findViewById<RadioGroup>(R.id.sort_group)//获取排列模式组
         val hello_card = findViewById<CardView>(R.id.hello_wd)//你好，文达
 
+
+        val toggle = ActionBarDrawerToggle(
+                this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawer_layout.addDrawerListener(toggle)
+        toggle.syncState()
+        nav_view.setNavigationItemSelectedListener(this)
         //搜索模式：设置监听器
         search_group.setOnCheckedChangeListener{
           _,sid ->
@@ -280,16 +290,7 @@ class WDMain : AppCompatActivity(){
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item!!.itemId) {
-            //我的借阅历史
-            R.id.menu_history -> {
-                if (logined != 1) {
-                    Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
-                    tools().loginDialog()
-                } else {
-                    val intent3 = Intent(this, history::class.java)
-                    startActivity(intent3)//切换到我的借阅历史
-                }
-            }
+
             //登录状态检测
             R.id.menu_my -> {
                 if (logined != 1) {
@@ -308,25 +309,7 @@ class WDMain : AppCompatActivity(){
                     dialog.show()
                 }
             }
-            //关于
-            R.id.menu_about -> {
 
-                val about_dia = AlertDialog.Builder(this@WDMain)
-                        .setView(layoutInflater.inflate(R.layout.activity_about,null))
-                        .setTitle("开发者：IWH").create().show()
-            }
-            //正在借阅的
-            R.id.menu_brown -> {
-
-                if (logined != 1) {
-                    Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
-                    tools().loginDialog()
-
-                } else {
-                    val intent = Intent(this, brow::class.java)
-                    startActivity(intent)
-                }
-            }
         }
 
         return true
@@ -334,8 +317,60 @@ class WDMain : AppCompatActivity(){
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+
         menuInflater.inflate(R.menu.menu, menu)
 
+
+        return true
+    }
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        // Handle navigation view item clicks here.
+
+
+        when (item.itemId) {
+            R.id.nav_myLibrary -> {
+                if (logined != 1) {
+                    Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
+                    tools().loginDialog()
+
+                } else {
+                    val alert = AlertDialog.Builder(this@WDMain)
+                    alert.setItems(arrayOf("我的借阅","我的借阅历史")){
+                        _,which ->
+                        when(which){
+                            0 ->{
+                                val intent = Intent(this, brow::class.java)
+                                startActivity(intent)
+                            }
+                            1->{
+                                val intent3 = Intent(this, history::class.java)
+                                startActivity(intent3)//切换到我的借阅历史
+                            }
+                        }
+                    }.setTitle("选择功能").create().show()
+                }
+
+            }
+            R.id.nav_notice -> {
+
+            }
+            R.id.nav_text -> {
+
+            }
+            R.id.nav_sort -> {
+
+            }
+            R.id.nav_about -> {
+                val about_dia = AlertDialog.Builder(this@WDMain)
+                        .setView(layoutInflater.inflate(R.layout.activity_about,null))
+                        .setTitle("开发者：IWH").create().show()
+            }
+            R.id.nav_send -> {
+
+            }
+        }
+
+        drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
 

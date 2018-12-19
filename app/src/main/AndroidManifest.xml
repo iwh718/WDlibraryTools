@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.simplewen.win0.wd">
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -14,16 +15,15 @@
         <activity
             android:name=".WDMain"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
             android:name=".brow"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="我的借阅" />
-        <activity android:name=".history"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="我的借阅历史"/>
+            android:label="我的借阅"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".history"
+            android:label="我的借阅历史"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.Design.NoActionBar">
@@ -33,11 +33,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".search_login"
+        <activity
+            android:name=".search_login"
             android:label="图书搜索"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
-        </activity>
     </application>
 
 </manifest>

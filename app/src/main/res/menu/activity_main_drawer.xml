@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_myLibrary"
+            android:icon="@drawable/nav_mylibrary_icon"
+            android:title="我的图书馆" />
+        <item
+            android:id="@+id/nav_notice"
+            android:icon="@drawable/nav_notice_icon"
+            android:title="公告与通知" />
+        <item
+            android:id="@+id/nav_text"
+            android:icon="@drawable/nav_text_icon"
+            android:title="电子资源" />
+        <item
+            android:id="@+id/nav_sort"
+            android:icon="@drawable/nav_sort_icon"
+            android:title="阅读排行榜" />
+    </group>
+
+    <item android:title="其它">
+        <menu>
+            <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/nav_about_icon"
+                android:title="关于" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/nav_send_icon"
+                android:title="分享" />
+        </menu>
+    </item>
+
+</menu>
