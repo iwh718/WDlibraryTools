@@ -14,8 +14,9 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:actionMenuTextColor">@color/white</item>
-        <item name="actionMenuTextColor">@color/white</item>
+        <item name="popupMenuStyle">@style/menuPop</item>
+        <item name="android:actionMenuTextColor">@color/black</item>
+        <item name="actionMenuTextColor">@color/black</item>
         <item name="android:statusBarColor">@color/colorAccent</item>
     </style>
 
@@ -24,14 +25,15 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:colorBackground">@color/colorPrimary</item>
         <item name="actionMenuTextColor">@color/black</item>
-        <item name="actionMenuTextAppearance">@style/MenuTextStyle
-        </item>
+
+    </style>
+    <style name="menuPop" parent="AppTheme.PopupOverlay">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:actionMenuTextColor">@color/black</item>
+
     </style>
 
-    <style name="MenuTextStyle">
-        <item name="android:actionMenuTextColor">@color/white</item>
-        <item name="android:textColor">@color/black</item>
-    </style>
+
 
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

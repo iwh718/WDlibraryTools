@@ -8,9 +8,9 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.simplewen.win0.wd"
-        minSdkVersion 22
+        minSdkVersion 19
         targetSdkVersion 26
-        versionCode 10
+        versionCode 19
         versionName "2.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

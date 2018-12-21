@@ -37,7 +37,9 @@ class requestManage(val context: Context) {
    private val myContinueUrl = "http://172.16.1.43/dzxj/dzxj.asp"//我的图书续借
    private val myHiStoryUrl = "http://172.16.1.43/dzjs/dztj.asp"//我的借阅历史
    private val bookInfoUrl = "http://172.16.1.43/showmarc/table.asp?nTmpKzh="//图书详情信息
-
+   private val noticeUrl = "http://172.16.1.43/ggtz/xiaoxi.asp"//通知链接
+    private val newsUrl = ""//新闻链接
+   private val gs_url = "http://172.16.1.43/dzjs/card_guashi.asp"//挂失图书证
     private val bookSearchUrl = "http://172.16.1.43/wxjs/tmjs.asp"//搜索地址
     val b_id = intArrayOf(R.id.b_name, R.id.b_last, R.id.b_next, R.id.b_continue,R.id.b_id)
     val client = OkHttpClient.Builder().cookieJar(cookieJar).build() //初始化请求
@@ -47,6 +49,8 @@ class requestManage(val context: Context) {
     var bookInfo = ""//存放图书详情
     var loginFlag: Int = 0
     var userName = ""
+    var notices = ArrayList<ArrayList<String>>()//公告内容+时间
+    var noticeTitle = ArrayList<String>()//公告标题
 
 
 
@@ -233,6 +237,69 @@ class requestManage(val context: Context) {
 
 
     }
+    /**user：账号，pw：密码，name：姓名**/
+    fun gsCard(user:String,pw:String,name:String,hand:Handler){
+        val hasGs = Regex(".*?\\u5df2\\u7ecf\\u6302\\u5931\\u8fc7.*?")//已经挂失
+        val noMatch= Regex(".*\\u4fe1\\u606f\\u4e0d\\u5339\\u914d.*")//信息不匹配
+        val isOk = Regex(".*\\u6302\\u5931\\u6210\\u529f.*")//挂失完成
+        var res = ""
+        if (user.isNotEmpty() && pw.isNotEmpty() && name.isNotEmpty()) {
+            //在主线程中开启一个网络线程
+
+            thread {
+                //发送参数
+                val gsinfo = FormBody.Builder()
+                        .add("user", user)
+                        .add("dzxm", name)
+                        .add("dzkl",pw)
+                        .add("cert_mode", "dzzh")
+                        .add("submit1", "确认挂失登记")
+                        .build()
+                //构建请求
+                val request = Request.Builder().url(this.gs_url).post(gsinfo).build()
+
+                val _this = this
+                var response = this.client.newCall(request).enqueue(object : Callback {
+                    override fun onResponse(call: Call, response: Response) {
+
+                        val resText = response.body()?.string()
+                        val temResText: String? = resText
+                        val doc = Jsoup.parse(temResText)
+                        res = doc.getElementsByTag("script").html().toString()
+                        Log.d("gs_card:", res)
+                        if (hasGs.containsMatchIn(res)) {
+                            val msg = Message()
+                            msg.what = 0x11
+                            hand.sendMessage(msg)
+                        } else if (noMatch.containsMatchIn(res)) {
+                            val msg = Message()
+                            msg.what = 0x12
+                            hand.sendMessage(msg)
+
+                        }else if(isOk.containsMatchIn(res)){
+                            val msg = Message()
+                            msg.what = 0x13
+                            hand.sendMessage(msg)
+                        }
+                    }
+
+                    override fun onFailure(call: Call, e: IOException) {
+                        val msg = Message()
+                        msg.what = 3
+                        hand.sendMessage(msg)
+                    }
+                })
+
+
+            }
+
+
+        } else {
+            val msg: Message = Message()
+            msg.what = 5
+            hand.sendMessage(msg)
+        }
+    }
 
     fun mySearch(hand: Handler, bname: String,mode:String,sort:String) {
 
@@ -367,6 +434,60 @@ class requestManage(val context: Context) {
        }
 
    }
+    //获取通知
+    fun getNotice(hand:Handler){
+        val _this = this
+        this.noticeTitle.clear()
+        this.notices.clear()
+        thread {
+            val request = Request.Builder().url(this.noticeUrl).build()//获取公告
+            var response = this.client.newCall(request).enqueue(object : Callback {
+                override fun onResponse(call: Call, response: Response) {
+                    val res = response.body()?.string()
+                    val tem_res = res//临时存放string
+                    val doc2 = Jsoup.parse(tem_res)
+                    Log.d("doc", doc2.toString())
+                    val temText = doc2.select(".pmain table")
+
+                    //noticdInfo  =   temText.toString().replace("&nbsp;","").replace(" ","")//移除空格编码
+                    var n_title: String = ""//公告标题
+                    var n_body: String = ""//公告内容
+                    var n_time: String = ""//公告时间
+                    temText.removeAt(0)//移除第一个导航
+                    for (item: Element in temText) {
+                        n_title = item.select("tr:nth-of-type(1) td font b").html().toString()
+                        n_body = item.select("tr:nth-of-type(2) td").html().toString()
+                        n_time = item.select("tr:nth-of-type(3) td font").html().toString()
+
+                        val tem = arrayListOf<String>()
+
+                        tem.add( 0,n_body.replace("&nbsp;", "", false))
+                        tem.add( n_time.replace("&nbsp;", "", false))
+                        _this.noticeTitle.add(n_title)//添加公告
+                        _this.notices.add(tem)
+                        Log.d("noticeItem", tem.toString())
+                        Log.d("noticetitle",_this.noticeTitle.toString())
+
+                    }
+                    val msg = Message()
+                    msg.what = 1
+                    Log.d("返回：", temText.toString())
+                    hand.sendMessage(msg)
+                }
+
+                override fun onFailure(call: Call, e: IOException) {
+                    val msg = Message()
+                    msg.what = 0
+                    hand.sendMessage(msg)
+                }
+            })
+
+        }
+    }
+    //获取新闻
+    fun getNews(hand:Handler){
+
+    }
 
 
 }

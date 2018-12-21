@@ -11,7 +11,7 @@
         <item
             android:id="@+id/nav_notice"
             android:icon="@drawable/nav_notice_icon"
-            android:title="公告与通知" />
+            android:title="公告通知" />
         <item
             android:id="@+id/nav_text"
             android:icon="@drawable/nav_text_icon"
@@ -19,7 +19,7 @@
         <item
             android:id="@+id/nav_sort"
             android:icon="@drawable/nav_sort_icon"
-            android:title="阅读排行榜" />
+            android:title="图书馆动态" />
     </group>
 
     <item android:title="其它">

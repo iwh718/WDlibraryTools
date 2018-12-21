@@ -62,17 +62,7 @@
                     android:padding="5dp"
                     android:text="@string/about_bore" />
 
-                <Button
-                    android:onClick="donateAli"
-                    android:focusable="true"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="5dp"
-                    android:textColor="#fff"
-                    android:layout_margin="10dp"
-                    android:background="@drawable/btn_radiius"
 
-                    android:text="@string/thank_me" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
 

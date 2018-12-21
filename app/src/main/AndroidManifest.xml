@@ -15,7 +15,7 @@
         <activity
             android:name=".WDMain"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".brow"
             android:label="我的借阅"
@@ -29,6 +29,7 @@
             android:theme="@style/Theme.Design.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -36,8 +37,11 @@
         <activity
             android:name=".search_login"
             android:label="图书搜索"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".getNotice"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-
+        <activity android:name=".libraryweb.libraryweb"></activity>
     </application>
 
 </manifest>

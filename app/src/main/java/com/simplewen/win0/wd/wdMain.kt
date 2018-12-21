@@ -27,6 +27,8 @@ import android.net.Uri
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TextInputEditText
 import android.support.v7.widget.CardView
+import com.simplewen.win0.wd.libraryweb.libraryweb
+import kotlinx.android.synthetic.main.activity_libraryweb.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 
 
@@ -43,6 +45,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
     private var bore_user: String = ""
     private var bore_pw: String = ""
     var tem_dialog:AlertDialog? = null//临时dialog对象，用来调用dismiss
+
     var tem_load:AlertDialog? =null //临时加载
     var userNameText:TextView? = null
     //handler接收网络线程数据
@@ -61,6 +64,15 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                     tem_load?.dismiss()//移除加载
                     request.loginFlag = 1
                     logined = 1
+                    if(getSharedPreferences("noticeFlag",Activity.MODE_PRIVATE).getString("flag","false") == "false"){
+                        val noticeBox = AlertDialog.Builder(this@WDMain)
+                                .setTitle("测试通知1.0").setMessage("如果出现闪退，点击无效，无法，获取数据，出现错误代码，请反馈到群。\n测试设备：安卓4.4.4-7.1.1\n2018.12.20")
+                                .setCancelable(false).setPositiveButton("了解"){
+                                    _,_ ->
+                                    val shareP_notice = getSharedPreferences("noticeFlag", Activity.MODE_PRIVATE)
+                                    shareP_notice.edit().putString("flag","true").apply()
+                                }.create().show()
+                    }
                     val shareP = getSharedPreferences("wd", Activity.MODE_PRIVATE)
                     val edit = shareP.edit()
                     edit.putString("user", msg.data.getString("user"))
@@ -76,7 +88,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                     Toast.makeText(this@WDMain, "请先登录校园网", Toast.LENGTH_SHORT).show()
                     logined = 0
                     val dialog = AlertDialog.Builder(this@WDMain)
-                    dialog.setTitle("请先登录校园网再使用本应用！")
+                    dialog.setTitle("图书馆访问失败，程序即将退出！")
                             .setCancelable(false)
                             .setPositiveButton("确认") { _, _ ->
                                 finish()
@@ -89,7 +101,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                     Toast.makeText(this@WDMain, "网络异常", Toast.LENGTH_SHORT).show()
                     logined = 0
                     val dialog = AlertDialog.Builder(this@WDMain)
-                    dialog.setTitle("请先登录校园网再使用本应用！")
+                    dialog.setTitle("图书馆访问失败，程序即将退出！")
                             .setCancelable(false)
                             .setPositiveButton("确认") { _, _ ->
                                 finish()
@@ -99,11 +111,27 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                 }
                 5 -> {
 
-                    Toast.makeText(this@WDMain, "请输入账号与密码", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@WDMain, "请补全信息！", Toast.LENGTH_SHORT).show()
                     tem_load?.dismiss()
                 }
                 6 -> {
                     logined = 1
+                }
+                7 ->{
+                    Toast.makeText(this@WDMain,"挂失失败",Toast.LENGTH_SHORT).show()
+                    tem_dialog!!.dismiss()
+                }
+                //挂失图书卡
+                0x11 ->{
+                    Toast.makeText(this@WDMain,"该图书证，已经挂失",Toast.LENGTH_SHORT).show()
+                    tem_dialog!!.dismiss()
+                }
+                0x12 ->{
+                    Toast.makeText(this@WDMain,"信息不匹配，重新输入",Toast.LENGTH_SHORT).show()
+                }
+                0x13 ->{
+                    Toast.makeText(this@WDMain,"挂失成功，请到图书馆解除！",Toast.LENGTH_SHORT).show()
+                    tem_dialog!!.dismiss()
                 }
             }
         }
@@ -111,13 +139,13 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
     }
 
 
-    //工具类：加入QQ群，支付宝捐赠
+    //工具类：加入QQ群
     inner class tools{
         fun joinQQGroup(): Boolean {
             val intent = Intent()
             val key="hKgBCQNgklW4c2dHwinkN85CCq-Fvyyg"
             intent.data = Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D$key")
-            // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面
             try {
                 startActivity(intent)
                 return true
@@ -170,6 +198,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         fun hello(){
             Snackbar.make(search_btn,"你好，这里是文达！",Snackbar.LENGTH_SHORT).show()
         }
+
     }
 
 
@@ -335,16 +364,33 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
 
                 } else {
                     val alert = AlertDialog.Builder(this@WDMain)
-                    alert.setItems(arrayOf("我的借阅","我的借阅历史")){
+                    alert.setItems(arrayOf("我的借阅","我的借阅历史","挂失图书证")){
                         _,which ->
                         when(which){
                             0 ->{
                                 val intent = Intent(this, brow::class.java)
-                                startActivity(intent)
+                                startActivity(intent)//切换我的借阅
                             }
                             1->{
                                 val intent3 = Intent(this, history::class.java)
                                 startActivity(intent3)//切换到我的借阅历史
+                            }
+                            2 ->{
+                                val gs_ly = layoutInflater.inflate(R.layout.guashi,null)
+                                val gs_name =  gs_ly.findViewById<EditText>(R.id.gs_name).text
+                                val gs_number = gs_ly.findViewById<EditText>(R.id.gs_number).text
+                                val gs_password = gs_ly.findViewById<EditText>(R.id.gs_password).text
+                                val gs_btn = gs_ly.findViewById<Button>(R.id.gs)
+                                gs_btn.setOnClickListener{
+
+                                    request.gsCard(gs_number.toString(),gs_password.toString(),gs_name.toString(),hand)
+                                }
+
+                                tem_dialog  = AlertDialog.Builder(this@WDMain)
+                                       .setTitle("挂失图书证").setView(gs_ly).create()
+                                tem_dialog!!.show()
+
+
                             }
                         }
                     }.setTitle("选择功能").create().show()
@@ -352,13 +398,14 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
 
             }
             R.id.nav_notice -> {
-
+                    val intent = Intent(this@WDMain,getNotice::class.java)
+                    startActivity(intent)
             }
             R.id.nav_text -> {
-
+                    Toast.makeText(this@WDMain,"正在酝酿中哦",Toast.LENGTH_LONG).show()
             }
             R.id.nav_sort -> {
-
+               startActivity(Intent(this@WDMain,libraryweb::class.java))
             }
             R.id.nav_about -> {
                 val about_dia = AlertDialog.Builder(this@WDMain)
@@ -366,7 +413,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                         .setTitle("开发者：IWH").create().show()
             }
             R.id.nav_send -> {
-
+                Toast.makeText(this@WDMain,"内测阶段。",Toast.LENGTH_LONG).show()
             }
         }
 
@@ -374,12 +421,6 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         return true
     }
 
-    fun donateAli(view:View) {
-        val payCode = "FKX03272QHJKIU7YQ2VS68"
-        val hasInstalledAlipayClient = AlipayDonate.hasInstalledAlipayClient(this@WDMain)
-        if (hasInstalledAlipayClient) {
-            AlipayDonate.startAlipayClient(this@WDMain, payCode)
-        }
-    }
+
 
 }
