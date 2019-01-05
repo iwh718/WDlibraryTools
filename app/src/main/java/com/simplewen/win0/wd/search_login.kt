@@ -37,31 +37,34 @@ class search_login : AppCompatActivity() {
         search_list.adapter = listadapter3//listview适配器
         val hand_search: Handler = object : Handler(Looper.getMainLooper()) {
 
-            override fun handleMessage(msg: Message?) {
-                super.handleMessage(msg)
-                when (msg?.what) {
+                override fun handleMessage(msg: Message?) {
+                    super.handleMessage(msg)
+                    when (msg?.what) {
 
-                    6 -> {
-                        listadapter3.notifyDataSetChanged()
+                        6 -> {
+                            if(s_books.size < 1 ){
+                                Toast.makeText(this@search_login,"没有找到，换一下搜索模式？",Toast.LENGTH_SHORT).show()
+                            }
+                            listadapter3.notifyDataSetChanged()
 
-                    }
-                    1 -> {
-                        Tos("这本书没有提供简介哦！")
-                        //无简介，弹出tos
-                    }
-                    2 -> {
-                        bookInfo = requset.bookInfo//更新简介
-                       // Tos("获取到简介")
-                        val diaInfo = AlertDialog.Builder(this@search_login).setTitle("本书简介")
-                                .setMessage("$bookInfo").create().show()
-                        //有简介，弹出alert
-                    }
-                    0 -> {
-                        Tos("数据异常，请稍后再试！")
-                        //解析失败
+                        }
+                        1 -> {
+                            Tos("这本书没有提供简介哦！")
+                            //无简介，弹出tos
+                        }
+                        2 -> {
+                            bookInfo = requset.bookInfo//更新简介
+                            // Tos("获取到简介")
+                            val diaInfo = AlertDialog.Builder(this@search_login).setTitle("本书简介")
+                                    .setMessage("$bookInfo").create().show()
+                            //有简介，弹出alert
+                        }
+                        0 -> {
+                            Tos("数据异常，请稍后再试！")
+                            //解析失败
+                        }
                     }
                 }
-            }
 
         }
         val temIntent:Intent=intent

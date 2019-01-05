@@ -4,7 +4,7 @@
         android:shape="rectangle">
         <!-- 填充的颜色 -->
 
-        <solid android:color="#169d6f" />
+        <solid android:color="@color/colorPrimary" />
 
         <!-- 设置按钮的四个角为弧形 -->
 

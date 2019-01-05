@@ -24,6 +24,7 @@
         android:id="@+id/notice_refresh"
         android:layout_height="wrap_content">
         <ExpandableListView
+            android:groupIndicator="@null"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/notice_listView">

@@ -10,8 +10,8 @@ android {
         applicationId "com.simplewen.win0.wd"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 19
-        versionName "2.1"
+        versionCode 23
+        versionName "wd_v1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -23,6 +23,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
+    implementation 'com.android.support:gridlayout-v7:26.+'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:26.1.0'

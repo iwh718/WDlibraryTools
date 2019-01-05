@@ -32,6 +32,12 @@
         <item name="android:actionMenuTextColor">@color/black</item>
 
     </style>
+    <style name="mySearchBox">
+        <item name="android:windowEnterAnimation">@anim/search_box_in</item>
+        <item name="android:windowExitAnimation">@anim/search_box_out</item>
+    </style>
+
+
 
 
 

@@ -1,4 +1,8 @@
 <resources>
+    <string name="appV1_time">v1.0 | 2019.01.02</string>
+    <string name="author">开发者：IWH</string>
+    <string name="appV1_desc">改善UI，实现校内网登录，检索，续借，增加图书馆动态，挂失，密码管理。</string>
+    <string name="appHelp">帮助：由于校内网络限制，图书续借与检索仅提供校园网登录！</string>
     <string name="userName">未登录</string>
     <string name="app_name">文院移动图书馆</string>
     <string name="user_hint">输入账号（图书证号）</string>
@@ -21,8 +25,7 @@
     <string name="search_hint">输入书名</string>
     <string name="search_tips">趁阳光正好,做点有意义的.2018.11.30</string>
     <string name="about_qq">QQ:2868579699</string>
-    <string name="about_ex">简介：文院校内使用，校外网无法登录。正在内测开发阶段，有问题，随时反馈群里。如果补办过卡，密码依旧是以前的账号。</string>
-    <string name="about_bore">其它：暂未开发如下：排行榜，电子资源，修改密码。</string>
+    <string name="app_desc">简介：文院校内使用，校外网无法登录。正在内测开发阶段，有问题，随时反馈群里。如果补办过卡，密码依旧是以前的账号。</string>
     <string name="thank_me">支持或捐赠开发者。</string>
     <string name="search_b_name">书名：</string>
     <string name="search_b_number">索取号：</string>
@@ -30,11 +33,10 @@
     <string name="search_b_time">出版日期：</string>
     <string name="search_b_fact">出版社：</string>
     <string name="update">更新日志</string>
-    <string name="v7">v2.1|18.12.20（内测)</string>
-    <string name="v7_desc">新增查看图书简介。</string>
     <string name="title_activity_index">index</string>
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="action_settings">Settings</string>
-    <string name="nav_menu_"/>
+    <string name="nav_menu_" />
+    <string name="upDesc">"调整UI，节日快乐。\n 2019.01.02"</string>
 </resources>

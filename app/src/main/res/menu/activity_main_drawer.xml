@@ -3,36 +3,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_myLibrary"
-            android:icon="@drawable/nav_mylibrary_icon"
-            android:title="我的图书馆" />
-        <item
-            android:id="@+id/nav_notice"
-            android:icon="@drawable/nav_notice_icon"
-            android:title="公告通知" />
-        <item
-            android:id="@+id/nav_text"
-            android:icon="@drawable/nav_text_icon"
-            android:title="电子资源" />
-        <item
-            android:id="@+id/nav_sort"
-            android:icon="@drawable/nav_sort_icon"
-            android:title="图书馆动态" />
-    </group>
+    <item
+        android:icon="@drawable/nav_opentime_icon"
+        android:id="@+id/nav_openTime"
+        android:title="开放时间" />
+    <item
+        android:icon="@drawable/ic_action_name_search"
+        android:id="@+id/nav_qk"
+        android:title="期刊搜索" />
+    <item
+        android:icon="@drawable/nav_reader_icon"
+        android:id="@+id/nav_reader"
+        android:title="读者互动" />
+    <item
+        android:icon="@drawable/nav_bookshelf_icon"
+        android:id="@+id/nav_bookshelf"
+        android:title="图书架排列规则" />
+    <item
+        android:icon="@drawable/nav_qusetions_icon"
+        android:id="@+id/nav_questions"
+        android:title="常见问题解答" />
 
-    <item android:title="其它">
-        <menu>
+
+            <item android:id="@+id/nav_updata"
+                android:icon="@drawable/nav_update_icon"
+                android:title="检查更新"/>
+
             <item
                 android:id="@+id/nav_about"
                 android:icon="@drawable/nav_about_icon"
-                android:title="关于" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/nav_send_icon"
-                android:title="分享" />
-        </menu>
-    </item>
+                android:title="关于应用" />
+
+
 
 </menu>

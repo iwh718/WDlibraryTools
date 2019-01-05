@@ -48,12 +48,15 @@ class brow : AppCompatActivity() {
             override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
                 when (msg.what) {
-                    3 -> {
+                    0x15 -> {
                         Toast.makeText(this@brow,"请求失败", Toast.LENGTH_SHORT).show()
                     }
 
-                    6 -> {
+                    0x16 -> {
                         //Toast.makeText(this@brow,"请求成功",Toast.LENGTH_SHORT).show()
+                        if(books.size < 1){
+                            Toast.makeText(this@brow,"您目前没有在借的图书",Toast.LENGTH_SHORT).show()
+                        }
                         listadapter.notifyDataSetChanged()
 
                     }
@@ -63,7 +66,7 @@ class brow : AppCompatActivity() {
                     8-> {Toast.makeText(this@brow,"续借失败，你已经续借过！",Toast.LENGTH_SHORT).show()}
                     9 -> {
                         books.clear()
-                        request.myBrow(this,listadapter)
+                        request.myBrow(this)
                         listadapter.notifyDataSetChanged()
                         refresh.isRefreshing = false
                         Toast.makeText(this@brow,"刷新完成",Toast.LENGTH_SHORT).show()
@@ -92,7 +95,7 @@ class brow : AppCompatActivity() {
             }
         }
 
-        request.myBrow(hand,listadapter)
+        request.myBrow(hand)
         refresh.setOnRefreshListener {
             val msg = Message()
             msg.what = 9
@@ -117,4 +120,6 @@ class brow : AppCompatActivity() {
         finish()
         return super.onSupportNavigateUp()
     }
+
+
 }

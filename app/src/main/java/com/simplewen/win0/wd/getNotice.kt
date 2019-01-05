@@ -105,10 +105,12 @@ class getNotice :AppCompatActivity(){
                 val ll: LinearLayout
                 if (convertView == null)
                 {
-                    ll = LinearLayout(this@getNotice)
-                    ll.orientation = LinearLayout.HORIZONTAL
+                    ll = layoutInflater.inflate(R.layout.ex_listview_parent,null) as LinearLayout
+
                     val textView = this.textView
                     textView.setTextColor(Color.BLACK)
+                    textView.setSingleLine(true)
+                    textView.maxEms = 20
                     textView.text = getGroup(groupPosition).toString()
                     ll.addView(textView)
                 }
@@ -136,7 +138,7 @@ class getNotice :AppCompatActivity(){
                     0 ->{
                             Toast.makeText(this@getNotice,"请求失败",Toast.LENGTH_SHORT).show()
                     }
-                    1->{
+                    0x14->{
                         //
                         if(refresh.isRefreshing){
                             Toast.makeText(this@getNotice,"刷新成功",Toast.LENGTH_SHORT).show()
