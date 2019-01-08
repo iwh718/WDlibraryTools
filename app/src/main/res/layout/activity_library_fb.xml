@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".libraryFb">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:fitsSystemWindows="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        app:popupTheme="@style/AppTheme.PopupOverlay" />
+    <ScrollView
+        android:orientation="vertical"
+       android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:layout_margin="5dp"
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:textAlignment="center"
+                        android:layout_margin="5dp"
+                        android:padding="5dp"
+                        android:layout_width="match_parent"
+                        android:text="图书馆一楼"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_margin="5dp"
+                        android:padding="5dp"
+                        android:layout_width="match_parent"
+                        android:text="@string/dialog_fb_f1_shkx"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_margin="5dp"
+                        android:padding="5dp"
+                        android:layout_width="match_parent"
+                        android:text="@string/dialog_fb_f1_zrkx"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:layout_margin="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:textAlignment="center"
+                        android:layout_margin="5dp"
+                        android:padding="5dp"
+                        android:layout_width="match_parent"
+                        android:text="图书馆二楼"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_margin="5dp"
+                        android:padding="5dp"
+                        android:layout_width="match_parent"
+                        android:text="@string/dialog_fb_f2_ml"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_margin="5dp"
+                        android:padding="5dp"
+                        android:layout_width="match_parent"
+                        android:text="@string/dialog_fb_f2_qc"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_margin="5dp"
+                        android:padding="5dp"
+                        android:layout_width="match_parent"
+                        android:text="@string/dialog_fb_f2_ys"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_margin="5dp"
+                        android:padding="5dp"
+                        android:layout_width="match_parent"
+                        android:text="@string/dialog_fb_f2_yy"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:layout_margin="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:textAlignment="center"
+                        android:layout_margin="5dp"
+                        android:padding="5dp"
+                        android:layout_width="match_parent"
+                        android:text="图书馆四楼"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:layout_margin="5dp"
+                        android:padding="5dp"
+                        android:layout_width="match_parent"
+                        android:text="@string/dialog_fb_f4_tool"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:layout_margin="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:textAlignment="center"
+                        android:layout_margin="5dp"
+                        android:padding="5dp"
+                        android:layout_width="match_parent"
+                        android:text="敬梓楼西一楼"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_margin="5dp"
+                        android:padding="5dp"
+                        android:layout_width="match_parent"
+                        android:text="@string/dialog_fb_jz_cjys"
+                        android:layout_height="wrap_content" />
+
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

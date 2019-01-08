@@ -2,6 +2,10 @@
     <string name="appV1_time">v1.0 | 2019.01.02</string>
     <string name="author">开发者：IWH</string>
     <string name="appV1_desc">改善UI，实现校内网登录，检索，续借，增加图书馆动态，挂失，密码管理。</string>
+    <string name="appV2_time">v1.2 | 2019.01.04</string>
+    <string name="appV3_desc">增加馆藏分布，开放时间。</string>
+    <string name="appV3_time">v1.3 | 2019.01.07</string>
+    <string name="appV2_desc">改善侧滑卡顿，调整UI，自动切换公告。</string>
     <string name="appHelp">帮助：由于校内网络限制，图书续借与检索仅提供校园网登录！</string>
     <string name="userName">未登录</string>
     <string name="app_name">文院移动图书馆</string>
@@ -38,5 +42,17 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="action_settings">Settings</string>
     <string name="nav_menu_" />
-    <string name="upDesc">"调整UI，节日快乐。\n 2019.01.02"</string>
+    <string name="upDesc">"增加馆藏分布与开放时间。\n 2019.01.07"</string>
+    <string name="dialog_fb_f1_shkx">社会科学书库:\n I文学、G文化教育、K历史地理传记、R医药卫生、TS轻工业手工业 、 Z综合类图书</string>
+    <string name="dialog_fb_f1_zrkx">自然科学书库:\n T工业技术，TD矿业工程，TE石油工业，TF冶金工业，TG金属学、金属工艺，TH机械、仪表工业，TK动力工程，TP自动化技术、计算机技术，TQ化学工业，TU建筑科学，TV水利工程，O数理科学,P地球科学，Q生物科学，S农业，V航空航天，X环境科学类图书</string>
+    <string name="dialog_fb_f2_ys">艺术书库：\n J艺术类图书</string>
+    <string name="dialog_fb_f2_qc">汽车、电子书库：\n TM 电工技术，TN无线电电子学、电子技术，U交通运输类图书</string>
+    <string name="dialog_fb_f2_yy">语言书库：\n H语言类图书</string>
+    <string name="dialog_fb_f2_ml">马列政治书库：\n A马列毛泽东、B哲学、C社会学、 D法律、E军事类图书</string>
+    <string name="dialog_fb_f4_tool">工具样本书库教师书屋：\n 各类工具书和馆藏相应样本图书</string>
+    <string name="dialog_fb_jz_cjys">财经艺术分馆：\n F财经管理类图书、财经类期刊，和馆藏期刊合订本。</string>
+    <string name="opentime_f1">周一至周五：\n 08:20---11:40 13:00---16:50 （冬时制）\n 13:00---17:20 （夏时制）\n 周六（周日休息） \n 08:20---11:40 14:00---16:50</string>
+    <string name="opentime_f2">周一至周五：\n  08:20---11:40 13:00---16:50 （冬时制）\n 13:00---17:20 （夏时制） \n（周六、周日休息）</string>
+    <string name="opentime_f4">周一至周五:\n 8:20---11:30 13:00---16:50（冬时制）\n 13:00---17:20（夏时制）\n 开架阅览，不外借</string>
+    <string name="opentime_jz">周一至周五：\n 08:20---11:40 13:00---16:50（冬时制）\n 13:00---17:20（夏时制）\n 周六（周日休息）\n 08:20---11:40 14:00---16:50</string>
 </resources>

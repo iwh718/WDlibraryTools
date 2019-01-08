@@ -27,6 +27,7 @@ import android.net.Uri
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TextInputEditText
 import android.support.v4.widget.SwipeRefreshLayout
+import android.util.Log
 
 import com.simplewen.win0.wd.libraryweb.libraryQk
 
@@ -34,15 +35,17 @@ import com.simplewen.win0.wd.libraryweb.libraryweb
 import com.simplewen.win0.wd.libraryweb.searchOthers
 import com.simplewen.win0.wd.util.Utils
 import kotlinx.android.synthetic.main.app_bar_main.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 
-//author:bore初夏
+//author:IWH
 //QQ:2868579699
 //time:18.09.02
 //校园工具，非盈利项目，非礼勿扰
 //喜欢那个文，2018.09.20
 class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
+    val slideNotice = Timer()//定时器
     val request = requestManage(this@WDMain)//实例化请求对象
     var b_id = request.b_id//listview id
     var logined: Int = 0//是否历史登录标志
@@ -52,6 +55,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
     var temLoad:AlertDialog? =null //加载组件
     var userNameText:TextView? = null
     lateinit var mainFresh:SwipeRefreshLayout //下拉刷新
+    lateinit var noticeTitle:ArrayList<String>//公告
     //handler接收网络线程数据
     val hand: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message?) {
@@ -70,13 +74,13 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                     temLoad?.dismiss()//移除加载
                     request.loginFlag = 1
                     logined = 1
-                    if(getSharedPreferences("noticeFlag",Activity.MODE_PRIVATE).getInt("upflag",0) <= 3){
+                    if(getSharedPreferences("noticeFlag",Activity.MODE_PRIVATE).getInt("upflag",0) <= 5){
                         AlertDialog.Builder(this@WDMain)
-                                .setTitle("测试1.5").setTitle("本次更新").setMessage(R.string.upDesc)
+                                .setTitle("测试1.6").setTitle("本次更新").setMessage(R.string.upDesc)
                                 .setCancelable(false).setPositiveButton("了解"){
                                     _,_ ->
                                     val shareNotice = getSharedPreferences("noticeFlag", Activity.MODE_PRIVATE)
-                                    shareNotice.edit().putInt("upflag",4).apply()
+                                    shareNotice.edit().putInt("upflag",6).apply()
                                 }.create().show()
                     }
                     val shareP = getSharedPreferences("wd", Activity.MODE_PRIVATE)
@@ -108,11 +112,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                     Toast.makeText(this@WDMain, "网络异常", Toast.LENGTH_SHORT).show()
                     logined = 0
                     val dialog = AlertDialog.Builder(this@WDMain)
-                    dialog.setTitle("图书馆访问失败，程序即将退出！")
-                            .setCancelable(false)
-                            .setPositiveButton("确认") { _, _ ->
-
-                            }
+                    dialog.setTitle("图书馆访问失败，请稍后再试！")
                             .create()
                     dialog.show()
                 }
@@ -143,11 +143,16 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                 0x14 ->{
                     //获取公告
 
-                    noticeTextView.text = request.noticeTitle[0]
+                    //noticeTextView.text = request.noticeTitle[0]
+                    noticeTitle = request.noticeTitle
+                    Tools().startNotice()
                     if(mainFresh.isRefreshing){
                         mainFresh.isRefreshing = false
 
                     }
+                }//更换公告
+                0x144 -> {
+                    noticeTextView.text = noticeTitle[msg.arg1]
                 }
                 //查询借阅失败
                 0x15 ->{
@@ -161,7 +166,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                 //图书到期提醒
                 0x17 ->{
                    // Toast.makeText(this@WDMain,"你有图书即将超期！",Toast.LENGTH_SHORT).show()
-                    val warnBooks = AlertDialog.Builder(this@WDMain)
+                    AlertDialog.Builder(this@WDMain)
                             .setTitle("你有图书即将超期!")
                             .setMessage("请注意及时续借或还书。").setPositiveButton("去看看"){
                                 _,_ ->
@@ -221,6 +226,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
 
     /**内部类：检查登录，调出加载组件**/
     inner class Tools{
+
         fun joinQQGroup(): Boolean {
             val intent = Intent()
             val key="ylQNSD_I5zOdD7zjgp4iHN0KUN4TKbJx"
@@ -268,10 +274,34 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                 return true
 
             } else {
-                logined == 0
+                logined = 0
                 return false
             }
 
+
+        }
+        fun startNotice(){
+            var i = 0
+            //定时器自动更换公告
+            slideNotice.schedule(object :TimerTask(){
+
+                override fun run() {
+
+                    if(i < noticeTitle.size ){
+                       Log.d("@@arg-size",noticeTitle.size.toString())
+                        val message = Message()
+                        message.arg1 = i
+                        Log.d("@@arg",message.arg1.toString())
+                        Log.d("@@arg-i",i.toString())
+                        i++
+                        message.what = 0x144
+                        hand.sendMessage(message)
+
+                    }else{
+                        i = 0
+                    }
+                }
+            },1000,3000)
 
         }
 
@@ -304,16 +334,29 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         val searchModeSpinnerData  = arrayOf("默认搜索","模糊搜索","精确搜索")
         val searchModeSpinnerAdapter = ArrayAdapter(this,R.layout.spinnerlayout,searchModeSpinnerData)
         val searchSortSpinnerAdapter = ArrayAdapter(this,R.layout.spinnerlayout, searchSortSpinnerData)
-
-
         val gridLIbrary =  findViewById<LinearLayout>(R.id.grid_library)//动态
         val gridMyLibrary =  findViewById<LinearLayout>(R.id.grid_mylibrary)//我的图书馆
-
         val noticeTextView = findViewById<TextView>(R.id.noticeTextView)//公告
+        noticeTitle = arrayListOf("")
+        Tools().startNotice()
          val searchBox =   findViewById<LinearLayout>(R.id.search_box)//获取搜素模式盒子
          mainFresh = findViewById(R.id.main_fresh)//下拉刷新
 
+        //设置用户引导
+        if(!Utils.checkFLagTips()){
+            beginTips.visibility = View.GONE
+        }
+        //开始程序数据初始化
+        request.getNotice(hand)//获取公告
+        //每次打开，检测是否登录过
+        if (Tools().checkLogined()) {
+            request.myLogin(boreUser, borePw, hand)//登录
 
+
+        } else {
+            Toast.makeText(this,"你还未登录，或登录失效！",Toast.LENGTH_SHORT).show()
+            Tools().loginDialog()
+        }
 
         /**电子资源**/
         /**@param searchOthers_cx 超星期刊搜索**/
@@ -331,9 +374,9 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
             intent_search.putExtra("webUrl","http://www.duxiu.com/")
             startActivity(intent_search)
         }
-        //超星
+        //万方
         searchOthers_dx.setOnClickListener{
-            intent_search.putExtra("webUrl","http://qikan.chaoxing.com/")
+            intent_search.putExtra("webUrl","http://www.wanfangdata.com.cn/index.html")
             startActivity(intent_search)
         }
         //美文
@@ -348,12 +391,9 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         }
 
         /****/
-        //检测提示信息
-        if(!Utils.checkFLagTips()){
-            beginTips.visibility = View.GONE
-        }
-        request.getNotice(hand)//获取公告
 
+
+        /**设置适配器和监听器**/
         searchModeSpinner.adapter = searchModeSpinnerAdapter
         searchSortSpinner.adapter = searchSortSpinnerAdapter
         val toggle = ActionBarDrawerToggle(
@@ -362,7 +402,6 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
         //搜索模式：设置监听器
-
         searchModeSpinner.onItemSelectedListener = object :AdapterView.OnItemSelectedListener{
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 searchMode = (position+1).toString()
@@ -387,17 +426,6 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         noticeLayout.setOnClickListener{
             startActivity(Intent(this,getNotice::class.java))
         }
-
-        //每次打开，检测是否登录过
-        if (Tools().checkLogined()) {
-            request.myLogin(boreUser, borePw, hand)//登录
-
-
-        } else {
-            Toast.makeText(this,"你还未登录，或登录失效！",Toast.LENGTH_SHORT).show()
-            Tools().loginDialog()
-        }
-
 
         //绑定搜索按钮
         searchBtn.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -541,7 +569,10 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
 
             }
             R.id.nav_send -> {
-               // Toast.makeText(this@WDMain,"内测阶段。",Toast.LENGTH_LONG).show()
+                val textIntent = Intent(Intent.ACTION_SEND)
+                textIntent.type = "text/plain"
+                textIntent.putExtra(Intent.EXTRA_TEXT, "文院移动图书馆:https://www.coolapk.com/apk/com.simplewen.win0.wd")
+                startActivity(Intent.createChooser(textIntent, "分享文院移动图书馆给小伙伴！"))
             }
 
         }
@@ -580,7 +611,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
             }
             //开放时间
             R.id.nav_openTime ->{
-                Utils.Tos("正在完善！")
+                Utils.dialogTime(this@WDMain)
             }
             //读者互动
             R.id.nav_reader->{
@@ -588,7 +619,8 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
             }
             //图书架规则
             R.id.nav_bookshelf ->{
-                Utils.Tos("正在完善！")
+               startActivity(Intent(this@WDMain,libraryFb::class.java))
+
             }
             //常见问题
             R.id.nav_questions->{

@@ -232,7 +232,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
 
-                                android:text="超星期刊"
+                                android:text="万方"
                                 android:textAlignment="center"
 
                                 />
@@ -314,12 +314,12 @@
 
 
     <LinearLayout
+
+
         android:id="@+id/search_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
-        android:layout_margin="10dp"
-        android:background="@drawable/search_box_bg"
+        android:background="@color/white"
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent">

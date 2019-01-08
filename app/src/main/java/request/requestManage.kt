@@ -65,7 +65,7 @@ class requestManage(val context: Context) {
 
             thread {
                 val request = Request.Builder().url(this.myBrowUrl).build()
-                var response = this.client.newCall(request).enqueue(object : Callback {
+                this.client.newCall(request).enqueue(object : Callback {
                     override fun onResponse(call: Call, response: Response) {
                         res = response.body()?.string()
                         tem_res = res//临时存放string
@@ -173,7 +173,7 @@ class requestManage(val context: Context) {
                 val request = Request.Builder().url(this.logUrl).post(myinfo).build()
 
                 val _this = this
-                var response = this.client.newCall(request).enqueue(object : Callback {
+                this.client.newCall(request).enqueue(object : Callback {
                     override fun onResponse(call: Call, response: Response) {
 
                         var resText = response.body()?.string()
@@ -224,7 +224,7 @@ class requestManage(val context: Context) {
                     }
 
                     override fun onFailure(call: Call, e: IOException) {
-                        val msg: Message = Message()
+                        val msg = Message()
                         msg.what = 3
                         hand.sendMessage(msg)
                     }
@@ -235,7 +235,7 @@ class requestManage(val context: Context) {
 
 
         } else {
-            val msg: Message = Message()
+            val msg = Message()
             msg.what = 5
             hand.sendMessage(msg)
         }
