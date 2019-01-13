@@ -6,7 +6,7 @@
     <item
         android:icon="@drawable/nav_opentime_icon"
         android:id="@+id/nav_openTime"
-        android:title="开放时间" />
+        android:title="开放时间与馆藏" />
     <item
         android:icon="@drawable/ic_action_name_search"
         android:id="@+id/nav_qk"

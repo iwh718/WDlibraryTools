@@ -45,6 +45,7 @@ import kotlin.collections.ArrayList
 //校园工具，非盈利项目，非礼勿扰
 //喜欢那个文，2018.09.20
 class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    val  iwh = "校园工具，非盈利项目，非礼勿扰"
     val slideNotice = Timer()//定时器
     val request = requestManage(this@WDMain)//实例化请求对象
     var b_id = request.b_id//listview id
@@ -74,13 +75,13 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                     temLoad?.dismiss()//移除加载
                     request.loginFlag = 1
                     logined = 1
-                    if(getSharedPreferences("noticeFlag",Activity.MODE_PRIVATE).getInt("upflag",0) <= 5){
+                    if(getSharedPreferences("noticeFlag",Activity.MODE_PRIVATE).getInt("upflag",0) <= 6){
                         AlertDialog.Builder(this@WDMain)
-                                .setTitle("测试1.6").setTitle("本次更新").setMessage(R.string.upDesc)
+                                .setTitle("测试1.7").setTitle("本次更新").setMessage(R.string.upDesc)
                                 .setCancelable(false).setPositiveButton("了解"){
                                     _,_ ->
                                     val shareNotice = getSharedPreferences("noticeFlag", Activity.MODE_PRIVATE)
-                                    shareNotice.edit().putInt("upflag",6).apply()
+                                    shareNotice.edit().putInt("upflag",7).apply()
                                 }.create().show()
                     }
                     val shareP = getSharedPreferences("wd", Activity.MODE_PRIVATE)
@@ -233,6 +234,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
             intent.data = Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D$key")
             // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面 //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             try {
+
                 startActivity(intent)
                 return true
             } catch (e: Exception) {
@@ -611,7 +613,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
             }
             //开放时间
             R.id.nav_openTime ->{
-                Utils.dialogTime(this@WDMain)
+                startActivity(Intent(this@WDMain,libraryFb::class.java))
             }
             //读者互动
             R.id.nav_reader->{
@@ -619,7 +621,8 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
             }
             //图书架规则
             R.id.nav_bookshelf ->{
-               startActivity(Intent(this@WDMain,libraryFb::class.java))
+
+                Utils.Tos("正在完善！")
 
             }
             //常见问题

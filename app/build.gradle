@@ -10,8 +10,8 @@ android {
         applicationId "com.simplewen.win0.wd"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 25
-        versionName "1.3"
+        versionCode 26
+        versionName "1.3.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

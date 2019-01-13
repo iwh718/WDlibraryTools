@@ -19,7 +19,7 @@ import java.util.*
 import kotlin.concurrent.thread
 
 class requestManage(val context: Context) {
-
+    val  iwh = "校园工具，非盈利项目，非礼勿扰"
     val cookieJar: CookieJar = object : CookieJar {
         private val map = PersistentCookieStore(context)
         override fun saveFromResponse(url: HttpUrl, cookies: MutableList<Cookie>) {
