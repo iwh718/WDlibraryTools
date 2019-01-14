@@ -6,33 +6,33 @@ import android.app.Activity
 import android.content.Intent
 
 
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
 import android.support.design.widget.NavigationView
-import android.support.design.widget.Snackbar
+
 import android.support.v4.view.GravityCompat
 
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.*
-import android.widget.*
+
 import kotlinx.android.synthetic.main.activity_wd_main.*
 import request.requestManage
-import kotlinx.android.synthetic.main.content_wd_main.*
+
 import android.graphics.Color
 import android.net.Uri
+import android.os.*
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TextInputEditText
 import android.support.v4.widget.SwipeRefreshLayout
+import android.text.TextUtils
 import android.util.Log
+import android.widget.*
 
 import com.simplewen.win0.wd.libraryweb.libraryQk
 
 import com.simplewen.win0.wd.libraryweb.libraryweb
 import com.simplewen.win0.wd.libraryweb.searchOthers
+import com.simplewen.win0.wd.modal.iwhDataOperator
 import com.simplewen.win0.wd.util.Utils
 import kotlinx.android.synthetic.main.app_bar_main.*
 import java.util.*
@@ -54,9 +54,10 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
     private var borePw: String = ""
     var temDialog:AlertDialog? = null//临时dialog对象，用来调用dismiss
     var temLoad:AlertDialog? =null //加载组件
-    var userNameText:TextView? = null
+    var userNameText: TextView? = null
     lateinit var mainFresh:SwipeRefreshLayout //下拉刷新
-    lateinit var noticeTitle:ArrayList<String>//公告
+    lateinit var noticeTextSwitcher: TextSwitcher  //公告滚动
+    lateinit var noticeTitle:ArrayList<String>//公告内容
     //handler接收网络线程数据
     val hand: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message?) {
@@ -75,20 +76,19 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                     temLoad?.dismiss()//移除加载
                     request.loginFlag = 1
                     logined = 1
-                    if(getSharedPreferences("noticeFlag",Activity.MODE_PRIVATE).getInt("upflag",0) <= 6){
+                    if(getSharedPreferences("noticeFlag",Activity.MODE_PRIVATE).getInt("upflag",0) <= 7){
                         AlertDialog.Builder(this@WDMain)
                                 .setTitle("测试1.7").setTitle("本次更新").setMessage(R.string.upDesc)
                                 .setCancelable(false).setPositiveButton("了解"){
                                     _,_ ->
-                                    val shareNotice = getSharedPreferences("noticeFlag", Activity.MODE_PRIVATE)
-                                    shareNotice.edit().putInt("upflag",7).apply()
+                                    iwhDataOperator.setSHP("upflag",8,"noticeFlag")
                                 }.create().show()
                     }
-                    val shareP = getSharedPreferences("wd", Activity.MODE_PRIVATE)
-                    val edit = shareP.edit()
-                    edit.putString("user", msg.data.getString("user"))
-                    edit.putString("pw", msg.data.getString("pw"))
-                    edit.apply()
+                    //存储登录信息到本地私有目录
+                    iwhDataOperator
+                            .setSHP("user",msg.data.getString("user"),"wd")
+                            .setSHP("pw",msg.data.getString("pw"),"wd")
+
                 }
                 2 -> {
                     Utils.Tos("登录失败：账号或密码有误")
@@ -144,7 +144,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                 0x14 ->{
                     //获取公告
 
-                    //noticeTextView.text = request.noticeTitle[0]
+
                     noticeTitle = request.noticeTitle
                     Tools().startNotice()
                     if(mainFresh.isRefreshing){
@@ -153,7 +153,9 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                     }
                 }//更换公告
                 0x144 -> {
-                    noticeTextView.text = noticeTitle[msg.arg1]
+                    Log.d("@@_arg1:",noticeTitle[msg.arg1])
+                   noticeTextSwitcher.setText(noticeTitle[msg.arg1])
+
                 }
                 //查询借阅失败
                 0x15 ->{
@@ -188,26 +190,21 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
 
 
                 }
-                //失败
-                0x19 ->{
-
-                }
                 //检测更新
 
                 0x21 ->{
                     if(msg.arg1 >  Utils.getVersion(this@WDMain)){
-                        Utils.Tos("新版本")
 
-                            temDialog = AlertDialog.Builder(this@WDMain).setCancelable(false)
-                                    .setTitle("检测到新版本！").setMessage("是否立即更新?")
-                                    .setPositiveButton("确定"){
-                                        _,_ ->
+                            val updateView = layoutInflater.inflate(R.layout.update_view,null)
+                            updateView.findViewById<Button>(R.id.updateBtn)
+                                    .setOnClickListener{
+                                        temDialog!!.dismiss()
                                         Utils.DownNew()//下载更新
                                         Utils.Tos("请稍后查看通知栏进度！")
-
-                                    }.setNegativeButton("取消"){
-                                        _,_ ->
-                                    }.create()
+                                    }
+                            temDialog = AlertDialog.Builder(this@WDMain).setCancelable(true)
+                                    .setView(updateView)
+                                    .create()
                             temDialog!!.show()
                         } else{
                         Utils.Tos("当前是最新版本")
@@ -290,11 +287,8 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                 override fun run() {
 
                     if(i < noticeTitle.size ){
-                       Log.d("@@arg-size",noticeTitle.size.toString())
                         val message = Message()
                         message.arg1 = i
-                        Log.d("@@arg",message.arg1.toString())
-                        Log.d("@@arg-i",i.toString())
                         i++
                         message.what = 0x144
                         hand.sendMessage(message)
@@ -303,7 +297,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                         i = 0
                     }
                 }
-            },1000,3000)
+            },0,2000)
 
         }
 
@@ -317,7 +311,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         setContentView(R.layout.activity_wd_main)
         setSupportActionBar(toolbar)
         toolbar.setTitleTextColor(Color.WHITE)
-
+        if (Build.VERSION.SDK_INT >= 21)   window.navigationBarColor = Color.BLUE
         userNameText = findViewById<NavigationView>(R.id.nav_view)//获取导航
                 .getHeaderView(0)//获取头部
                 .findViewById<LinearLayout>(R.id.nav_header)//获取头部布局
@@ -325,8 +319,6 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         var searchMode:String = "1"//默认搜索模式
         var searchSort:String = "正题名"//默认排列
         val fab = findViewById<FloatingActionButton>(R.id.fab)
-        val beginTips = findViewById<LinearLayout>(R.id.beginTips)//获取提示布局
-        val closeBtn = findViewById<Button>(R.id.closeTips)//关闭按钮
         val login_layout = layoutInflater.inflate(R.layout.load,null)//加载布局
         val searchBtn = findViewById<SearchView>(R.id.search_btn)//搜索按钮
         val noticeLayout = findViewById<LinearLayout>(R.id.noticeLayout)//公告区
@@ -338,27 +330,34 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         val searchSortSpinnerAdapter = ArrayAdapter(this,R.layout.spinnerlayout, searchSortSpinnerData)
         val gridLIbrary =  findViewById<LinearLayout>(R.id.grid_library)//动态
         val gridMyLibrary =  findViewById<LinearLayout>(R.id.grid_mylibrary)//我的图书馆
-        val noticeTextView = findViewById<TextView>(R.id.noticeTextView)//公告
-        noticeTitle = arrayListOf("")
-        Tools().startNotice()
+         noticeTextSwitcher = findViewById(R.id.noticeTextSwitcher)//公告组件
+         noticeTextSwitcher.setFactory {
+             val tv = TextView(this)
+             tv.maxEms = 20
+             tv.setSingleLine(true)
+             tv.ellipsize = TextUtils.TruncateAt.MARQUEE
+             tv
+
+        }
+         noticeTitle = arrayListOf("2019.01.10 图书馆")
+
          val searchBox =   findViewById<LinearLayout>(R.id.search_box)//获取搜素模式盒子
          mainFresh = findViewById(R.id.main_fresh)//下拉刷新
 
-        //设置用户引导
-        if(!Utils.checkFLagTips()){
-            beginTips.visibility = View.GONE
-        }
+
         //开始程序数据初始化
         request.getNotice(hand)//获取公告
         //每次打开，检测是否登录过
+
         if (Tools().checkLogined()) {
             request.myLogin(boreUser, borePw, hand)//登录
-
 
         } else {
             Toast.makeText(this,"你还未登录，或登录失效！",Toast.LENGTH_SHORT).show()
             Tools().loginDialog()
         }
+        //获取更新
+        Utils.requestUpVersion(hand)
 
         /**电子资源**/
         /**@param searchOthers_cx 超星期刊搜索**/
@@ -388,7 +387,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         }
         //知网
         searchOthers_zw.setOnClickListener{
-            intent_search.putExtra("webUrl","http://www.cnki.net/")
+            intent_search.putExtra("webUrl","http://wap.cnki.net/touch/web/guide")
             startActivity(intent_search)
         }
 
@@ -460,14 +459,21 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         }
         //fab按钮
         fab.setOnClickListener{
-            Tools().joinQQGroup()
+           AlertDialog.Builder(this@WDMain)
+                   .setTitle("加入图书馆交流群")
+                   .setMessage("期待你的到来！")
+                   .setPositiveButton("确认"){
+                       _,_ ->
+                       Tools().joinQQGroup()
+                   }
+                   .setNegativeButton("算了"){
+                    _,_ ->
+
+                   }
+                   .create().show()
         }
 
-        //绑定提示按钮
-        closeBtn.setOnClickListener{
-            beginTips.visibility = View.GONE
-            Utils.closeTips()
-        }
+
         //绑定grid按钮
         gridLIbrary.setOnClickListener{
             startActivity(Intent(this@WDMain,libraryweb::class.java))
@@ -478,7 +484,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                 Tools().loginDialog()
 
             }else{
-                AlertDialog.Builder(this@WDMain).setItems(arrayOf("我的借阅","我的借阅历史","图书证挂失")){
+                AlertDialog.Builder(this@WDMain).setItems(arrayOf("我的借阅","我的借阅历史")){
                     _,which  ->
                     when(which){
                         0 -> {
@@ -488,21 +494,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                         1 ->{
                             startActivity( Intent(this, history::class.java))//切换我的借阅历史
                         }
-                        2-> {
-                            val gs_ly = layoutInflater.inflate(R.layout.guashi,null)
-                            val gs_name =  gs_ly.findViewById<EditText>(R.id.gs_name).text
-                            val gs_number = gs_ly.findViewById<EditText>(R.id.gs_number).text
-                            val gs_password = gs_ly.findViewById<EditText>(R.id.gs_password).text
-                            val gs_btn = gs_ly.findViewById<Button>(R.id.gs)
-                            gs_btn.setOnClickListener{
 
-                                request.gsCard(gs_number.toString(),gs_password.toString(),gs_name.toString(),hand)
-                            }
-
-                            temDialog  = AlertDialog.Builder(this@WDMain)
-                                    .setTitle("挂失图书证").setView(gs_ly).create()
-                            temDialog!!.show()
-                        }
                     }
 
                 }.setTitle("选择功能").create().show()
@@ -616,7 +608,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                 startActivity(Intent(this@WDMain,libraryFb::class.java))
             }
             //读者互动
-            R.id.nav_reader->{
+           /** R.id.nav_reader->{
                 Utils.Tos("正在完善！")
             }
             //图书架规则
@@ -624,6 +616,24 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
 
                 Utils.Tos("正在完善！")
 
+            }
+            **/
+            //图书证挂失
+            R.id.nav_gs ->{
+
+                val gs_ly = layoutInflater.inflate(R.layout.guashi,null)
+                val gs_name =  gs_ly.findViewById<EditText>(R.id.gs_name).text
+                val gs_number = gs_ly.findViewById<EditText>(R.id.gs_number).text
+                val gs_password = gs_ly.findViewById<EditText>(R.id.gs_password).text
+                val gs_btn = gs_ly.findViewById<Button>(R.id.gs)
+                gs_btn.setOnClickListener{
+
+                    request.gsCard(gs_number.toString(),gs_password.toString(),gs_name.toString(),hand)
+                }
+
+                temDialog  = AlertDialog.Builder(this@WDMain)
+                        .setTitle("挂失图书证").setView(gs_ly).create()
+                temDialog!!.show()
             }
             //常见问题
             R.id.nav_questions->{

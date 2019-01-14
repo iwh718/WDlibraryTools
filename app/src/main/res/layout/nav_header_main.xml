@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="190dp"
     android:id="@+id/nav_header"
-    android:background="@drawable/nav_bg"
+
     android:gravity="bottom"
     android:orientation="vertical"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -24,7 +24,7 @@
     <TextView
         android:textAlignment="center"
         android:layout_gravity="center|center_vertical"
-        android:textColor="@color/colorPrimary"
+        android:textColor="#a4a4a4"
         android:id="@+id/userName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

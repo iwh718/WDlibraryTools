@@ -11,10 +11,13 @@
         android:icon="@drawable/ic_action_name_search"
         android:id="@+id/nav_qk"
         android:title="期刊搜索" />
-    <item
+   <!-- <item
         android:icon="@drawable/nav_reader_icon"
         android:id="@+id/nav_reader"
-        android:title="读者互动" />
+        android:title="读者互动" />-->
+    <item android:title="图书证挂失"
+        android:icon="@drawable/nav_sort_icon"
+        android:id="@+id/nav_gs"/>
     <item
         android:icon="@drawable/nav_bookshelf_icon"
         android:id="@+id/nav_bookshelf"
@@ -23,7 +26,6 @@
         android:icon="@drawable/nav_qusetions_icon"
         android:id="@+id/nav_questions"
         android:title="常见问题解答" />
-
 
             <item android:id="@+id/nav_updata"
                 android:icon="@drawable/nav_update_icon"

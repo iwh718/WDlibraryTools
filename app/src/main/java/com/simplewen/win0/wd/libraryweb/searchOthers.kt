@@ -26,13 +26,24 @@ class searchOthers : AppCompatActivity() {
         webBox.webViewClient = object :WebViewClient(){
 
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                //
+                webBox.loadUrl("javascript: " +
+
+                        "document.querySelector('.clearfix').setAttribute('style','display:none');" +
+                        "document.querySelector('.footer-new').setAttribute('style','display:none');" +
+                        "document.querySelector('.userBar-new').setAttribute('style','display:none');" +
+                        "document.querySelector('.fix-bottom-content').setAttribute('style','display:none');" +
+                        "document.querySelector('.fix-top-content').setAttribute('style','display:none');")
                 return false
             }
 
             override fun onPageFinished(view: WebView?, url: String?){
-                webBox.loadUrl("javascript: document.querySelector('.m-copy').setAttribute('style','display:none');" +
-                        "document.querySelector('.u-tt .hd .col').setAttribute('style','display:none');")
+                webBox.loadUrl("javascript: " +
+
+                        "document.querySelector('.clearfix').setAttribute('style','display:none');" +
+                        "document.querySelector('.footer-new').setAttribute('style','display:none');" +
+                        "document.querySelector('.userBar-new').setAttribute('style','display:none');" +
+                        "document.querySelector('.fix-bottom-content').setAttribute('style','display:none');" +
+                        "document.querySelector('.fix-top-content').setAttribute('style','display:none');")
             }
         }
     }

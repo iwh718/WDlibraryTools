@@ -4,30 +4,22 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.DownloadManager
 import android.content.Context
-import android.content.Intent
-import android.content.res.Resources
-import android.graphics.Color
 import android.net.Uri
 import android.os.Environment
 import android.os.Handler
 import android.os.Message
-import android.support.design.widget.Snackbar
-import android.text.Layout
 
 
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.simplewen.win0.wd.R
 import com.simplewen.win0.wd.WdTools
+import com.simplewen.win0.wd.modal.iwhDataOperator
 import okhttp3.*
 import java.io.IOException
 import java.lang.Exception
-import java.lang.reflect.Parameter
 import kotlin.concurrent.thread
 
 class Utils{
@@ -48,7 +40,7 @@ class Utils{
             iwhLyout.findViewById<TextView>(R.id.iwh_toast_text).text = str
             iwhToast.show()
         }
-
+        /**检查版本**/
         fun requestUpVersion(hand:Handler){
             var versionOld = 0
             val client = OkHttpClient.Builder().build() //初始化请求
@@ -62,7 +54,7 @@ class Utils{
                         val resText = response.body()?.string()
                         val temResText: String? = resText
                         versionOld = temResText!!.replace(" ","").toInt()
-                        Log.d("@@versionWD:",versionOld.toString())
+                        //Log.d("@@versionWD:",versionOld.toString())
                         val msg = Message()
                         msg.what = 0x21
                         msg.arg1 = versionOld
@@ -81,6 +73,8 @@ class Utils{
             }
 
         }
+
+        /**下载新版本**/
         fun DownNew():Long{
 
 
@@ -98,24 +92,6 @@ class Utils{
             // 实例化DownloadManager 对象
            val downloadManager = WdTools.getContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             return downloadManager.enqueue(request)
-        }
-        /**检测第一次启动**/
-        //检查是否第一次使用
-        fun checkFLagTips():Boolean{
-            var flag:Boolean =false
-
-            if(WdTools.getContext().getSharedPreferences("beginTips",Activity.MODE_PRIVATE).getInt("tipsFlag",0)== 0)    {
-
-                flag = true
-            }
-            return flag
-        }
-        //控制用户引导
-        fun closeTips(){
-            val shareP2 = WdTools.getContext().getSharedPreferences("beginTips",Activity.MODE_PRIVATE)
-            val edit = shareP2.edit()
-            edit.putInt("tipsFlag", 1)
-            edit.apply()
         }
 
         /**
@@ -135,14 +111,7 @@ class Utils{
             return version!!.toInt()
         }
 
-        /***开放时间*/
-        fun dialogTime(context: Context){
-            val dialog_fb = LayoutInflater.from(WdTools.getContext()).inflate(R.layout.dialog_time,null)
-            AlertDialog.Builder(context)
-                    .setTitle("开放时间")
-                    .setView(dialog_fb)
-                    .create().show()
-        }
+
 
 
 
