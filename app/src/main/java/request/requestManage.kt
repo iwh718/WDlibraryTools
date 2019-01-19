@@ -58,7 +58,7 @@ class requestManage(val context: Context) {
 
 
     fun myBrow(hand: Handler) {
-        var res: String? = ""
+        var res: String?
         var tem_res: String? = ""
         if (this.loginFlag == 0) {
 
@@ -71,12 +71,8 @@ class requestManage(val context: Context) {
                         tem_res = res//临时存放string
                         val doc2 = Jsoup.parse(tem_res)
                         val temText = doc2.select("table[width=\"98%\"] tbody tr:not(table[width=\"98%\"] tbody tr:first-child)")
-                        var bname = ""
-                        var blast = ""
-                        var bnext = ""
-                        var bid = ""//图书续借id
-
-                        Log.d("返回：", temText.toString())
+                        var (bname,blast,bnext,bid) = arrayOf("","","")
+                       // Log.d("返回：", temText.toString())
 
                         for (item: Element in temText) {
                             bname = item.select("td:nth-child(2)").html().toString()
@@ -115,26 +111,25 @@ class requestManage(val context: Context) {
     }
 
     fun myHisory(hand: Handler) {
-        var res: String? = ""
-        var tem_res: String? = ""
+        var res: String?
+        var tem_res: String?
         thread {
 
             val request = Request.Builder().url(this.myHiStoryUrl).build()
-            var response = this.client.newCall(request).execute()
+            val response = this.client.newCall(request).execute()
 
             res = response.body()?.string()
             tem_res = res
 
-            var doc = Jsoup.parse(tem_res)
-            var r1 = doc.select(".pmain table:nth-of-type(4) tbody tr")
-            var h_name: String = ""
-            var h_number: String = ""
+            val doc = Jsoup.parse(tem_res)
+            val r1 = doc.select(".pmain table:nth-of-type(4) tbody tr")
+            var (h_name,h_number)  = arrayOf("","")
             for (item: Element in r1) {
                 h_name = item.select("td:nth-of-type(3)").html().toString()
                 h_number = item.select("td:nth-of-type(2)").html().toString()
                 val tem = LinkedHashMap<String, Any>()
                 tem.put("h_name", h_name)
-                tem.put("h_number", "索取号:" + h_number)
+                tem.put("h_number", "索取号:$h_number" )
                 this.h_books.add(tem)
             }
             this.h_books.removeAt(0)
@@ -142,11 +137,6 @@ class requestManage(val context: Context) {
             val msg: Message = Message()
             msg.what = 6
             hand.sendMessage(msg)
-
-
-
-            Log.d("history:", r1.toString())
-
 
         }
     }
@@ -249,8 +239,7 @@ class requestManage(val context: Context) {
         val noMatch = Regex(".*\\u4fe1\\u606f\\u4e0d\\u5339\\u914d.*")//信息不匹配
         val isOk = Regex(".*\\u6302\\u5931\\u6210\\u529f.*")//挂失完成
         var res = ""
-        if (user.isNotEmpty() && pw.isNotEmpty() && name.isNotEmpty()) {
-            //在主线程中开启一个网络线程
+
 
             thread {
                 //发送参数
@@ -300,11 +289,7 @@ class requestManage(val context: Context) {
             }
 
 
-        } else {
-            val msg: Message = Message()
-            msg.what = 5
-            hand.sendMessage(msg)
-        }
+
     }
 
     /**@param mySearch 搜索**/
@@ -585,6 +570,9 @@ class requestManage(val context: Context) {
     }
 
     //检查超期
+    /**@param books 借阅的图书集合
+     * @param hand 主线程Handler
+     **/
     fun checkBook(books:ArrayList<Map<String, Any>>,hand:Handler){
 
        fun parseTime(strTime:String):Int{
@@ -614,8 +602,6 @@ class requestManage(val context: Context) {
 
 
         }
-
-
 
 
     }

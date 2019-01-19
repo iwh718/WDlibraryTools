@@ -4,10 +4,12 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.app.DownloadManager
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Environment
 import android.os.Handler
 import android.os.Message
+import android.support.v4.content.ContextCompat.startActivity
 
 
 import android.view.Gravity
@@ -23,7 +25,7 @@ import java.lang.Exception
 import kotlin.concurrent.thread
 
 class Utils{
-    /**@param CheckUp 检查版本更新 **/
+
 
 
     companion object {
@@ -32,10 +34,10 @@ class Utils{
         /**自定义 Toast
          * @param str 自定义文本
         **/
-        fun Tos(str:String){
+        fun Tos(str:String,gravity: Int = Gravity.BOTTOM){
             val iwhToast = Toast.makeText(WdTools.getContext(),str,Toast.LENGTH_SHORT)
             val iwhLyout = LayoutInflater.from(WdTools.getContext()).inflate(R.layout.iwh_toast,null)
-            iwhToast.setGravity(Gravity.FILL_HORIZONTAL or Gravity.BOTTOM,0,0)
+            iwhToast.setGravity(Gravity.FILL_HORIZONTAL or gravity,0,0)
             iwhToast.view = iwhLyout
             iwhLyout.findViewById<TextView>(R.id.iwh_toast_text).text = str
             iwhToast.show()
@@ -75,7 +77,7 @@ class Utils{
         }
 
         /**下载新版本**/
-        fun DownNew():Long{
+        fun downNew():Long{
 
 
             val  request = DownloadManager.Request(Uri.parse(versionWd))
@@ -113,9 +115,11 @@ class Utils{
 
 
 
+        }
+
+
 
 
 
 
     }
-}

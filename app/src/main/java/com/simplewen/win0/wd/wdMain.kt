@@ -107,6 +107,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                             }
                             .create()
                     dialog.show()
+                    noticeTitle = arrayListOf("网络环境异常！")
                 }
                 4 -> {
                     temDialog?.dismiss()
@@ -116,6 +117,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                     dialog.setTitle("图书馆访问失败，请稍后再试！")
                             .create()
                     dialog.show()
+
                 }
                 5 -> {
 
@@ -143,8 +145,6 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                 }
                 0x14 ->{
                     //获取公告
-
-
                     noticeTitle = request.noticeTitle
                     Tools().startNotice()
                     if(mainFresh.isRefreshing){
@@ -199,7 +199,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                             updateView.findViewById<Button>(R.id.updateBtn)
                                     .setOnClickListener{
                                         temDialog!!.dismiss()
-                                        Utils.DownNew()//下载更新
+                                        Utils.downNew()//下载更新
                                         Utils.Tos("请稍后查看通知栏进度！")
                                     }
                             temDialog = AlertDialog.Builder(this@WDMain).setCancelable(true)
@@ -263,9 +263,8 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         }
         //检测登录状态
         fun checkLogined(): Boolean {
-            val shareP = getSharedPreferences("wd", Activity.MODE_PRIVATE)
-            val temUser: String = shareP.getString("user", "")
-            val temPw: String = shareP.getString("pw", "")
+            val temUser: String = iwhDataOperator.getSHP("user","wd","0")
+            val temPw: String = iwhDataOperator.getSHP("pw","wd","0")
             if (temPw.isNotEmpty() && temPw.isNotEmpty()) {
                 logined = 1
                 borePw = temPw
@@ -363,23 +362,12 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         /**@param searchOthers_cx 超星期刊搜索**/
         /**@param searchOthers_dx 读秀搜索**/
 
-        val searchOthers_cx = findViewById<LinearLayout>(R.id.grid_others_cx)
-        val searchOthers_dx = findViewById<LinearLayout>(R.id.grid_others_dx)
+
         val searchOthers_mw = findViewById<LinearLayout>(R.id.grid_others_mw)
         val searchOthers_zw = findViewById<LinearLayout>(R.id.grid_others_zw)
 
         val intent_search = Intent(this@WDMain,searchOthers::class.java)
-        //读秀
-        searchOthers_cx.setOnClickListener{
 
-            intent_search.putExtra("webUrl","http://www.duxiu.com/")
-            startActivity(intent_search)
-        }
-        //万方
-        searchOthers_dx.setOnClickListener{
-            intent_search.putExtra("webUrl","http://www.wanfangdata.com.cn/index.html")
-            startActivity(intent_search)
-        }
         //美文
         searchOthers_mw.setOnClickListener{
             intent_search.putExtra("webUrl","http://wendaedu.com.cn/tsg/m/info_109.html")
@@ -420,7 +408,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                //
+
                 searchSort = searchSortSpinnerData[0]
             }
         }
@@ -446,6 +434,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                 return true
             }
         })
+        //搜索模式打开
         searchBtn.setOnQueryTextFocusChangeListener{
             _,_ ->
             if(searchBox.visibility == View.GONE){
@@ -474,7 +463,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         }
 
 
-        //绑定grid按钮
+        //绑定index功能按钮
         gridLIbrary.setOnClickListener{
             startActivity(Intent(this@WDMain,libraryweb::class.java))
         }
@@ -497,7 +486,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
 
                     }
 
-                }.setTitle("选择功能").create().show()
+                }.create().show()
 
             }
 
@@ -553,7 +542,7 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                     val (user,pwNew,pwOld) = arrayOf(modifyLayout.findViewById<EditText>(R.id.menu_modify_user).text.toString(),
                             modifyLayout.findViewById<EditText>(R.id.menu_modify_mewPass).text.toString(),
                             modifyLayout.findViewById<EditText>(R.id.menu_modify_oldPass).text.toString())
-                    if(user.length < 1 || pwNew.length <1 || pwOld.length <1){
+                    if(user.isNotEmpty() || pwNew.isNotEmpty()  || pwOld.isNotEmpty()){
                         Toast.makeText(this@WDMain,"请完善信息",Toast.LENGTH_SHORT).show()
                     }else{
                         request.modifyPass(user,pwNew,pwOld,hand)//提交修改
@@ -583,7 +572,6 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
 
 
         when (item.itemId) {
@@ -627,8 +615,12 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                 val gs_password = gs_ly.findViewById<EditText>(R.id.gs_password).text
                 val gs_btn = gs_ly.findViewById<Button>(R.id.gs)
                 gs_btn.setOnClickListener{
+                    if(gs_number.isNotEmpty() && gs_password.isNotEmpty()){
+                        request.gsCard(gs_number.toString(),gs_password.toString(),gs_name.toString(),hand)
+                    }else{
+                        Utils.Tos("请补全信息！")
+                    }
 
-                    request.gsCard(gs_number.toString(),gs_password.toString(),gs_name.toString(),hand)
                 }
 
                 temDialog  = AlertDialog.Builder(this@WDMain)

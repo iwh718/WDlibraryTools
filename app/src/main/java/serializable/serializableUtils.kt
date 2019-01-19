@@ -11,7 +11,7 @@ import java.io.ObjectOutputStream
 /**
  * 序列化Cookie的工具类
  * @author cxm
- * 缅怀，希望以后能看懂
+ *
  */
 class PersistentCookieStore(val context: Context) {
     private val COOKIE_PREFS = "cookie_prefs"

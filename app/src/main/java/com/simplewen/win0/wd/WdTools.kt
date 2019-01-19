@@ -15,6 +15,7 @@ class WdTools:Application(){
     override fun onCreate() {
         super.onCreate()
         _context = this
+      //  val request = requestManage(this)
     }
 
 
