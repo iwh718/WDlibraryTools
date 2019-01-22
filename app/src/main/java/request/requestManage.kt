@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.*
 import com.simplewen.win0.Utils.PersistentCookieStore
 import com.simplewen.win0.wd.R
+import com.simplewen.win0.wd.util.Utils
 import okhttp3.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
@@ -19,7 +20,7 @@ import java.util.*
 import kotlin.concurrent.thread
 
 class requestManage(val context: Context) {
-    val  iwh = "校园工具，非盈利项目，非礼勿扰"
+    val iwh = "校园工具，非盈利项目，非礼勿扰"
     val cookieJar: CookieJar = object : CookieJar {
         private val map = PersistentCookieStore(context)
         override fun saveFromResponse(url: HttpUrl, cookies: MutableList<Cookie>) {
@@ -71,35 +72,32 @@ class requestManage(val context: Context) {
                         tem_res = res//临时存放string
                         val doc2 = Jsoup.parse(tem_res)
                         val temText = doc2.select("table[width=\"98%\"] tbody tr:not(table[width=\"98%\"] tbody tr:first-child)")
-                        var (bname,blast,bnext,bid) = arrayOf("","","")
-                       // Log.d("返回：", temText.toString())
-
                         for (item: Element in temText) {
-                            bname = item.select("td:nth-child(2)").html().toString()
-                            blast = item.select("td:nth-child(4)").html().toString()
-                            bnext = item.select("td:nth-child(5)").html().toString()
-                            bid = item.select("td:nth-child(8) a").attr("href").toString()//提取续借编号
-                            bid = bid.replace("../dzxj/dzxj.asp?nbsl=", "")//提取编号
-                            //Log.d("bid:",bid)
-                            val tem = LinkedHashMap<String, Any>()
-                            tem.put("b_name", bname)
-                            tem.put("b_last", "借阅" + blast)
-                            tem.put("b_next", "限还" + bnext)
-                            tem.put("b_continue", "续借")
-                            tem.put("bid", bid)
-                            books.add(tem)
+                            val bname = item.select("td:nth-child(2)").html().toString()
+                            val blast = item.select("td:nth-child(4)").html().toString()
+                            val bnext = item.select("td:nth-child(5)").html().toString()
+                            val bid = item.select("td:nth-child(8) a").attr("href").toString()
+                                    .replace("../dzxj/dzxj.asp?nbsl=", "")//提取编号
 
-
+                            with(LinkedHashMap<String, Any>()) {
+                                put("b_name", bname)
+                                put("b_last", "借阅" + blast)
+                                put("b_next", "限还" + bnext)
+                                put("b_continue", "续借")
+                                put("bid", bid)
+                                this@requestManage.books.add(this)
+                            }
                         }
-                        val msg = Message()
-                        msg.what = 0x16
-                        hand.sendMessage(msg)
+                        with(Message()) {
+                            what = 0x16
+                            hand.sendMessage(this)
+                        }
+
                     }
 
                     override fun onFailure(call: Call, e: IOException) {
-                        val msg = Message()
-                        msg.what = 0x15
-                        hand.sendMessage(msg)
+                        Utils.sendMsg(0x15, hand)
+
                     }
                 })
 
@@ -123,13 +121,13 @@ class requestManage(val context: Context) {
 
             val doc = Jsoup.parse(tem_res)
             val r1 = doc.select(".pmain table:nth-of-type(4) tbody tr")
-            var (h_name,h_number)  = arrayOf("","")
+            var (h_name, h_number) = arrayOf("", "")
             for (item: Element in r1) {
                 h_name = item.select("td:nth-of-type(3)").html().toString()
                 h_number = item.select("td:nth-of-type(2)").html().toString()
                 val tem = LinkedHashMap<String, Any>()
                 tem.put("h_name", h_name)
-                tem.put("h_number", "索取号:$h_number" )
+                tem.put("h_number", "索取号:$h_number")
                 this.h_books.add(tem)
             }
             this.h_books.removeAt(0)
@@ -142,7 +140,7 @@ class requestManage(val context: Context) {
     }
 
 
-    fun myLogin(user: String, pw: String, hand: Handler):Boolean{
+    fun myLogin(user: String, pw: String, hand: Handler): Boolean {
         val isWdLogin = Regex(".*?http:172.16.1.101:80/portalowa.*?")//判断是否校园网
         val isFailLogin = Regex(".*window.history.back.*")//判断是否失败
         val isSuccLogin = Regex(".*dzjs.login_form.*")//判断是否成功
@@ -166,57 +164,48 @@ class requestManage(val context: Context) {
                 this.client.newCall(request).enqueue(object : Callback {
                     override fun onResponse(call: Call, response: Response) {
 
-                        var resText = response.body()?.string()
-                        var temResText: String? = resText
-                        var doc = Jsoup.parse(temResText)
+                        val resText = response.body()?.string()
+                        val temResText: String? = resText
+                        val doc = Jsoup.parse(temResText)
                         res = doc.getElementsByTag("script").html().toString()
+                        when {
+                            isSuccLogin.containsMatchIn(res) -> {
+                                res = res.replace("，欢迎您登录！\\n离开时,不要忘记安全退出！\");", "")
+                                        .replace("window.alert(\"", "")
+                                        .replace("window.location=\"../dzjs/login_form.asp\";", "")
+                                        .replace("\$nbsp;", "")
+                                        .replace(" ", "")
 
-                        if (isSuccLogin.containsMatchIn(res)) {
+                                _this.userName = res
+                                with(Message()) {
+                                    what = 1
+                                    data = Bundle().apply {
+                                        putString("user", user)
+                                        putString("pw", pw)
 
+                                    }
+                                    hand.sendMessage(this)
+                                }
+                                loginFLag = true
+                            }
+                            isFailLogin.containsMatchIn(res) -> {
+                                //账号或密码错误
+                                Utils.sendMsg(2, hand)
+                            }
+                            isWdLogin.containsMatchIn(res) -> {
+                                Utils.sendMsg(3, hand)
 
-                            res = res.replace("，欢迎您登录！\\n离开时,不要忘记安全退出！\");", "")
-                                    .replace("window.alert(\"", "")
-                                    .replace("window.location=\"../dzjs/login_form.asp\";", "")
-                                    .replace("\$nbsp;", "")
-                                    .replace(" ", "")
-
-                            _this.userName = res
-                            Log.d("login:", res)
-                            val msg = Message()
-                            msg.what = 1
-                            val temData = Bundle()
-                            temData.putString("user", user)
-                            temData.putString("pw", pw)
-                            msg.data = temData
-                            hand.sendMessage(msg)
-                            loginFLag = true
-
-
-                        } else if (isFailLogin.containsMatchIn(res)) {
-                            val msg: Message = Message()
-                            msg.what = 2
-                            hand.sendMessage(msg)
-
-
-                        } else if (isWdLogin.containsMatchIn(res)) {
-                            val msg: Message = Message()
-                            msg.what = 3
-                            hand.sendMessage(msg)
-
-
-                        } else {
-                            val msg: Message = Message()
-                            msg.what = 6
-                            hand.sendMessage(msg)
-                            Log.d("re:", res)
-
+                            }
+                            else -> {
+                                Utils.sendMsg(6, hand)
+                            }
                         }
+
                     }
 
                     override fun onFailure(call: Call, e: IOException) {
-                        val msg = Message()
-                        msg.what = 3
-                        hand.sendMessage(msg)
+                        Utils.sendMsg(3, hand)
+
                     }
                 })
 
@@ -239,55 +228,45 @@ class requestManage(val context: Context) {
         val noMatch = Regex(".*\\u4fe1\\u606f\\u4e0d\\u5339\\u914d.*")//信息不匹配
         val isOk = Regex(".*\\u6302\\u5931\\u6210\\u529f.*")//挂失完成
         var res = ""
+        thread {
+            //发送参数
+            val gsinfo = FormBody.Builder()
+                    .add("user", user)
+                    .add("dzxm", name)
+                    .add("dzkl", pw)
+                    .add("cert_mode", "dzzh")
+                    .add("submit1", "确认挂失登记")
+                    .build()
+            //构建请求
+            val request = Request.Builder().url(this.gs_url).post(gsinfo).build()
+            this.client.newCall(request).enqueue(object : Callback {
+                override fun onResponse(call: Call, response: Response) {
 
-
-            thread {
-                //发送参数
-                val gsinfo = FormBody.Builder()
-                        .add("user", user)
-                        .add("dzxm", name)
-                        .add("dzkl", pw)
-                        .add("cert_mode", "dzzh")
-                        .add("submit1", "确认挂失登记")
-                        .build()
-                //构建请求
-                val request = Request.Builder().url(this.gs_url).post(gsinfo).build()
-
-                val _this = this
-                var response = this.client.newCall(request).enqueue(object : Callback {
-                    override fun onResponse(call: Call, response: Response) {
-
-                        val resText = response.body()?.string()
-                        val temResText: String? = resText
-                        val doc = Jsoup.parse(temResText)
-                        res = doc.getElementsByTag("script").html().toString()
-                        Log.d("gs_card:", res)
-                        if (hasGs.containsMatchIn(res)) {
-                            val msg = Message()
-                            msg.what = 0x11
-                            hand.sendMessage(msg)
-                        } else if (noMatch.containsMatchIn(res)) {
-                            val msg = Message()
-                            msg.what = 0x12
-                            hand.sendMessage(msg)
-
-                        } else if (isOk.containsMatchIn(res)) {
-                            val msg = Message()
-                            msg.what = 0x13
-                            hand.sendMessage(msg)
+                    val resText = response.body()?.string()
+                    val temResText: String? = resText
+                    val doc = Jsoup.parse(temResText)
+                    res = doc.getElementsByTag("script").html().toString()
+                    when {
+                        hasGs.containsMatchIn(res) -> {
+                            Utils.sendMsg(0x11, hand)
+                        }
+                        noMatch.containsMatchIn(res) -> {
+                            Utils.sendMsg(0x12, hand)
+                        }
+                        isOk.containsMatchIn(res) -> {
+                            Utils.sendMsg(0x13, hand)
                         }
                     }
 
-                    override fun onFailure(call: Call, e: IOException) {
-                        val msg = Message()
-                        msg.what = 3
-                        hand.sendMessage(msg)
-                    }
-                })
+                }
+
+                override fun onFailure(call: Call, e: IOException) {
+                    Utils.sendMsg(3, hand)
+                }
+            })
 
 
-            }
-
+        }
 
 
     }
@@ -299,61 +278,50 @@ class requestManage(val context: Context) {
 
     fun mySearch(hand: Handler, bname: String, mode: String, sort: String) {
 
-        if (this.loginFlag == 0) {
 
-            thread {
-                //发送参数
-                val search_info = FormBody.Builder()
-                        .add("txtWxlx", "CN")
-                        .add("hidWxlx", "spanCNLx")
-                        .add("txtPY:", "HZ")
-                        .add("txtTm", bname)
-                        .add("txtLx", "%")
-                        .add("txtSearchType", mode)
-                        .add("nMaxCount", "5000")
-                        .add("nSetPageSize", "50")
-                        .add("cSortFld", sort)
-                        .add("B1", "检索")
-                        .build()
-                //构建请求
-                var request3 = Request.Builder().url(this.bookSearchUrl).post(search_info).build()
-                var response = this.client.newCall(request3).execute()
-                var resText = response.body()?.string()
-                var temResText: String? = resText
-                var doc3 = Jsoup.parse(temResText)
-                var temDoc = doc3.select("table[width=\"98%\"] tbody tr:not(table[width=\"98%\"] tbody tr:first-child)")
+        thread {
+            //发送参数
+            val search_info = FormBody.Builder()
+                    .add("txtWxlx", "CN")
+                    .add("hidWxlx", "spanCNLx")
+                    .add("txtPY:", "HZ")
+                    .add("txtTm", bname)
+                    .add("txtLx", "%")
+                    .add("txtSearchType", mode)
+                    .add("nMaxCount", "5000")
+                    .add("nSetPageSize", "50")
+                    .add("cSortFld", sort)
+                    .add("B1", "检索")
+                    .build()
+            //构建请求
 
-                Log.d("con", temDoc.toString())
-                var s_name: String = ""//图书名
-                var s_number: String = ""//图书借阅编号
-                var s_author: String = ""//图书作者
-                var s_time: String = ""//图书出版时间
-                var s_id = ""//图书借阅id
-                for (item: Element in temDoc) {
-                    s_name = item.select("td:nth-of-type(3) a").html().toString()
-                    s_time = item.select("td:nth-of-type(6)").html().toString()
-                    s_author = item.select("td:nth-of-type(4)").html().toString()
-                    s_number = item.select("td:nth-of-type(2)").html().toString()
-                    s_id = item.select("td:nth-of-type(7) a").attr("href").toString()
-                    s_id = s_id.replace("../dzyy/default.asp?nTmpKzh=", "")//分离出id
-                    val tem = LinkedHashMap<String, Any>()
-                    tem.put("search_b_id", s_id)
-                    tem.put("search_b_name", s_name.replace("&nbsp;", "", false))
-                    tem.put("search_b_time", "出版:" + s_time.replace("&nbsp;", "", false))
-                    tem.put("search_b_author", "作者：" + s_author.replace("&nbsp;", "", false))
-                    tem.put("search_b_number", "索取号：" + s_number.replace("&nbsp;", "", false))
-                    this.s_books.add(tem)
+            val response = this.client.newCall(Request.Builder().url(this.bookSearchUrl).post(search_info).build()).execute()
+            val resText = response.body()?.string()
+            val temResText: String? = resText
+            val doc3 = Jsoup.parse(temResText)
+            val temDoc = doc3.select("table[width=\"98%\"] tbody tr:not(table[width=\"98%\"] tbody tr:first-child)")
+
+
+            for (item: Element in temDoc) {
+                val s_name = item.select("td:nth-of-type(3) a").html().toString()
+                val s_time = item.select("td:nth-of-type(6)").html().toString()
+                val s_author = item.select("td:nth-of-type(4)").html().toString()
+                val s_number = item.select("td:nth-of-type(2)").html().toString()
+                val s_id = item.select("td:nth-of-type(7) a").attr("href").toString()
+                        .replace("../dzyy/default.asp?nTmpKzh=", "")//分离出id
+
+                with(LinkedHashMap<String, Any>()) {
+                    put("search_b_id", s_id)
+                    put("search_b_name", s_name.replace("&nbsp;", "", false))
+                    put("search_b_time", "出版:" + s_time.replace("&nbsp;", "", false))
+                    put("search_b_author", "作者：" + s_author.replace("&nbsp;", "", false))
+                    put("search_b_number", "索取号：" + s_number.replace("&nbsp;", "", false))
+                    this@requestManage.s_books.add(this)
                 }
-                var msg: Message = Message()
-                msg.what = 6
-                hand.sendMessage(msg)
-
 
             }
+            Utils.sendMsg(6, hand)
 
-
-        } else {
-            Toast.makeText(contextThis, "请先登录", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -363,32 +331,20 @@ class requestManage(val context: Context) {
 
     fun myContinue(b_id: String, hand: Handler) {
         val isNot = Regex(".*?\\u6700\\u9ad8\\u7eed\\u501f.*?")//判断是否校园网
-        val isOk = Regex("..")
+
         thread {
 
-            val request3 = Request.Builder().get().url("${this.myContinueUrl}?nbsl=${b_id}").build()
-            val response = this.client.newCall(request3).execute()
-            var resText = response.body()?.string()
-            var temResText: String? = resText
-            var doc3 = Jsoup.parse(temResText)
-            var res = doc3.getElementsByTag("script").html().toString()
+            val response = this.client.newCall(Request.Builder().get().url("${this.myContinueUrl}?nbsl=${b_id}").build()).execute()
+            val resText = response.body()?.string()
+            val temResText: String? = resText
+            val doc3 = Jsoup.parse(temResText)
+            val res = doc3.getElementsByTag("script").html().toString()
             if (isNot.containsMatchIn(res)) {
-                var msg: Message = Message()
-                msg.what = 8
-                hand.sendMessage(msg)
+               Utils.sendMsg(8,hand)
             } else {
-                var msg: Message = Message()
-                msg.what = 7
-                hand.sendMessage(msg)
+               Utils.sendMsg(7,hand)
             }
-            Log.d("续借：", res)
-
-
-            var msg: Message = Message()
-            msg.what = 6
-            hand.sendMessage(msg)
-
-
+          Utils.sendMsg(6,hand)
         }
     }//续借
 
@@ -487,7 +443,7 @@ class requestManage(val context: Context) {
     }
 
     //搜搜期刊
-    fun getQk(hand: Handler,title:String) {
+    fun getQk(hand: Handler, title: String) {
         this.qkBooks.clear()
         val noThings = "暂时没有哦"
         var res = ""
@@ -544,7 +500,7 @@ class requestManage(val context: Context) {
                             tem.put("search_b_number", "索取号：" + s_number.replace("&nbsp;", "", false))
                             _this.qkBooks.add(tem)
                         }
-                        Log.d("@@qk:",_this.qkBooks.toString())
+                        Log.d("@@qk:", _this.qkBooks.toString())
                         val msg = Message()
                         msg.what = 1
                         hand.sendMessage(msg)
@@ -573,30 +529,30 @@ class requestManage(val context: Context) {
     /**@param books 借阅的图书集合
      * @param hand 主线程Handler
      **/
-    fun checkBook(books:ArrayList<Map<String, Any>>,hand:Handler){
+    fun checkBook(books: ArrayList<Map<String, Any>>, hand: Handler) {
 
-       fun parseTime(strTime:String):Int{
+        fun parseTime(strTime: String): Int {
 
-           val format = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
+            val format = SimpleDateFormat("yyyy-MM-dd", Locale.CHINA)
 
-           var time = 0L
-             try {
-                 time = format.parse(strTime).time
-             } catch (e:Exception){
-                 println(e)
-             }
-            return ((time - System.currentTimeMillis())/(1000*60*60*24)).toInt()
+            var time = 0L
+            try {
+                time = format.parse(strTime).time
+            } catch (e: Exception) {
+                println(e)
+            }
+            return ((time - System.currentTimeMillis()) / (1000 * 60 * 60 * 24)).toInt()
         }
-        for (i in books){
+        for (i in books) {
             //Log.d("@@图书:",i.toString())
-            Log.d("@@","借阅时间：${i["b_last"]},限还：${i["b_next"]}")
-            val b_last = i["b_last"].toString().replace("借阅","")
-            val b_next = i["b_next"].toString().replace("限还","")
-            if(parseTime(b_last) > 2){
+            Log.d("@@", "借阅时间：${i["b_last"]},限还：${i["b_next"]}")
+            val b_last = i["b_last"].toString().replace("借阅", "")
+            val b_next = i["b_next"].toString().replace("限还", "")
+            if (parseTime(b_last) > 2) {
                 val msg = Message()
                 msg.what = 0x17
                 hand.sendMessage(msg)
-                Log.d("@@parse:","剩余：${parseTime(b_next)} 天")
+                Log.d("@@parse:", "剩余：${parseTime(b_next)} 天")
                 return
             }
 
@@ -608,49 +564,49 @@ class requestManage(val context: Context) {
 
 
     //修改密码
-    fun modifyPass(user:String,pwNew:String,pwOld:String,hand:Handler):Boolean{
+    fun modifyPass(user: String, pwNew: String, pwOld: String, hand: Handler): Boolean {
         val errorInfo = Regex(".*?\\u9519\\u8bef.*?")//信息不匹配
         var res = ""
-            //在主线程中开启一个网络线程
-            thread {
-                //发送参数
-                val gsinfo = FormBody.Builder()
-                        .add("user", user)
-                        .add("pw", pwOld)
-                        .add("pw1", pwNew)
-                        .add("pw2", pwNew)
-                        .add("submit1", "提 交")
-                        .build()
-                //构建请求
-                val request = Request.Builder().url(this.modifyPassUrl).post(gsinfo).build()
-                val _this = this
-                var response = this.client.newCall(request).enqueue(object : Callback {
-                    override fun onResponse(call: Call, response: Response) {
+        //在主线程中开启一个网络线程
+        thread {
+            //发送参数
+            val gsinfo = FormBody.Builder()
+                    .add("user", user)
+                    .add("pw", pwOld)
+                    .add("pw1", pwNew)
+                    .add("pw2", pwNew)
+                    .add("submit1", "提 交")
+                    .build()
+            //构建请求
+            val request = Request.Builder().url(this.modifyPassUrl).post(gsinfo).build()
+            val _this = this
+            var response = this.client.newCall(request).enqueue(object : Callback {
+                override fun onResponse(call: Call, response: Response) {
 
-                        val resText = response.body()?.string()
-                        val temResText: String? = resText
-                        val doc = Jsoup.parse(temResText)
-                        res = doc.html().toString()
-                        Log.d("&&修改密码：", res)
-                        val msg = Message()
-                        if(errorInfo.containsMatchIn(res)){
-                            msg.what = 0x12
+                    val resText = response.body()?.string()
+                    val temResText: String? = resText
+                    val doc = Jsoup.parse(temResText)
+                    res = doc.html().toString()
+                    Log.d("&&修改密码：", res)
+                    val msg = Message()
+                    if (errorInfo.containsMatchIn(res)) {
+                        msg.what = 0x12
 
-                        }else{
-                            msg.what = 0x18
-                        }
-                        hand.sendMessage(msg)
+                    } else {
+                        msg.what = 0x18
                     }
+                    hand.sendMessage(msg)
+                }
 
-                    override fun onFailure(call: Call, e: IOException) {
-                        val msg = Message()
-                        msg.what = 0x19
-                        hand.sendMessage(msg)
-                    }
-                })
+                override fun onFailure(call: Call, e: IOException) {
+                    val msg = Message()
+                    msg.what = 0x19
+                    hand.sendMessage(msg)
+                }
+            })
 
 
-            }
+        }
 
 
 

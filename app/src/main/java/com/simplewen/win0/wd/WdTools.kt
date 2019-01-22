@@ -9,13 +9,10 @@ class WdTools:Application(){
         fun getContext():Context{
             return _context!!
         }
-
     }
-
     override fun onCreate() {
         super.onCreate()
         _context = this
-      //  val request = requestManage(this)
     }
 
 

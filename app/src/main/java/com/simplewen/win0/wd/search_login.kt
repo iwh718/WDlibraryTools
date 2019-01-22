@@ -14,6 +14,7 @@ import android.widget.ListView
 import android.widget.SimpleAdapter
 import android.widget.TextView
 import android.widget.Toast
+import com.simplewen.win0.wd.util.Utils
 import kotlinx.android.synthetic.main.activity_search_login.*
 import request.requestManage
 
@@ -55,8 +56,8 @@ class search_login : AppCompatActivity() {
                         2 -> {
                             bookInfo = requset.bookInfo//更新简介
                             // Tos("获取到简介")
-                            val diaInfo = AlertDialog.Builder(this@search_login).setTitle("本书简介")
-                                    .setMessage("$bookInfo").create().show()
+                            AlertDialog.Builder(this@search_login).setTitle("本书简介")
+                                    .setMessage(bookInfo).create().show()
                             //有简介，弹出alert
                         }
                         0 -> {
@@ -71,18 +72,13 @@ class search_login : AppCompatActivity() {
         val search_mode = temIntent.getStringExtra("search_mode")
         val search_sort = temIntent.getStringExtra("search_sort")
         val search_key=temIntent.getStringExtra("search_key")
-        val bookList = findViewById<ListView>(R.id.search_list)//获取图书列表
-        val bookInfo_btn = findViewById<TextView>(R.id.search_b_info)//简介
 
-
-        bookList.setOnItemClickListener{
+        search_list.setOnItemClickListener{
             _,_,position,_ ->
-            //this@search_login.Tos("你点击是：$position,id为：${s_books[position]["search_b_id"]}")
             requset.bookInfo("${s_books[position]["search_b_id"]}",hand_search)
 
         }
-        Snackbar.make(search_list,"$search_key：搜索中···",Snackbar.LENGTH_LONG).show()
-
+       Utils.Tos("$search_key：搜索中···")
         requset.mySearch(hand_search,search_key,search_mode,search_sort)
 
     }

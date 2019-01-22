@@ -35,6 +35,7 @@ import com.simplewen.win0.wd.libraryweb.searchOthers
 import com.simplewen.win0.wd.modal.iwhDataOperator
 import com.simplewen.win0.wd.util.Utils
 import kotlinx.android.synthetic.main.app_bar_main.*
+import kotlinx.android.synthetic.main.content_wd_main2.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -45,49 +46,48 @@ import kotlin.collections.ArrayList
 //校园工具，非盈利项目，非礼勿扰
 //喜欢那个文，2018.09.20
 class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    val  iwh = "校园工具，非盈利项目，非礼勿扰"
+    val iwh = "校园工具，非盈利项目，非礼勿扰"
     val slideNotice = Timer()//定时器
     val request = requestManage(this@WDMain)//实例化请求对象
     var b_id = request.b_id//listview id
     var logined: Int = 0//是否历史登录标志
     private var boreUser: String = ""
     private var borePw: String = ""
-    var temDialog:AlertDialog? = null//临时dialog对象，用来调用dismiss
-    var temLoad:AlertDialog? =null //加载组件
+    var temDialog: AlertDialog? = null//临时dialog对象，用来调用dismiss
+    var temLoad: AlertDialog? = null //加载组件
     var userNameText: TextView? = null
-    lateinit var mainFresh:SwipeRefreshLayout //下拉刷新
-    lateinit var noticeTextSwitcher: TextSwitcher  //公告滚动
-    lateinit var noticeTitle:ArrayList<String>//公告内容
+    lateinit var mainFresh: SwipeRefreshLayout //下拉刷新
+    //lateinit var noticeTextSwitcher: TextSwitcher  //公告滚动
+    lateinit var noticeTitle: ArrayList<String>//公告内容
     //handler接收网络线程数据
     val hand: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message?) {
             super.handleMessage(msg)
             when (msg?.what) {
                 0 -> {
-                   temLoad?.dismiss()
+                    temLoad?.dismiss()
                     mainFresh.isRefreshing = false
 
                 }
                 1 -> {
                     temDialog?.dismiss()
-                   Utils.Tos( "登录成功，欢迎您:${request.userName}")
+                    Utils.Tos("登录成功，欢迎您:${request.userName}")
                     userNameText?.text = "欢迎你,${request.userName}"
                     request.myBrow(this)
                     temLoad?.dismiss()//移除加载
                     request.loginFlag = 1
                     logined = 1
-                    if(getSharedPreferences("noticeFlag",Activity.MODE_PRIVATE).getInt("upflag",0) <= 7){
+                    if (getSharedPreferences("noticeFlag", Activity.MODE_PRIVATE).getInt("upflag", 0) <= 7) {
                         AlertDialog.Builder(this@WDMain)
                                 .setTitle("测试1.7").setTitle("本次更新").setMessage(R.string.upDesc)
-                                .setCancelable(false).setPositiveButton("了解"){
-                                    _,_ ->
-                                    iwhDataOperator.setSHP("upflag",8,"noticeFlag")
+                                .setCancelable(false).setPositiveButton("了解") { _, _ ->
+                                    iwhDataOperator.setSHP("upflag", 8, "noticeFlag")
                                 }.create().show()
                     }
                     //存储登录信息到本地私有目录
                     iwhDataOperator
-                            .setSHP("user",msg.data.getString("user"),"wd")
-                            .setSHP("pw",msg.data.getString("pw"),"wd")
+                            .setSHP("user", msg.data.getString("user"), "wd")
+                            .setSHP("pw", msg.data.getString("pw"), "wd")
 
                 }
                 2 -> {
@@ -127,86 +127,84 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                 6 -> {
                     logined = 1
                 }
-                7 ->{
-                    Toast.makeText(this@WDMain,"挂失失败",Toast.LENGTH_SHORT).show()
+                7 -> {
+                    Toast.makeText(this@WDMain, "挂失失败", Toast.LENGTH_SHORT).show()
                     temDialog!!.dismiss()
                 }
                 //挂失图书卡
-                0x11 ->{
-                    Toast.makeText(this@WDMain,"该图书证，已经挂失",Toast.LENGTH_SHORT).show()
+                0x11 -> {
+                    Toast.makeText(this@WDMain, "该图书证，已经挂失", Toast.LENGTH_SHORT).show()
                     temDialog!!.dismiss()
                 }
-                0x12 ->{
-                    Toast.makeText(this@WDMain,"信息不匹配，重新输入",Toast.LENGTH_SHORT).show()
+                0x12 -> {
+                    Toast.makeText(this@WDMain, "信息不匹配，重新输入", Toast.LENGTH_SHORT).show()
                 }
-                0x13 ->{
-                    Toast.makeText(this@WDMain,"挂失成功，请到图书馆解除！",Toast.LENGTH_SHORT).show()
+                0x13 -> {
+                    Toast.makeText(this@WDMain, "挂失成功，请到图书馆解除！", Toast.LENGTH_SHORT).show()
                     temDialog!!.dismiss()
                 }
-                0x14 ->{
+                0x14 -> {
                     //获取公告
                     noticeTitle = request.noticeTitle
                     Tools().startNotice()
-                    if(mainFresh.isRefreshing){
+                    if (mainFresh.isRefreshing) {
                         mainFresh.isRefreshing = false
 
                     }
                 }//更换公告
                 0x144 -> {
-                    Log.d("@@_arg1:",noticeTitle[msg.arg1])
-                   noticeTextSwitcher.setText(noticeTitle[msg.arg1])
+                    Log.d("@@_arg1:", noticeTitle[msg.arg1])
+                    noticeTextSwitcher.setText(noticeTitle[msg.arg1])
 
                 }
                 //查询借阅失败
-                0x15 ->{
+                0x15 -> {
                     Utils.Tos("查询借阅失败")
                 }
                 //查询借阅成功
-                0x16 ->{
+                0x16 -> {
 
-                    request.checkBook(request.books,this)
+                    request.checkBook(request.books, this)
                 }
                 //图书到期提醒
-                0x17 ->{
-                   // Toast.makeText(this@WDMain,"你有图书即将超期！",Toast.LENGTH_SHORT).show()
+                0x17 -> {
+                    // Toast.makeText(this@WDMain,"你有图书即将超期！",Toast.LENGTH_SHORT).show()
                     AlertDialog.Builder(this@WDMain)
                             .setTitle("你有图书即将超期!")
-                            .setMessage("请注意及时续借或还书。").setPositiveButton("去看看"){
-                                _,_ ->
-                                startActivity(Intent(this@WDMain,brow::class.java))
+                            .setMessage("请注意及时续借或还书。").setPositiveButton("去看看") { _, _ ->
+                                startActivity(Intent(this@WDMain, brow::class.java))
 
 
-                            }.setNegativeButton("知道了"){
-                                _,_ ->
+                            }.setNegativeButton("知道了") { _, _ ->
 
                             }.create().show()
 
                 }
                 //修改密码成功
-                0x18 ->{
+                0x18 -> {
                     Utils.Tos("修改成功，请重新登录")
-                    logined =  0
+                    logined = 0
                     temDialog!!.dismiss()
 
 
                 }
                 //检测更新
 
-                0x21 ->{
-                    if(msg.arg1 >  Utils.getVersion(this@WDMain)){
+                0x21 -> {
+                    if (msg.arg1 > Utils.getVersion(this@WDMain)) {
 
-                            val updateView = layoutInflater.inflate(R.layout.update_view,null)
-                            updateView.findViewById<Button>(R.id.updateBtn)
-                                    .setOnClickListener{
-                                        temDialog!!.dismiss()
-                                        Utils.downNew()//下载更新
-                                        Utils.Tos("请稍后查看通知栏进度！")
-                                    }
-                            temDialog = AlertDialog.Builder(this@WDMain).setCancelable(true)
-                                    .setView(updateView)
-                                    .create()
-                            temDialog!!.show()
-                        } else{
+                        val updateView = layoutInflater.inflate(R.layout.update_view, null)
+                        updateView.findViewById<Button>(R.id.updateBtn)
+                                .setOnClickListener {
+                                    temDialog!!.dismiss()
+                                    Utils.downNew()//下载更新
+                                    Utils.Tos("请稍后查看通知栏进度！")
+                                }
+                        temDialog = AlertDialog.Builder(this@WDMain).setCancelable(true)
+                                .setView(updateView)
+                                .create()
+                        temDialog!!.show()
+                    } else {
                         Utils.Tos("当前是最新版本")
                     }
 
@@ -221,50 +219,35 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
     }
 
 
-
     /**内部类：检查登录，调出加载组件**/
-    inner class Tools{
-
-        fun joinQQGroup(): Boolean {
-            val intent = Intent()
-            val key="ylQNSD_I5zOdD7zjgp4iHN0KUN4TKbJx"
-            intent.data = Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D$key")
-            // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面 //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            try {
-
-                startActivity(intent)
-                return true
-            } catch (e: Exception) {
-                Toast.makeText(this@WDMain,"未安装QQ或版本不支持，请手动添加",Toast.LENGTH_LONG).show()
-                return false
-            }
-
-        }
-        fun loadDialog(){
+    inner class Tools {
+        fun loadDialog() {
             val dialog = AlertDialog.Builder(this@WDMain)
-            val login_layout = layoutInflater.inflate(R.layout.load,null)
+            val login_layout = layoutInflater.inflate(R.layout.load, null)
             dialog.setView(login_layout).setCancelable(true).create()
             temLoad = dialog.show()
         }
-        fun loginDialog(){
+
+        fun loginDialog() {
             val dialog = AlertDialog.Builder(this@WDMain)
-            val login_layout = layoutInflater.inflate(R.layout.login_form,null)
+            val login_layout = layoutInflater.inflate(R.layout.login_form, null)
             val login_btn = login_layout.findViewById<Button>(R.id.sign)
-            login_btn.setOnClickListener{
+            login_btn.setOnClickListener {
                 val myuser: String = login_layout.findViewById<TextInputEditText>(R.id.user).text.toString()
                 val mypw: String = login_layout.findViewById<TextInputEditText>(R.id.pw).text.toString()
                 Tools().loadDialog()
-                Toast.makeText(this@WDMain,"登录中",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@WDMain, "登录中", Toast.LENGTH_SHORT).show()
                 request.myLogin(myuser, mypw, hand)
 
             }
             dialog.setView(login_layout).create()
             temDialog = dialog.show()
         }
+
         //检测登录状态
         fun checkLogined(): Boolean {
-            val temUser: String = iwhDataOperator.getSHP("user","wd","0")
-            val temPw: String = iwhDataOperator.getSHP("pw","wd","0")
+            val temUser: String = iwhDataOperator.getSHP("user", "wd", "0")
+            val temPw: String = iwhDataOperator.getSHP("pw", "wd", "0")
             if (temPw.isNotEmpty() && temPw.isNotEmpty()) {
                 logined = 1
                 borePw = temPw
@@ -278,28 +261,28 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
 
 
         }
-        fun startNotice(){
+
+        fun startNotice() {
             var i = 0
             //定时器自动更换公告
-            slideNotice.schedule(object :TimerTask(){
+            slideNotice.schedule(object : TimerTask() {
 
                 override fun run() {
 
-                    if(i < noticeTitle.size ){
+                    if (i < noticeTitle.size) {
                         val message = Message()
                         message.arg1 = i
                         i++
                         message.what = 0x144
                         hand.sendMessage(message)
 
-                    }else{
+                    } else {
                         i = 0
                     }
                 }
-            },0,2000)
+            }, 0, 2000)
 
         }
-
 
 
     }
@@ -310,39 +293,29 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         setContentView(R.layout.activity_wd_main)
         setSupportActionBar(toolbar)
         toolbar.setTitleTextColor(Color.WHITE)
-        if (Build.VERSION.SDK_INT >= 21)   window.navigationBarColor = Color.BLUE
         userNameText = findViewById<NavigationView>(R.id.nav_view)//获取导航
                 .getHeaderView(0)//获取头部
                 .findViewById<LinearLayout>(R.id.nav_header)//获取头部布局
                 .findViewById(R.id.userName)//获取登录名
-        var searchMode:String = "1"//默认搜索模式
-        var searchSort:String = "正题名"//默认排列
-        val fab = findViewById<FloatingActionButton>(R.id.fab)
-        val login_layout = layoutInflater.inflate(R.layout.load,null)//加载布局
-        val searchBtn = findViewById<SearchView>(R.id.search_btn)//搜索按钮
-        val noticeLayout = findViewById<LinearLayout>(R.id.noticeLayout)//公告区
-        val searchSortSpinner = findViewById<Spinner>(R.id.sortSpinner)//获取搜索排序组件
+        var searchMode = "1"//默认搜索模式
+        var searchSort = "正题名"//默认排列
         val searchModeSpinner = findViewById<Spinner>(R.id.ModeSpinner)//获取搜索模式组件
-        val searchSortSpinnerData = arrayOf("正题名","出版日期","作者","出版社","索取号")
-        val searchModeSpinnerData  = arrayOf("默认搜索","模糊搜索","精确搜索")
-        val searchModeSpinnerAdapter = ArrayAdapter(this,R.layout.spinnerlayout,searchModeSpinnerData)
-        val searchSortSpinnerAdapter = ArrayAdapter(this,R.layout.spinnerlayout, searchSortSpinnerData)
-        val gridLIbrary =  findViewById<LinearLayout>(R.id.grid_library)//动态
-        val gridMyLibrary =  findViewById<LinearLayout>(R.id.grid_mylibrary)//我的图书馆
-         noticeTextSwitcher = findViewById(R.id.noticeTextSwitcher)//公告组件
-         noticeTextSwitcher.setFactory {
-             val tv = TextView(this)
-             tv.maxEms = 20
-             tv.setSingleLine(true)
-             tv.ellipsize = TextUtils.TruncateAt.MARQUEE
-             tv
-
+        val searchSortSpinnerData = arrayOf("正题名", "出版日期", "作者", "出版社", "索取号")
+        val searchModeSpinnerData = arrayOf("默认搜索", "模糊搜索", "精确搜索")
+        val searchModeSpinnerAdapter = ArrayAdapter(this, R.layout.spinnerlayout, searchModeSpinnerData )
+        val searchSortSpinnerAdapter = ArrayAdapter(this, R.layout.spinnerlayout, searchSortSpinnerData)
+        //公告滚动
+        noticeTextSwitcher.setFactory {
+            TextView(this).apply {
+                maxEms = 20
+                setSingleLine(true)
+                ellipsize = TextUtils.TruncateAt.MARQUEE
+            }
         }
-         noticeTitle = arrayListOf("2019.01.10 图书馆")
+        noticeTitle = arrayListOf("2019.01.10 图书馆")
 
-         val searchBox =   findViewById<LinearLayout>(R.id.search_box)//获取搜素模式盒子
-         mainFresh = findViewById(R.id.main_fresh)//下拉刷新
-
+        val searchBox = findViewById<LinearLayout>(R.id.search_box)//获取搜素模式盒子
+        mainFresh = findViewById(R.id.main_fresh)//下拉刷新
 
         //开始程序数据初始化
         request.getNotice(hand)//获取公告
@@ -352,80 +325,70 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
             request.myLogin(boreUser, borePw, hand)//登录
 
         } else {
-            Toast.makeText(this,"你还未登录，或登录失效！",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "你还未登录，或登录失效！", Toast.LENGTH_SHORT).show()
             Tools().loginDialog()
         }
         //获取更新
         Utils.requestUpVersion(hand)
-
         /**电子资源**/
-        /**@param searchOthers_cx 超星期刊搜索**/
-        /**@param searchOthers_dx 读秀搜索**/
+        /** searchOthers_cx 超星期刊搜索**/
+        /** searchOthers_dx 读秀搜索
+         * **/
 
-
-        val searchOthers_mw = findViewById<LinearLayout>(R.id.grid_others_mw)
-        val searchOthers_zw = findViewById<LinearLayout>(R.id.grid_others_zw)
-
-        val intent_search = Intent(this@WDMain,searchOthers::class.java)
-
+        val intent_search = Intent(this@WDMain, searchOthers::class.java)
         //美文
-        searchOthers_mw.setOnClickListener{
-            intent_search.putExtra("webUrl","http://wendaedu.com.cn/tsg/m/info_109.html")
+        grid_others_mw.setOnClickListener {
+            intent_search.putExtra("webUrl", "http://wendaedu.com.cn/tsg/m/info_109.html")
             startActivity(intent_search)
         }
         //知网
-        searchOthers_zw.setOnClickListener{
-            intent_search.putExtra("webUrl","http://wap.cnki.net/touch/web/guide")
+        grid_others_zw.setOnClickListener {
+            intent_search.putExtra("webUrl", "http://wap.cnki.net/touch/web/guide")
             startActivity(intent_search)
         }
 
-        /****/
-
-
         /**设置适配器和监听器**/
         searchModeSpinner.adapter = searchModeSpinnerAdapter
-        searchSortSpinner.adapter = searchSortSpinnerAdapter
+        sortSpinner.adapter = searchSortSpinnerAdapter
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
         //搜索模式：设置监听器
-        searchModeSpinner.onItemSelectedListener = object :AdapterView.OnItemSelectedListener{
+        searchModeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                searchMode = (position+1).toString()
+                searchMode = (position + 1).toString()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-               searchMode = 1.toString()
+                searchMode = 1.toString()
             }
         }
         //排列方式：设置监听器
-        searchSortSpinner.onItemSelectedListener = object:AdapterView.OnItemSelectedListener{
+        sortSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                //
                 searchSort = searchSortSpinnerData[position]
             }
-
             override fun onNothingSelected(parent: AdapterView<*>?) {
-
                 searchSort = searchSortSpinnerData[0]
             }
         }
-        noticeLayout.setOnClickListener{
-            startActivity(Intent(this,getNotice::class.java))
+        //查看公告
+        noticeLayout.setOnClickListener {
+            startActivity(Intent(this, getNotice::class.java))
         }
-
         //绑定搜索按钮
-        searchBtn.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        search_btn.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             var s_key: String? = "bore test"
             override fun onQueryTextSubmit(query: String?): Boolean {
+                with(Intent(this@WDMain, search_login::class.java)) {
+                    putExtra("search_mode", searchMode)
+                    putExtra("search_sort", searchSort)
+                    putExtra("search_key", s_key)
+                    startActivity(this)
+                }
 
-                val intent5 = Intent(this@WDMain, search_login::class.java)
-                intent5.putExtra("search_mode",searchMode)
-                intent5.putExtra("search_sort",searchSort)
-                intent5.putExtra("search_key", s_key)
-                startActivity(intent5)
                 return true
             }
 
@@ -435,53 +398,46 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
             }
         })
         //搜索模式打开
-        searchBtn.setOnQueryTextFocusChangeListener{
-            _,_ ->
-            if(searchBox.visibility == View.GONE){
+        search_btn.setOnQueryTextFocusChangeListener { _, _ ->
+
+            if (searchBox.visibility == View.GONE) {
                 searchBox.visibility = View.VISIBLE
 
-
-            }else{
+            } else {
                 searchBox.visibility = View.GONE
             }
 
         }
         //fab按钮
-        fab.setOnClickListener{
-           AlertDialog.Builder(this@WDMain)
-                   .setTitle("加入图书馆交流群")
-                   .setMessage("期待你的到来！")
-                   .setPositiveButton("确认"){
-                       _,_ ->
-                       Tools().joinQQGroup()
-                   }
-                   .setNegativeButton("算了"){
-                    _,_ ->
-
-                   }
-                   .create().show()
+        fab.setOnClickListener {
+            AlertDialog.Builder(this@WDMain)
+                    .setTitle("加入图书馆交流群")
+                    .setMessage("期待你的到来！")
+                    .setPositiveButton("确认") { _, _ ->
+                        Utils.joinQQGroup()
+                    }
+                    .setNegativeButton("算了", null)
+                    .create().show()
         }
 
 
         //绑定index功能按钮
-        gridLIbrary.setOnClickListener{
-            startActivity(Intent(this@WDMain,libraryweb::class.java))
+        grid_library.setOnClickListener {
+            startActivity(Intent(this@WDMain, libraryweb::class.java))
         }
-        gridMyLibrary.setOnClickListener{
+        grid_mylibrary.setOnClickListener {
             if (logined != 1) {
                 Toast.makeText(this, "请先登录", Toast.LENGTH_SHORT).show()
                 Tools().loginDialog()
 
-            }else{
-                AlertDialog.Builder(this@WDMain).setItems(arrayOf("我的借阅","我的借阅历史")){
-                    _,which  ->
-                    when(which){
+            } else {
+                AlertDialog.Builder(this@WDMain).setItems(arrayOf("我的借阅", "我的借阅历史")) { _, which ->
+                    when (which) {
                         0 -> {
-
-                            startActivity( Intent(this, brow::class.java))//切换我的借阅
+                            startActivity(Intent(this, brow::class.java))//切换我的借阅
                         }
-                        1 ->{
-                            startActivity( Intent(this, history::class.java))//切换我的借阅历史
+                        1 -> {
+                            startActivity(Intent(this, history::class.java))//切换我的借阅历史
                         }
 
                     }
@@ -496,16 +452,20 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         //绑定下拉刷新
         mainFresh.setColorSchemeColors(resources.getColor(R.color.colorAccent))
         mainFresh.setOnRefreshListener {
-                request.getNotice(hand)//获取公告
+            request.getNotice(hand)//获取公告
         }
 
 
+
     }
+
+
     override fun onBackPressed() {
-                val intent = Intent()
-                intent.action = Intent.ACTION_MAIN
-                intent.addCategory(Intent.CATEGORY_HOME)
-                startActivity(intent)
+        with(Intent()) {
+            action = android.content.Intent.ACTION_MAIN
+            addCategory(android.content.Intent.CATEGORY_HOME)
+            startActivity(intent)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -529,33 +489,34 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
                     dialog.show()
                 }
             }
-            R.id.menu_modify ->{
-                val modifyLayout = layoutInflater.inflate(R.layout.modifypass,null)
-
+            R.id.menu_modify -> {
+                val modifyLayout = layoutInflater.inflate(R.layout.modifypass, null)
                 val modifyBtn = modifyLayout.findViewById<Button>(R.id.menu_modify_submit)
                 temDialog = AlertDialog.Builder(this)
                         .setTitle("修改密码")
                         .setView(modifyLayout)
                         .create()
                 temDialog!!.show()
-                modifyBtn.setOnClickListener{
-                    val (user,pwNew,pwOld) = arrayOf(modifyLayout.findViewById<EditText>(R.id.menu_modify_user).text.toString(),
+                modifyBtn.setOnClickListener {
+                    val (user, pwNew, pwOld) = arrayOf(modifyLayout.findViewById<EditText>(R.id.menu_modify_user).text.toString(),
                             modifyLayout.findViewById<EditText>(R.id.menu_modify_mewPass).text.toString(),
                             modifyLayout.findViewById<EditText>(R.id.menu_modify_oldPass).text.toString())
-                    if(user.isNotEmpty() || pwNew.isNotEmpty()  || pwOld.isNotEmpty()){
-                        Toast.makeText(this@WDMain,"请完善信息",Toast.LENGTH_SHORT).show()
-                    }else{
-                        request.modifyPass(user,pwNew,pwOld,hand)//提交修改
+                    if (user.isNotEmpty() || pwNew.isNotEmpty() || pwOld.isNotEmpty()) {
+                        Toast.makeText(this@WDMain, "请完善信息", Toast.LENGTH_SHORT).show()
+                    } else {
+                        request.modifyPass(user, pwNew, pwOld, hand)//提交修改
                     }
                 }
 
 
             }
             R.id.nav_send -> {
-                val textIntent = Intent(Intent.ACTION_SEND)
-                textIntent.type = "text/plain"
-                textIntent.putExtra(Intent.EXTRA_TEXT, "文院移动图书馆:https://www.coolapk.com/apk/com.simplewen.win0.wd")
-                startActivity(Intent.createChooser(textIntent, "分享文院移动图书馆给小伙伴！"))
+                with(Intent(Intent.ACTION_SEND)) {
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, "文院移动图书馆:https://www.coolapk.com/apk/com.simplewen.win0.wd")
+                    startActivity(Intent.createChooser(this, "分享文院移动图书馆给小伙伴！"))
+                }
+
             }
 
         }
@@ -564,71 +525,66 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-
         menuInflater.inflate(R.menu.menu, menu)
-
-
         return true
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 
-
         when (item.itemId) {
-
 
             //关于应用
             R.id.nav_about -> {
-               startActivity(Intent(this@WDMain,about::class.java))
+                startActivity(Intent(this@WDMain, about::class.java))
             }
             //检查更新
-            R.id.nav_updata ->{
+            R.id.nav_updata -> {
                 Utils.requestUpVersion(hand)
 
             }
 
             //期刊检索
-            R.id.nav_qk ->{
-                startActivity(Intent(this@WDMain,libraryQk::class.java))
+            R.id.nav_qk -> {
+                startActivity(Intent(this@WDMain, libraryQk::class.java))
             }
             //开放时间
-            R.id.nav_openTime ->{
-                startActivity(Intent(this@WDMain,libraryFb::class.java))
+            R.id.nav_openTime -> {
+                startActivity(Intent(this@WDMain, libraryFb::class.java))
             }
             //读者互动
-           /** R.id.nav_reader->{
-                Utils.Tos("正在完善！")
+            /** R.id.nav_reader->{
+            Utils.Tos("正在完善！")
             }
             //图书架规则
             R.id.nav_bookshelf ->{
 
-                Utils.Tos("正在完善！")
+            Utils.Tos("正在完善！")
 
             }
-            **/
+             **/
             //图书证挂失
-            R.id.nav_gs ->{
+            R.id.nav_gs -> {
 
-                val gs_ly = layoutInflater.inflate(R.layout.guashi,null)
-                val gs_name =  gs_ly.findViewById<EditText>(R.id.gs_name).text
+                val gs_ly = layoutInflater.inflate(R.layout.guashi, null)
+                val gs_name = gs_ly.findViewById<EditText>(R.id.gs_name).text
                 val gs_number = gs_ly.findViewById<EditText>(R.id.gs_number).text
                 val gs_password = gs_ly.findViewById<EditText>(R.id.gs_password).text
                 val gs_btn = gs_ly.findViewById<Button>(R.id.gs)
-                gs_btn.setOnClickListener{
-                    if(gs_number.isNotEmpty() && gs_password.isNotEmpty()){
-                        request.gsCard(gs_number.toString(),gs_password.toString(),gs_name.toString(),hand)
-                    }else{
+                gs_btn.setOnClickListener {
+                    if (gs_number.isNotEmpty() && gs_password.isNotEmpty()) {
+                        request.gsCard(gs_number.toString(), gs_password.toString(), gs_name.toString(), hand)
+                    } else {
                         Utils.Tos("请补全信息！")
                     }
 
                 }
 
-                temDialog  = AlertDialog.Builder(this@WDMain)
+                temDialog = AlertDialog.Builder(this@WDMain)
                         .setTitle("挂失图书证").setView(gs_ly).create()
                 temDialog!!.show()
             }
             //常见问题
-            R.id.nav_questions->{
+            R.id.nav_questions -> {
                 Utils.Tos("正在完善！")
             }
         }
@@ -636,10 +592,6 @@ class WDMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListe
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
     }
-
-
-
-
 
 
 }

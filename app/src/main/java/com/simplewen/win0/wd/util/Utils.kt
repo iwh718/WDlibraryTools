@@ -112,6 +112,30 @@ class Utils{
             }
             return version!!.toInt()
         }
+        fun joinQQGroup(): Boolean {
+            val intent = Intent()
+            val key="ylQNSD_I5zOdD7zjgp4iHN0KUN4TKbJx"
+            intent.data = Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D$key")
+            // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面 //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            try {
+
+                WdTools.getContext().startActivity(intent)
+                return true
+            } catch (e: Exception) {
+                Toast.makeText(WdTools.getContext(),"未安装QQ或版本不支持，请手动添加",Toast.LENGTH_LONG).show()
+                return false
+            }
+
+        }
+
+        /**发送到主线程消息**/
+        fun sendMsg(msgId:Int,hand:Handler){
+            with(Message()){
+                what = msgId
+                hand.sendMessage(this)
+            }
+
+        }
 
 
 
