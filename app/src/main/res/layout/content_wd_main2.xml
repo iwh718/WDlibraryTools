@@ -8,7 +8,7 @@
     android:background="#d9d7d7"
     android:focusable="true"
     android:orientation="vertical"
-    tools:context=".WDMain">
+    tools:context=".AXGmain">
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:id="@+id/main_fresh"

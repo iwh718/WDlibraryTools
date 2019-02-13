@@ -1,5 +1,5 @@
 <resources>
-    <string name="author">开发者：IWH</string>
+    <string name="author">开发者：姚</string>
     <string name="appV3_time">
         v1.4 | 2019.01.14 \n\n (1.优化侧边菜单卡顿 \n\n (2,调整UI，轻简，移除多余背景 \n\n (3.知网web页面调整 \n\n (4.移除轮播，至简。\n\n
         5.图书证挂失移动到侧边
@@ -10,8 +10,8 @@
     v1.0 | 2019.01.02 改善UI，实现校内网登录，检索，续借，增加图书馆动态，挂失，密码管理。\n\n
     </string>
     <string name="appHelp">帮助：目前由于校内网络限制，图书续借与检索仅提供校园网登录！</string>
-    <string name="userName">文院图书馆助手（未登录）</string>
-    <string name="app_name">文院移动图书馆</string>
+    <string name="userName">云朵图书馆（未登录）</string>
+    <string name="app_name">云朵图书馆</string>
     <string name="user_hint">输入账号（图书证号）</string>
     <string name="pw_hint">输入密码（默认同卡号）</string>
     <string name="sign_btn">登录</string>
@@ -19,7 +19,7 @@
     <string name="info">调试代码区：</string>
     <string name="info_history">历史借阅</string>
     <string name="info_like">我的书架</string>
-    <string name="title_activity_wd_main">文院图书助手</string>
+    <string name="title_activity_wd_main">云朵图书助手</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_desc">文院</string>

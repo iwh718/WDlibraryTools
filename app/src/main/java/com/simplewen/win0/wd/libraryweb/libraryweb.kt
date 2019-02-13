@@ -4,14 +4,13 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.simplewen.win0.wd.R
-import com.simplewen.win0.wd.WDMain
+import com.simplewen.win0.wd.AXGmain
 import kotlinx.android.synthetic.main.activity_libraryweb.*
 
 class libraryweb : AppCompatActivity() {
@@ -54,7 +53,7 @@ class libraryweb : AppCompatActivity() {
 
         when(item?.itemId){
             android.R.id.home -> {
-               startActivity(Intent(this@libraryweb,WDMain::class.java))
+               startActivity(Intent(this@libraryweb,AXGmain::class.java))
                 finish()
             }
         }

@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         }
         Timer().schedule(object:TimerTask(){
             override fun run() {
-                startActivity(Intent(this@MainActivity,WDMain::class.java))
+                startActivity(Intent(this@MainActivity,AXGmain::class.java))
                 finish()
             }
         } ,2000)
