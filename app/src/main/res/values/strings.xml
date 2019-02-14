@@ -13,7 +13,7 @@
     <string name="userName">云朵图书馆（未登录）</string>
     <string name="app_name">云朵图书馆</string>
     <string name="user_hint">输入账号（图书证号）</string>
-    <string name="pw_hint">输入密码（默认同卡号）</string>
+    <string name="pw_hint">输入密码（默认0000）</string>
     <string name="sign_btn">登录</string>
     <string name="cancel_btn">取消</string>
     <string name="info">调试代码区：</string>
@@ -83,4 +83,8 @@
     <string name="index_item_library_dt">图书馆动态</string>
     <string name="index_item_library_mw">读者美文</string>
     <string name="index_item_library_my">我的图书馆</string>
+    <string name="school_name">安徽信息工程学院</string>
+    <string name="cloudlibrary_name">CloudLibrary</string>
+    <string name="cloud_quote">至简的图书馆工具</string>
+    <string name="team_by">Test By IWH and Yao 2019</string>
 </resources>

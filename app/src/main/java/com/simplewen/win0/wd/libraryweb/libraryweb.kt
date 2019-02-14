@@ -10,7 +10,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.simplewen.win0.wd.R
-import com.simplewen.win0.wd.AXGmain
+import com.simplewen.win0.wd.activity.AXGmain
 import kotlinx.android.synthetic.main.activity_libraryweb.*
 
 class libraryweb : AppCompatActivity() {
@@ -53,7 +53,7 @@ class libraryweb : AppCompatActivity() {
 
         when(item?.itemId){
             android.R.id.home -> {
-               startActivity(Intent(this@libraryweb,AXGmain::class.java))
+               startActivity(Intent(this@libraryweb, AXGmain::class.java))
                 finish()
             }
         }

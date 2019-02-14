@@ -1,9 +1,9 @@
-package com.simplewen.win0.wd
+package com.simplewen.win0.wd.app
 import android.app.Application
 import android.content.Context
 
 
-class WdTools:Application(){
+class CloudApp:Application(){
     companion object {
         var  _context:Application? = null
         fun getContext():Context{

@@ -1,7 +1,6 @@
 package com.simplewen.win0.wd.util
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
@@ -9,7 +8,6 @@ import android.net.Uri
 import android.os.Environment
 import android.os.Handler
 import android.os.Message
-import android.support.v4.content.ContextCompat.startActivity
 
 
 import android.view.Gravity
@@ -17,8 +15,7 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import android.widget.Toast
 import com.simplewen.win0.wd.R
-import com.simplewen.win0.wd.WdTools
-import com.simplewen.win0.wd.modal.iwhDataOperator
+import com.simplewen.win0.wd.app.CloudApp
 import okhttp3.*
 import java.io.IOException
 import java.lang.Exception
@@ -35,8 +32,8 @@ class Utils{
          * @param str 自定义文本
         **/
         fun Tos(str:String,gravity: Int = Gravity.BOTTOM){
-            val iwhToast = Toast.makeText(WdTools.getContext(),str,Toast.LENGTH_SHORT)
-            val iwhLyout = LayoutInflater.from(WdTools.getContext()).inflate(R.layout.iwh_toast,null)
+            val iwhToast = Toast.makeText(CloudApp.getContext(),str,Toast.LENGTH_SHORT)
+            val iwhLyout = LayoutInflater.from(CloudApp.getContext()).inflate(R.layout.iwh_toast,null)
             iwhToast.setGravity(Gravity.FILL_HORIZONTAL or gravity,0,0)
             iwhToast.view = iwhLyout
             iwhLyout.findViewById<TextView>(R.id.iwh_toast_text).text = str
@@ -82,7 +79,7 @@ class Utils{
 
             val  request = DownloadManager.Request(Uri.parse(versionWd))
             request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
-            request.setDestinationInExternalFilesDir(WdTools.getContext(), Environment.DIRECTORY_DOWNLOADS,"wd.apk")
+            request.setDestinationInExternalFilesDir(CloudApp.getContext(), Environment.DIRECTORY_DOWNLOADS,"wd.apk")
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             // 设置 Notification 信息
             request.setTitle("正在下载文院图书馆更新")
@@ -92,7 +89,7 @@ class Utils{
             request.setMimeType("application/vnd.android.package-archive")
 
             // 实例化DownloadManager 对象
-           val downloadManager = WdTools.getContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+           val downloadManager = CloudApp.getContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             return downloadManager.enqueue(request)
         }
 
@@ -119,10 +116,10 @@ class Utils{
             // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面 //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             try {
 
-                WdTools.getContext().startActivity(intent)
+                CloudApp.getContext().startActivity(intent)
                 return true
             } catch (e: Exception) {
-                Toast.makeText(WdTools.getContext(),"未安装QQ或版本不支持，请手动添加",Toast.LENGTH_LONG).show()
+                Toast.makeText(CloudApp.getContext(),"未安装QQ或版本不支持，请手动添加",Toast.LENGTH_LONG).show()
                 return false
             }
 

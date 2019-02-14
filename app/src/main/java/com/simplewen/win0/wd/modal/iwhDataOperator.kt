@@ -1,7 +1,7 @@
 package com.simplewen.win0.wd.modal
 
 import android.app.Activity
-import com.simplewen.win0.wd.WdTools
+import com.simplewen.win0.wd.app.CloudApp
 
 /**数据操作类
  @author:iwh
@@ -18,7 +18,7 @@ class iwhDataOperator{
          * **/
         fun<T> setSHP(saveKey:String,saveText:T,shpName:String):iwhDataOperator.Companion{
             //打开指定文件
-            val SHP_Text =  WdTools.getContext().getSharedPreferences(shpName, Activity.MODE_PRIVATE)
+            val SHP_Text =  CloudApp.getContext().getSharedPreferences(shpName, Activity.MODE_PRIVATE)
                 when(saveText){
                    is Int ->{
                         //存放整型数据
@@ -41,7 +41,7 @@ class iwhDataOperator{
          * @param type 取出指定类型值
          * @param shpName 获取指定文件**/
         fun<T> getSHP(getKey:String,shpName:String,type:T):T{
-            val SHP_Text =  WdTools.getContext().getSharedPreferences(shpName, Activity.MODE_PRIVATE)
+            val SHP_Text =  CloudApp.getContext().getSharedPreferences(shpName, Activity.MODE_PRIVATE)
             when(type){
                 is Int ->{
                     //返回整型数据

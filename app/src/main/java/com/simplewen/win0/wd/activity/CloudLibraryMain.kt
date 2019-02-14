@@ -1,4 +1,4 @@
-package com.simplewen.win0.wd
+package com.simplewen.win0.wd.activity
 
 
 import android.app.Activity
@@ -25,6 +25,7 @@ import android.support.v4.widget.SwipeRefreshLayout
 import android.text.TextUtils
 import android.util.Log
 import android.widget.*
+import com.simplewen.win0.wd.*
 
 import com.simplewen.win0.wd.libraryweb.libraryQk
 
