@@ -6,6 +6,7 @@ import android.content.Context
 class CloudApp:Application(){
     companion object {
         var  _context:Application? = null
+        var  temArrayData:ArrayList<Map<String,Any>>? = null
         fun getContext():Context{
             return _context!!
         }
@@ -13,6 +14,7 @@ class CloudApp:Application(){
     override fun onCreate() {
         super.onCreate()
         _context = this
+
     }
 
 

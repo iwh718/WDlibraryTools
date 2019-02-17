@@ -41,8 +41,8 @@
     <string name="search_b_fact">出版社：</string>
     <string name="update">更新日志</string>
     <string name="title_activity_index">index</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">云朵图书馆</string>
+    <string name="nav_header_subtitle">CloudLibrary 至简工具</string>
     <string name="action_settings">Settings</string>
     <string name="nav_menu_" />
     <string name="github">GitHub开源：代码正在整理中</string>
@@ -87,4 +87,12 @@
     <string name="cloudlibrary_name">CloudLibrary</string>
     <string name="cloud_quote">至简的图书馆工具</string>
     <string name="team_by">Test By IWH and Yao 2019</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="action_example">Example action</string>
+    <string name="title_activity_cloud_library">CloudLibrary</string>
+    <string name="title_activity_cloud_library_main">CloudLibraryMain</string>
 </resources>

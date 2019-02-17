@@ -3,6 +3,8 @@ package com.simplewen.win0.wd.modal
 import android.app.Activity
 import com.simplewen.win0.wd.app.CloudApp
 
+
+
 /**数据操作类
  @author:iwh
  @time:2019.01.10

@@ -4,7 +4,7 @@
     <item
         android:id="@+id/login_how_menu"
         app:showAsAction="always"
-        android:icon="@drawable/login_menu_how"
+        android:icon="@drawable/login_menu_how_login"
         android:title="如何登陆" />
 
 

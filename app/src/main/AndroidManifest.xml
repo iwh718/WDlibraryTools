@@ -15,46 +15,17 @@
         android:roundIcon="@drawable/cloud_library_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.Light.NoActionBar">
-        <activity
-            android:name=".activity.AXGmain"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".brow"
-            android:label="我的借阅"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".history"
-            android:label="我的借阅历史"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.LoginActivity">
+        <activity android:name=".activity.LoginActivity"
+            android:theme="@style/Theme.Design.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".search_login"
-            android:label="图书搜索"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".getNotice"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".libraryweb.libraryweb"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".libraryweb.libraryQk"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".libraryweb.searchOthers" />
         <activity android:name=".about" />
-        <activity android:name=".moreOthers" />
-        <activity android:name=".libraryFb"
-            android:label="图书馆馆藏分布"
-            android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".activity.CL_Help_Login" />
+        <activity android:name=".activity.CloudLibraryMain">
 
         </activity>
     </application>

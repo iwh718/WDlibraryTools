@@ -2,18 +2,8 @@ package com.simplewen.win0.wd.modal
 
 class PreData{
     companion object {
-        //登录
-        val loginIndexUrl = ""
-        //搜索
-        val searchUrl = ""
-        //续借
-        val continueUrl =""
-        //挂失
-        val dismissUrl = ""
-        //在借
-        val orderingUrl = ""
-        //历史
-        val orderedUrl = ""
+        val baseUrl = "https://www.borebooks.top/CL/index_axg.php"
+
     }
 }
 
