@@ -68,8 +68,15 @@ class LoginActivity : AppCompatActivity() {
             }
 
         }
-        schoolSpinner.adapter = ArrayAdapter(this@LoginActivity,R.layout.support_simple_spinner_dropdown_item,PreData.schoolLists).apply {
-           
+        schoolSpinner.adapter = ArrayAdapter(this@LoginActivity,R.layout.support_simple_spinner_dropdown_item,PreData.schoolLists)
+        schoolSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+               if(position!=0){
+                   Utils.Tos("暂未开放该学校！")
+               }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?)=  Unit
         }
         //检测是否登录过
         if(iwhDataOperator.getSHP("userAccount","CloudUser","").isNotEmpty()){

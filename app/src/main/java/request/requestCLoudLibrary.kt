@@ -128,4 +128,60 @@ class requestCLoudLibrary{
         return ""
     }
 
+    /**
+     * 搜索图书
+     */
+    fun search(hand: Handler,searchStr:String){
+        val loginInfo = FormBody.Builder()
+                .add("iwhKey", "718")
+                .add("schoolId","axg")
+                .add("searchText",searchStr)
+                .build()
+        //构建请求
+        var res: String?
+        thread {
+            val request = Request.Builder().url(PreData.baseUrl).post(loginInfo).build()
+            this.client.newCall(request).enqueue(object : Callback {
+                override fun onResponse(call: Call, response: Response) {
+                    res = response.body()?.string()
+                    try {
+                        val tem_res: JSONArray?
+                        tem_res = JSONArray(res)
+                        Log.d("@@@iwhRES_search:",tem_res.toString())
+                        this@requestCLoudLibrary.userName =tem_res.getJSONArray(0).getJSONObject(0).getString("userName")
+                        val currentJSON:JSONArray = tem_res.getJSONArray(0)
+
+
+                            //获取当前借阅
+                            for (i in 1 until currentJSON.length()){
+                                with(LinkedHashMap<String, Any>()) {
+                                    put("b_searchId", currentJSON.getJSONObject(i).getString("b_searchId"))
+                                    put("b_title", currentJSON.getJSONObject(i).getString("b_title"))
+                                    put("b_author", currentJSON.getJSONObject(i).getString("b_author"))
+                                    put("b_by", currentJSON.getJSONObject(i).getString("b_by"))
+                                    put("b_time", currentJSON.getJSONObject(i).getString("b_time"))
+
+                                    this@requestCLoudLibrary.searchBooks.add(this)
+                                }
+                            }
+
+                            Log.d("@@@Cdata:",this@requestCLoudLibrary.searchBooks.toString())
+                            Utils.sendMsg(0x1, hand)
+
+
+                    }catch (e:Exception){
+                        Log.d("@@@error:",e.toString())
+                        Utils.sendMsg(0x2, hand)
+                    }
+                }
+                override fun onFailure(call: Call, e: IOException) {
+                    Utils.sendMsg(0x3, hand)
+
+                }
+            })
+
+        }
+
+    }
+
     }

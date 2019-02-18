@@ -15,19 +15,21 @@
         android:roundIcon="@drawable/cloud_library_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.Light.NoActionBar">
-        <activity android:name=".activity.LoginActivity"
+        <activity
+            android:name=".activity.LoginActivity"
             android:theme="@style/Theme.Design.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name=".about" />
         <activity android:name=".activity.CL_Help_Login" />
-        <activity android:name=".activity.CloudLibraryMain">
-
-        </activity>
+        <activity android:name=".activity.CloudLibraryMain"/>
+        <activity android:name=".activity.SearchActivity"
+            android:theme="@style/Theme.Design.Light.NoActionBar"/>
     </application>
 
 </manifest>

@@ -1,18 +1,8 @@
 <resources>
     <string name="author">开发者：姚</string>
-    <string name="appV3_time">
-        v1.4 | 2019.01.14 \n\n (1.优化侧边菜单卡顿 \n\n (2,调整UI，轻简，移除多余背景 \n\n (3.知网web页面调整 \n\n (4.移除轮播，至简。\n\n
-        5.图书证挂失移动到侧边
-    v1.3.2 | 2019.01.13 \n  1.调整公告滚动 \n 2.增加自动检测更新 \n 3.其它细节调整 \n 4.修复全面屏设备启动页LOGO扭曲。\n\n
-    v1.3.1 | 2019.01.09 \n  调整时间,web页面支持浏览器打开 \n\n
-    v1.3 | 2019.01.07 \n 增加馆藏分布，开放时间。 \n\n
-    v1.2 | 2019.01.04. 改善侧滑卡顿，调整UI，自动切换公告。 \n\n
-    v1.0 | 2019.01.02 改善UI，实现校内网登录，检索，续借，增加图书馆动态，挂失，密码管理。\n\n
-    </string>
-    <string name="appHelp">帮助：目前由于校内网络限制，图书续借与检索仅提供校园网登录！</string>
     <string name="userName">云朵图书馆（未登录）</string>
     <string name="app_name">云朵图书馆</string>
-    <string name="user_hint">输入账号（图书证号）</string>
+    <string name="user_hint">输入账号（校园卡号）</string>
     <string name="pw_hint">输入密码（默认0000）</string>
     <string name="sign_btn">登录</string>
     <string name="cancel_btn">取消</string>
@@ -22,18 +12,16 @@
     <string name="title_activity_wd_main">云朵图书助手</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_desc">文院</string>
-    <string name="my">登录管理</string>
+
+
     <string name="b_name">书名</string>
     <string name="b_last">借阅时间</string>
     <string name="b_next">限还时间</string>
     <string name="b_continue">续借</string>
     <string name="remrmber">：记住密码</string>
     <string name="search_hint">输入书名</string>
-    <string name="search_tips">趁阳光正好,做点有意义的.2018.11.30</string>
-    <string name="about_qq">QQ:2868579699</string>
-    <string name="app_desc">简介：文院校内使用，校外网无法登录。正在内测开发阶段，有问题，随时反馈群里。如果补办过卡，密码依旧是以前的账号。</string>
-    <string name="thank_me">支持或捐赠开发者。</string>
+
+
     <string name="search_b_name">书名：</string>
     <string name="search_b_number">索取号：</string>
     <string name="search_b_author">作者：</string>
@@ -45,54 +33,11 @@
     <string name="nav_header_subtitle">CloudLibrary 至简工具</string>
     <string name="action_settings">Settings</string>
     <string name="nav_menu_" />
-    <string name="github">GitHub开源：代码正在整理中</string>
-    <string name="upDesc"> v1.4 | 2019.01.14 \n\n (1.优化侧边菜单卡顿 \n\n (2,调整UI，轻简，移除多余背景 \n\n (3.知网web页面调整 \n\n (4.移除轮播，至简。\n\n
-        5.图书证挂失移动到侧边</string>
-    <string name="dialog_fb_f1_shkx">社会科学书库\n \n I文学、G文化教育、K历史地理传记、R医药卫生、TS轻工业手工业 、 Z综合类图书</string>
-    <string name="dialog_fb_f1_zrkx">自然科学书库\n\n T工业技术，TD矿业工程，TE石油工业，TF冶金工业，TG金属学、金属工艺，TH机械、仪表工业，TK动力工程，TP自动化技术、计算机技术，TQ化学工业，TU建筑科学，TV水利工程，O数理科学,P地球科学，Q生物科学，S农业，V航空航天，X环境科学类图书</string>
-    <string name="dialog_fb_f2_ys">艺术书库\n\n J艺术类图书</string>
-    <string name="dialog_fb_f2_qc">汽车、电子书库：\n TM 电工技术，TN无线电电子学、电子技术，U交通运输类图书</string>
-    <string name="dialog_fb_f2_yy">语言书库\n\n H语言类图书</string>
-    <string name="dialog_fb_f2_ml">马列政治书库\n\n A马列毛泽东、B哲学、C社会学、 D法律、E军事类图书</string>
-    <string name="dialog_fb_f4_tool">工具样本书库教师书屋\n\n 各类工具书和馆藏相应样本图书</string>
-    <string name="dialog_fb_jz_cjys">财经艺术分馆\n\n F财经管理类图书、财经类期刊，和馆藏期刊合订本。</string>
-    <string name="opentime_f1">周一至周五：
-08:20---11:40 \n 13:00---16:50（冬时制）\n 13:00---17:20（夏时制）\n
-周六（周日休息）\n
-08:20---11:40
-14:00---16:50
-</string>
-    <string name="opentime_f2">周一至周五：（周六、周日休息）\n\n
-08:20---11:40 \n 14:00---16:50（冬时制） \n
-14:00---17:20（夏时制）
-</string>
-    <string name="opentime_f4">周一至周五：（周六、周日休息） \n \n
-08:20---11:40  \n
-14:00---16:50（冬时制） \n
-14:00---17:20（夏时制）
-\n </string>
-    <string name="opentime_jz">周一至周五：\n
-08:20---11:40\n
-14:00---16:50（冬时制）\n
-14:00---17:20（夏时制）\n
-周六（周日休息）\n
-08:20---11:40
-14:00---16:50
-</string>
-    <!--首页功能-->
-    <string name="index_item_library_dt">图书馆动态</string>
-    <string name="index_item_library_mw">读者美文</string>
-    <string name="index_item_library_my">我的图书馆</string>
     <string name="school_name">安徽信息工程学院</string>
     <string name="cloudlibrary_name">CloudLibrary</string>
     <string name="cloud_quote">至简的图书馆工具</string>
     <string name="team_by">Test By IWH and Yao 2019</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
-
-    <string name="action_example">Example action</string>
     <string name="title_activity_cloud_library">CloudLibrary</string>
     <string name="title_activity_cloud_library_main">CloudLibraryMain</string>
 </resources>

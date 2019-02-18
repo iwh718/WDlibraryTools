@@ -100,7 +100,12 @@ class CloudLibraryMain : AppCompatActivity(), NavigationView.OnNavigationItemSel
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+            with(Intent(Intent.ACTION_MAIN)){
+               flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                addCategory(Intent.CATEGORY_HOME)
+                startActivity(this)
+            }
+
         }
     }
 
@@ -114,10 +119,10 @@ class CloudLibraryMain : AppCompatActivity(), NavigationView.OnNavigationItemSel
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-       /** when (item.itemId) {
-            R.id.action_settings -> return true
-            else -> return super.onOptionsItemSelected(item)
-        }**/
+        when (item.itemId) {
+            R.id.menu_search -> startActivity(Intent(this@CloudLibraryMain,SearchActivity::class.java))
+
+        }
         return true
     }
 
@@ -159,7 +164,6 @@ class CloudLibraryMain : AppCompatActivity(), NavigationView.OnNavigationItemSel
         return true
     }
 
-    fun setHandler(handler: Handler){
 
-    }
+
 }

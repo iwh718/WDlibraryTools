@@ -22,10 +22,10 @@ class HistoryListViewAdapter(private val historyData:ArrayList<Map<String,Any>>)
         with(vi){
             this!!.findViewById<TextView>(R.id.b_searchId).text =  historyData[position]["b_searchId"].toString()
             findViewById<TextView>(R.id.b_title).text =  historyData[position]["b_title"].toString()
-            findViewById<TextView>(R.id.b_author).text =  historyData[position]["b_author"].toString()
-            findViewById<TextView>(R.id.b_address).text =  historyData[position]["b_address"].toString()
-            findViewById<TextView>(R.id.b_startTime).text = historyData[position]["b_startTime"].toString()
-            findViewById<TextView>(R.id.b_stopTime).text =  historyData[position]["b_stopTime"].toString()
+            findViewById<TextView>(R.id.b_author).text =  "作者：${historyData[position]["b_author"].toString()}"
+            findViewById<TextView>(R.id.b_address).text =  "出版社:${historyData[position]["b_address"].toString()}"
+            findViewById<TextView>(R.id.b_startTime).text = "借于：${historyData[position]["b_startTime"].toString()}"
+            findViewById<TextView>(R.id.b_stopTime).text =  "还于：${historyData[position]["b_stopTime"].toString()}"
 
         }
 
