@@ -15,8 +15,10 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.TextView
 import com.simplewen.win0.wd.R
 import com.simplewen.win0.wd.adapter.ViewPageAdapter
+import com.simplewen.win0.wd.app.CloudApp
 import com.simplewen.win0.wd.modal.PreData
 import com.simplewen.win0.wd.modal.iwhDataOperator
 import com.simplewen.win0.wd.view.CL_ViewPageFragment
@@ -30,6 +32,7 @@ import kotlinx.android.synthetic.main.activity_cloud_library_main.*
  * 校园工具，非盈利项目
  */
 class CloudLibraryMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +50,7 @@ class CloudLibraryMain : AppCompatActivity(), NavigationView.OnNavigationItemSel
             }
             true
         }
+        nav_view.getHeaderView(0).findViewById<TextView>(R.id.userName).text = CloudApp.requestAll!!.userName
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
@@ -153,5 +157,9 @@ class CloudLibraryMain : AppCompatActivity(), NavigationView.OnNavigationItemSel
         drawer_layout.closeDrawer(GravityCompat.START)
         Thread.sleep(300)
         return true
+    }
+
+    fun setHandler(handler: Handler){
+
     }
 }

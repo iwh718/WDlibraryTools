@@ -38,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
                     0x1 -> {
                         loginBar.visibility = View.GONE
                         Utils.Tos("登录完成！")
-                        CloudApp.temArrayData = request.currentBooks
+                      //  CloudApp.temArrayData = request.currentBooks
                         iwhDataOperator.setSHP("school_type","axg","CloudInfo")
                                 .setSHP("userAccount",request.userInfo["userAccount"],"CloudUser")
                                 .setSHP("userPassword",request.userInfo["userPassword"],"CloudUser")
@@ -48,11 +48,15 @@ class LoginActivity : AppCompatActivity() {
 
                     0x2 -> {
                         Utils.Tos("登录失败：账号或密码有误")
+                        loginBar.visibility = View.GONE
+                        loginLayout.visibility = View.VISIBLE
 
                     }
 
                     0x3 ->{
                         Utils.Tos("网络连接失败")
+                        loginBar.visibility = View.GONE
+                        loginLayout.visibility = View.VISIBLE
                     }
 
 

@@ -7,6 +7,7 @@ import com.simplewen.win0.wd.modal.PreData
 import com.simplewen.win0.wd.util.Utils
 import okhttp3.*
 import org.json.JSONArray
+import org.json.JSONObject
 import java.io.IOException
 import java.lang.Exception
 import java.util.*
@@ -37,9 +38,9 @@ class requestCLoudLibrary{
      * @param userAccount 账号
      * @param userPassword 密码
      */
-    fun Login(hand: Handler, userAccount:String = "317205010234",userPassword:String = "0000" ) {
+    fun Login(hand: Handler, userAccount:String,userPassword:String ) {
             //发送参数
-            CloudApp.temArrayData?.clear()
+           // CloudApp.requestAll?.currentBooks?.clear()
             this@requestCLoudLibrary.currentBooks.clear()
             val loginInfo = FormBody.Builder()
                     .add("iwhKey", "718")
@@ -61,22 +62,42 @@ class requestCLoudLibrary{
                                 val tem_res: JSONArray?
                                 tem_res = JSONArray(res)
                                 Log.d("@@@iwhRES_login:",tem_res.toString())
-                                if( tem_res.getJSONObject(0).getString("flag") == "true"){
-                                    for (i in 0 until tem_res.length()){
+                                this@requestCLoudLibrary.userName =tem_res.getJSONArray(0).getJSONObject(0).getString("userName")
+                                val currentJSON:JSONArray = tem_res.getJSONArray(0)
+                                val historyJSON:JSONArray = tem_res.getJSONArray(1)
+                                if( currentJSON.getJSONObject(1).getString("flag") == "true"){
+                                    this@requestCLoudLibrary.loginFlag = 1
+                                    //获取当前借阅
+                                    for (i in 2 until currentJSON.length()){
                                         with(LinkedHashMap<String, Any>()) {
-                                            put("b_id", tem_res.getJSONObject(i).getString("b_id"))
-                                            put("b_title", tem_res.getJSONObject(i).getString("b_title"))
-                                            put("b_author",  tem_res.getJSONObject(i).getString("b_author"))
-                                            put("b_address",  tem_res.getJSONObject(i).getString("b_address"))
-                                            put("b_startTime", tem_res.getJSONObject(i).getString("b_startTime"))
-                                            put("b_stopTime", tem_res.getJSONObject(i).getString("b_stopTime"))
-                                            put("b_status", tem_res.getJSONObject(i).getString("b_status"))
+                                            put("b_id", currentJSON.getJSONObject(i).getString("b_id"))
+                                            put("b_title", currentJSON.getJSONObject(i).getString("b_title"))
+                                            put("b_author", currentJSON.getJSONObject(i).getString("b_author"))
+                                            put("b_address", currentJSON.getJSONObject(i).getString("b_address"))
+                                            put("b_startTime",currentJSON.getJSONObject(i).getString("b_startTime"))
+                                            put("b_stopTime", currentJSON.getJSONObject(i).getString("b_stopTime"))
+                                            put("b_status", currentJSON.getJSONObject(i).getString("b_status"))
                                             this@requestCLoudLibrary.currentBooks.add(this)
                                         }
                                     }
-                                    this@requestCLoudLibrary.currentBooks.removeAt(0)
-                                    this@requestCLoudLibrary.loginFlag = 1
-                                    Log.d("@@@data:",this@requestCLoudLibrary.currentBooks.toString())
+                                    //this@requestCLoudLibrary.currentBooks.removeAt(0)
+                                    //获取历史借阅
+                                    for (i in 1 until historyJSON.length()){
+                                        with(LinkedHashMap<String, Any>()) {
+                                            put("b_id", historyJSON.getJSONObject(i).getString("b_id"))
+                                            put("b_title",historyJSON.getJSONObject(i).getString("b_title"))
+                                            put("b_author", historyJSON.getJSONObject(i).getString("b_author"))
+                                            put("b_address", historyJSON.getJSONObject(i).getString("b_address"))
+                                            put("b_startTime",historyJSON.getJSONObject(i).getString("b_startTime"))
+                                            put("b_stopTime", historyJSON.getJSONObject(i).getString("b_stopTime"))
+                                            put("b_searchId", historyJSON.getJSONObject(i).getString("b_searchId"))
+                                            this@requestCLoudLibrary.historyBooks.add(this)
+                                        }
+                                    }
+                                  //  this@requestCLoudLibrary.historyBooks.removeAt(0)
+                                    Log.d("@@@Cdata:",this@requestCLoudLibrary.currentBooks.toString())
+                                    Log.d("@@@Hdata:",this@requestCLoudLibrary.historyBooks.toString())
+                                    CloudApp.requestAll = this@requestCLoudLibrary
                                     Utils.sendMsg(0x1, hand)
 
                                 }else{
