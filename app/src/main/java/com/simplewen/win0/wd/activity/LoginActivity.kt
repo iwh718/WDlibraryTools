@@ -9,8 +9,11 @@ import android.support.v7.app.AlertDialog
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import com.simplewen.win0.wd.R
 import com.simplewen.win0.wd.app.CloudApp
+import com.simplewen.win0.wd.modal.PreData
 import com.simplewen.win0.wd.modal.iwhDataOperator
 import com.simplewen.win0.wd.util.Utils
 import kotlinx.android.synthetic.main.login_activity.*
@@ -64,6 +67,9 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
 
+        }
+        schoolSpinner.adapter = ArrayAdapter(this@LoginActivity,R.layout.support_simple_spinner_dropdown_item,PreData.schoolLists).apply {
+           
         }
         //检测是否登录过
         if(iwhDataOperator.getSHP("userAccount","CloudUser","").isNotEmpty()){

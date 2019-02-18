@@ -3,6 +3,11 @@ package com.simplewen.win0.wd.modal
 class PreData{
     companion object {
         val baseUrl = "https://www.borebooks.top/CL/index_axg.php"
+        val schoolLists = arrayListOf<String>(
+                "安徽信息工程学院",
+                "安徽文达信息工程学院",
+                "正在适配..."
+        )
 
     }
 }
