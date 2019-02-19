@@ -5,16 +5,16 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="高级搜索" />
+            android:id="@+id/nav_search"
+            android:icon="@drawable/nav_send_icon"
+            android:title="立即搜索" />
 
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
+            android:id="@+id/nav_change_pw"
+            android:icon="@drawable/nav_icon_changepw"
             android:title="密码更改" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/nav_account_lost"
             android:icon="@drawable/ic_menu_manage"
             android:title="账号挂失" />
     </group>
@@ -27,7 +27,7 @@
                 android:title="分享应用" />
             <item
                 android:id="@+id/nav_outSign"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/nav_icon_exit"
                 android:title="注销登录" />
         </menu>
     </item>

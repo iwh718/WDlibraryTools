@@ -21,6 +21,7 @@ import com.simplewen.win0.wd.adapter.ViewPageAdapter
 import com.simplewen.win0.wd.app.CloudApp
 import com.simplewen.win0.wd.modal.PreData
 import com.simplewen.win0.wd.modal.iwhDataOperator
+import com.simplewen.win0.wd.util.Utils
 import com.simplewen.win0.wd.view.CL_ViewPageFragment
 import kotlinx.android.synthetic.main.activity_cloud_library_main.*
 
@@ -129,18 +130,18 @@ class CloudLibraryMain : AppCompatActivity(), NavigationView.OnNavigationItemSel
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_camera -> {
-                // Handle the camera action
+            R.id.nav_search -> {
+                startActivity(Intent(this@CloudLibraryMain,SearchActivity::class.java))
             }
 
-            R.id.nav_slideshow -> {
-
+            R.id.nav_change_pw -> {
+                Utils.Tos("暂未开放")
             }
-            R.id.nav_manage -> {
-
+            R.id.nav_account_lost -> {
+                Utils.Tos("暂未开放")
             }
             R.id.nav_share -> {
-
+                Utils.Tos("暂未开放")
             }
             //注销登录
             R.id.nav_outSign -> {
@@ -160,7 +161,6 @@ class CloudLibraryMain : AppCompatActivity(), NavigationView.OnNavigationItemSel
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)
-        Thread.sleep(300)
         return true
     }
 

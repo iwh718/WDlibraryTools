@@ -61,7 +61,7 @@ class requestCLoudLibrary{
                             try {
                                 val tem_res: JSONArray?
                                 tem_res = JSONArray(res)
-                                Log.d("@@@iwhRES_login:",tem_res.toString())
+                               // Log.d("@@@iwhRES_login:",tem_res.toString())
                                 this@requestCLoudLibrary.userName =tem_res.getJSONArray(0).getJSONObject(0).getString("userName")
                                 val currentJSON:JSONArray = tem_res.getJSONArray(0)
                                 val historyJSON:JSONArray = tem_res.getJSONArray(1)
@@ -95,8 +95,8 @@ class requestCLoudLibrary{
                                         }
                                     }
                                   //  this@requestCLoudLibrary.historyBooks.removeAt(0)
-                                    Log.d("@@@Cdata:",this@requestCLoudLibrary.currentBooks.toString())
-                                    Log.d("@@@Hdata:",this@requestCLoudLibrary.historyBooks.toString())
+                                  //  Log.d("@@@Cdata:",this@requestCLoudLibrary.currentBooks.toString())
+                                   // Log.d("@@@Hdata:",this@requestCLoudLibrary.historyBooks.toString())
                                     CloudApp.requestAll = this@requestCLoudLibrary
                                     Utils.sendMsg(0x1, hand)
 
@@ -120,20 +120,15 @@ class requestCLoudLibrary{
 
         }
 
-    /**
-     * 获取登录账号
-     * @param name 真实姓名
-     */
-    fun getAccount(name:String,hand: Handler):String{
-        return ""
-    }
 
     /**
      * 搜索图书
      */
     fun search(hand: Handler,searchStr:String){
+        searchBooks.clear()
         val loginInfo = FormBody.Builder()
                 .add("iwhKey", "718")
+                .add("API_TYPE","SEARCH")
                 .add("schoolId","axg")
                 .add("searchText",searchStr)
                 .build()
@@ -145,28 +140,28 @@ class requestCLoudLibrary{
                 override fun onResponse(call: Call, response: Response) {
                     res = response.body()?.string()
                     try {
+                        Log.d("@@@iwhRES_search:",res.toString())
                         val tem_res: JSONArray?
                         tem_res = JSONArray(res)
-                        Log.d("@@@iwhRES_search:",tem_res.toString())
-                        this@requestCLoudLibrary.userName =tem_res.getJSONArray(0).getJSONObject(0).getString("userName")
-                        val currentJSON:JSONArray = tem_res.getJSONArray(0)
-
-
-                            //获取当前借阅
-                            for (i in 1 until currentJSON.length()){
+                        if(tem_res.getJSONObject(0).getString("flag") == "false"){
+                            Utils.sendMsg(0x3, hand)
+                        }else{
+                            for (i in 1 until tem_res.length()){
                                 with(LinkedHashMap<String, Any>()) {
-                                    put("b_searchId", currentJSON.getJSONObject(i).getString("b_searchId"))
-                                    put("b_title", currentJSON.getJSONObject(i).getString("b_title"))
-                                    put("b_author", currentJSON.getJSONObject(i).getString("b_author"))
-                                    put("b_by", currentJSON.getJSONObject(i).getString("b_by"))
-                                    put("b_time", currentJSON.getJSONObject(i).getString("b_time"))
+                                    put("b_searchId", tem_res.getJSONObject(i).getString("b_searchId"))
+                                    put("b_title", tem_res.getJSONObject(i).getString("b_title"))
+                                    put("b_author", tem_res.getJSONObject(i).getString("b_author"))
+                                    put("b_by", tem_res.getJSONObject(i).getString("b_by"))
+                                    put("b_time", tem_res.getJSONObject(i).getString("b_time"))
 
                                     this@requestCLoudLibrary.searchBooks.add(this)
                                 }
                             }
 
-                            Log.d("@@@Cdata:",this@requestCLoudLibrary.searchBooks.toString())
+                            //Log.d("@@@Cdata:",this@requestCLoudLibrary.searchBooks.toString())
                             Utils.sendMsg(0x1, hand)
+
+                        }
 
 
                     }catch (e:Exception){
@@ -175,7 +170,7 @@ class requestCLoudLibrary{
                     }
                 }
                 override fun onFailure(call: Call, e: IOException) {
-                    Utils.sendMsg(0x3, hand)
+                    Utils.sendMsg(0x2, hand)
 
                 }
             })

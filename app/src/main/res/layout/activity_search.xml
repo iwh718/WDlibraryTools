@@ -7,6 +7,7 @@
     tools:context=".activity.SearchActivity">
     <android.support.v7.widget.Toolbar
         android:layout_marginTop="10dp"
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <android.support.v7.widget.SearchView
@@ -17,5 +18,11 @@
             app:iconifiedByDefault="false"
             android:layout_height="wrap_content"/>
     </android.support.v7.widget.Toolbar>
+    <ListView
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        android:id="@+id/searchListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 
 </android.support.constraint.ConstraintLayout>
