@@ -1,8 +1,9 @@
-package com.simplewen.win0.wd
+package com.simplewen.win0.wd.activity
 
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.simplewen.win0.wd.R
 import kotlinx.android.synthetic.main.activity_library_fb.*
 
 class libraryFb : AppCompatActivity() {

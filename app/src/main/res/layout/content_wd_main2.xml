@@ -8,7 +8,7 @@
     android:background="#d9d7d7"
     android:focusable="true"
     android:orientation="vertical"
-    tools:context=".WDMain">
+    tools:context=".activity.WDMain">
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:id="@+id/main_fresh"
@@ -32,10 +32,9 @@
                 <ViewFlipper
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
-                    android:autoStart="true"
-                    android:inAnimation="@anim/search_box_in"
-                    android:outAnimation="@anim/search_box_out"
-                    android:flipInterval="3500">
+
+
+                   >
 
                     <ImageView
                         android:contentDescription="@string/app_name"
@@ -44,13 +43,7 @@
                         android:adjustViewBounds="true"
                         android:scaleType="centerCrop"
                         android:src="@drawable/slide2" />
-                    <ImageView
-                        android:contentDescription="@string/app_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/slide1" />
+
                 </ViewFlipper>
 
 

@@ -1,7 +1,7 @@
 package com.simplewen.win0.wd.modal
 
 import android.app.Activity
-import com.simplewen.win0.wd.WdTools
+import com.simplewen.win0.wd.app.WdTools
 
 /**数据操作类
  @author:iwh

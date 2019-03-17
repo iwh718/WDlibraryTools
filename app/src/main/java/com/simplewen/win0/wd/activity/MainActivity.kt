@@ -1,10 +1,11 @@
-package com.simplewen.win0.wd
+package com.simplewen.win0.wd.activity
 import android.content.Intent
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.os.Build
+import com.simplewen.win0.wd.R
 import java.util.*
 
 
@@ -27,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         }
         Timer().schedule(object:TimerTask(){
             override fun run() {
-                startActivity(Intent(this@MainActivity,WDMain::class.java))
+                startActivity(Intent(this@MainActivity, WDMain::class.java))
                 finish()
             }
         } ,2000)

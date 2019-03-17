@@ -1,7 +1,6 @@
 package com.simplewen.win0.wd.util
 
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
@@ -9,7 +8,6 @@ import android.net.Uri
 import android.os.Environment
 import android.os.Handler
 import android.os.Message
-import android.support.v4.content.ContextCompat.startActivity
 
 
 import android.view.Gravity
@@ -17,8 +15,8 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import android.widget.Toast
 import com.simplewen.win0.wd.R
-import com.simplewen.win0.wd.WdTools
-import com.simplewen.win0.wd.modal.iwhDataOperator
+import com.simplewen.win0.wd.app.WdTools
+import com.simplewen.win0.wd.modal.PreData
 import okhttp3.*
 import java.io.IOException
 import java.lang.Exception
@@ -58,7 +56,7 @@ class Utils{
                         versionOld = temResText!!.replace(" ","").toInt()
                         //Log.d("@@versionWD:",versionOld.toString())
                         val msg = Message()
-                        msg.what = 0x21
+                        msg.what = PreData.CHECK_UPDATE_OK
                         msg.arg1 = versionOld
                         hand.sendMessage(msg)
 
@@ -66,7 +64,7 @@ class Utils{
 
                     override fun onFailure(call: Call, e: IOException) {
                         val msg = Message()
-                        msg.what = 0x22
+                        msg.what = PreData.NET_CODE_DATA_ERROR
                         hand.sendMessage(msg)
                     }
                 })

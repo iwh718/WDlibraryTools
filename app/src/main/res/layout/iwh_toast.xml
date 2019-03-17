@@ -16,7 +16,6 @@
             android:background="@color/colorAccent"
             android:id="@+id/iwh_toast_text"
             android:layout_width="match_parent"
-            android:text="WD"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:layout_height="wrap_content" />

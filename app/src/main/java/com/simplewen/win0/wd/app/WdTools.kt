@@ -1,4 +1,4 @@
-package com.simplewen.win0.wd
+package com.simplewen.win0.wd.app
 import android.app.Application
 import android.content.Context
 

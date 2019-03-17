@@ -1,4 +1,4 @@
-package com.simplewen.win0.wd
+package com.simplewen.win0.wd.activity
 
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
@@ -7,11 +7,10 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.Toolbar
-import android.text.Layout
 import android.util.Log
 import android.view.*
 import android.widget.*
+import com.simplewen.win0.wd.R
 import kotlinx.android.synthetic.main.activity_get_notice.*
 import request.requestManage
 

@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".WdTools"
+        android:name=".app.WdTools"
         android:allowBackup="true"
         android:hardwareAccelerated="false"
         android:icon="@drawable/wd"
@@ -16,19 +16,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".WDMain"
+            android:name=".activity.WDMain"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".brow"
+            android:name=".activity.brow"
             android:label="我的借阅"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".history"
+            android:name=".activity.history"
             android:label="我的借阅历史"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:theme="@style/Theme.Design.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,11 +38,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".search_login"
+            android:name=".activity.search_login"
             android:label="图书搜索"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".getNotice"
+            android:name=".activity.getNotice"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".libraryweb.libraryweb"
@@ -51,9 +51,9 @@
             android:name=".libraryweb.libraryQk"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".libraryweb.searchOthers" />
-        <activity android:name=".about" />
-        <activity android:name=".moreOthers" />
-        <activity android:name=".libraryFb"
+        <activity android:name=".activity.about" />
+        <activity android:name=".activity.moreOthers" />
+        <activity android:name=".activity.libraryFb"
             android:label="图书馆馆藏分布"
             android:theme="@style/AppTheme.NoActionBar">
 

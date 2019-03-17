@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.*
 import com.simplewen.win0.Utils.PersistentCookieStore
 import com.simplewen.win0.wd.R
+import com.simplewen.win0.wd.modal.PreData
 import com.simplewen.win0.wd.util.Utils
 import okhttp3.*
 import org.jsoup.Jsoup
@@ -27,7 +28,6 @@ class requestManage(val context: Context) {
             map[url.host()] = cookies
 
         }
-
         override fun loadForRequest(url: HttpUrl): MutableList<Cookie> {
 
             return map[url.host()] ?: ArrayList()
@@ -40,7 +40,6 @@ class requestManage(val context: Context) {
     private val myHiStoryUrl = "http://172.16.1.43/dzjs/dztj.asp"//我的借阅历史
     private val bookInfoUrl = "http://172.16.1.43/showmarc/table.asp?nTmpKzh="//图书详情信息
     private val noticeUrl = "http://172.16.1.43/ggtz/xiaoxi.asp"//通知链接
-    private val newsUrl = ""//新闻链接
     private val modifyPassUrl = "http://172.16.1.43/dzjs/modifyPw.asp"//修改密码
     private val getQkUrl = "http://172.16.1.43/wxjs/chqkjs.asp"//期刊链接
     private val gs_url = "http://172.16.1.43/dzjs/card_guashi.asp"//挂失图书证
@@ -89,14 +88,14 @@ class requestManage(val context: Context) {
                             }
                         }
                         with(Message()) {
-                            what = 0x16
+                            what = PreData.NET_CODE_DATA_OK
                             hand.sendMessage(this)
                         }
 
                     }
 
                     override fun onFailure(call: Call, e: IOException) {
-                        Utils.sendMsg(0x15, hand)
+                        Utils.sendMsg(PreData.NET_CODE_DATA_ERROR, hand)
 
                     }
                 })
@@ -114,34 +113,40 @@ class requestManage(val context: Context) {
         thread {
 
             val request = Request.Builder().url(this.myHiStoryUrl).build()
-            val response = this.client.newCall(request).execute()
+            this.client.newCall(request).enqueue(object :Callback{
+                override fun onResponse(call: Call, response: Response) {
+                    res = response.body()?.string()
+                    tem_res = res
 
-            res = response.body()?.string()
-            tem_res = res
+                    val doc = Jsoup.parse(tem_res)
+                    val r1 = doc.select(".pmain table:nth-of-type(4) tbody tr")
+                    var (h_name, h_number) = arrayOf("", "")
+                    for (item: Element in r1) {
+                        h_name = item.select("td:nth-of-type(3)").html().toString()
+                        h_number = item.select("td:nth-of-type(2)").html().toString()
+                        val tem = LinkedHashMap<String, Any>()
+                        tem.put("h_name", h_name)
+                        tem.put("h_number", "索取号:$h_number")
+                        this@requestManage.h_books.add(tem)
+                    }
+                    this@requestManage.h_books.removeAt(0)
+                    this@requestManage.h_books.removeAt(h_books.size - 1)
+                    val msg = Message()
+                    msg.what = PreData.NET_CODE_DATA_OK
+                    hand.sendMessage(msg)
+                }
 
-            val doc = Jsoup.parse(tem_res)
-            val r1 = doc.select(".pmain table:nth-of-type(4) tbody tr")
-            var (h_name, h_number) = arrayOf("", "")
-            for (item: Element in r1) {
-                h_name = item.select("td:nth-of-type(3)").html().toString()
-                h_number = item.select("td:nth-of-type(2)").html().toString()
-                val tem = LinkedHashMap<String, Any>()
-                tem.put("h_name", h_name)
-                tem.put("h_number", "索取号:$h_number")
-                this.h_books.add(tem)
-            }
-            this.h_books.removeAt(0)
-            this.h_books.removeAt(h_books.size - 1)
-            val msg: Message = Message()
-            msg.what = 6
-            hand.sendMessage(msg)
+                override fun onFailure(call: Call, e: IOException) {
+                    Utils.sendMsg(PreData.NET_CODE_DATA_ERROR,hand)
+                }
+            })
 
         }
     }
 
 
     fun myLogin(user: String, pw: String, hand: Handler): Boolean {
-        val isWdLogin = Regex(".*?http:172.16.1.101:80/portalowa.*?")//判断是否校园网
+
         val isFailLogin = Regex(".*window.history.back.*")//判断是否失败
         val isSuccLogin = Regex(".*dzjs.login_form.*")//判断是否成功
         var res = ""
@@ -178,7 +183,8 @@ class requestManage(val context: Context) {
 
                                 _this.userName = res
                                 with(Message()) {
-                                    what = 1
+                                    Log.d("@@@here：what LOGIN_OK","----")
+                                    what = PreData.LOGIN_OK
                                     data = Bundle().apply {
                                         putString("user", user)
                                         putString("pw", pw)
@@ -190,21 +196,14 @@ class requestManage(val context: Context) {
                             }
                             isFailLogin.containsMatchIn(res) -> {
                                 //账号或密码错误
-                                Utils.sendMsg(2, hand)
-                            }
-                            isWdLogin.containsMatchIn(res) -> {
-                                Utils.sendMsg(3, hand)
-
-                            }
-                            else -> {
-                                Utils.sendMsg(6, hand)
+                                Utils.sendMsg(PreData.DATA_NOT_MATCH, hand)
                             }
                         }
 
                     }
 
                     override fun onFailure(call: Call, e: IOException) {
-                        Utils.sendMsg(3, hand)
+                        Utils.sendMsg(PreData.NET_CODE_DATA_ERROR, hand)
 
                     }
                 })
@@ -214,9 +213,7 @@ class requestManage(val context: Context) {
 
 
         } else {
-            val msg = Message()
-            msg.what = 5
-            hand.sendMessage(msg)
+           Utils.Tos("请补全信息！")
         }
 
         return loginFLag
@@ -246,22 +243,25 @@ class requestManage(val context: Context) {
                     val temResText: String? = resText
                     val doc = Jsoup.parse(temResText)
                     res = doc.getElementsByTag("script").html().toString()
+                    val msg = Message()
                     when {
                         hasGs.containsMatchIn(res) -> {
-                            Utils.sendMsg(0x11, hand)
+                           msg.arg1 = 0
                         }
                         noMatch.containsMatchIn(res) -> {
-                            Utils.sendMsg(0x12, hand)
+                           msg.arg1 = 1
                         }
                         isOk.containsMatchIn(res) -> {
-                            Utils.sendMsg(0x13, hand)
+                            msg.arg1 = 2
                         }
                     }
+                    msg.what = PreData.LOST_OK
+                    hand.sendMessage(msg)
 
                 }
 
                 override fun onFailure(call: Call, e: IOException) {
-                    Utils.sendMsg(3, hand)
+                    Utils.sendMsg(PreData.NET_CODE_DATA_ERROR, hand)
                 }
             })
 
@@ -320,7 +320,7 @@ class requestManage(val context: Context) {
                 }
 
             }
-            Utils.sendMsg(6, hand)
+            Utils.sendMsg(PreData.NET_CODE_DATA_OK, hand)
 
         }
     }
@@ -339,12 +339,14 @@ class requestManage(val context: Context) {
             val temResText: String? = resText
             val doc3 = Jsoup.parse(temResText)
             val res = doc3.getElementsByTag("script").html().toString()
+            val msg = Message()
+            msg.what = PreData.CONTINUE_STATUS
             if (isNot.containsMatchIn(res)) {
-               Utils.sendMsg(8,hand)
+              msg.arg1  = 0
             } else {
-               Utils.sendMsg(7,hand)
+                msg.arg1  = 1
             }
-          Utils.sendMsg(6,hand)
+          hand.sendMessage(msg)
         }
     }//续借
 
@@ -370,20 +372,18 @@ class requestManage(val context: Context) {
                     Log.d("books.Info", _this.bookInfo)
                     val msg = Message()
                     Log.d("length", _this.bookInfo.length.toString())
+                    msg.what = PreData.BOOKS_INFO
                     if (_this.bookInfo.length < 5) {
-                        msg.what = 1
+                       msg.arg1 = 0
 
                     } else {
-                        msg.what = 2
+                        msg.arg1 = 1
                     }
-                    Log.d("返回：", temText.toString())
                     hand.sendMessage(msg)
                 }
 
                 override fun onFailure(call: Call, e: IOException) {
-                    val msg = Message()
-                    msg.what = 0
-                    hand.sendMessage(msg)
+                   Utils.sendMsg(PreData.NET_CODE_DATA_ERROR,hand)
                 }
             })
 
@@ -406,7 +406,7 @@ class requestManage(val context: Context) {
                     Log.d("doc", doc2.toString())
                     val temText = doc2.select(".pmain table")
 
-                    //noticdInfo  =   temText.toString().replace("&nbsp;","").replace(" ","")//移除空格编码
+
                     var n_title: String = ""//公告标题
                     var n_body: String = ""//公告内容
                     var n_time: String = ""//公告时间
@@ -422,20 +422,12 @@ class requestManage(val context: Context) {
                         tem.add(n_time.replace("&nbsp;", "", false))
                         _this.noticeTitle.add(n_title)//添加公告
                         _this.notices.add(tem)
-                        Log.d("noticeItem", tem.toString())
-                        Log.d("noticetitle", _this.noticeTitle.toString())
-
                     }
-                    val msg = Message()
-                    msg.what = 0x14
-                    Log.d("返回：", temText.toString())
-                    hand.sendMessage(msg)
+                   Utils.sendMsg(PreData.NOTICE_UPDATE,hand)
                 }
 
                 override fun onFailure(call: Call, e: IOException) {
-                    val msg = Message()
-                    msg.what = 0
-                    hand.sendMessage(msg)
+                   Utils.sendMsg(PreData.NET_CODE_DATA_ERROR,hand)
                 }
             })
 
@@ -447,7 +439,7 @@ class requestManage(val context: Context) {
         this.qkBooks.clear()
         val noThings = "暂时没有哦"
         var res = ""
-        if (true) {
+
             //在主线程中开启一个网络线程
 
             thread {
@@ -500,7 +492,7 @@ class requestManage(val context: Context) {
                             tem.put("search_b_number", "索取号：" + s_number.replace("&nbsp;", "", false))
                             _this.qkBooks.add(tem)
                         }
-                        Log.d("@@qk:", _this.qkBooks.toString())
+
                         val msg = Message()
                         msg.what = 1
                         hand.sendMessage(msg)
@@ -508,9 +500,7 @@ class requestManage(val context: Context) {
                     }
 
                     override fun onFailure(call: Call, e: IOException) {
-                        val msg = Message()
-                        msg.what = 2
-                        hand.sendMessage(msg)
+                       Utils.sendMsg(PreData.NET_CODE_DATA_ERROR,hand)
                     }
                 })
 
@@ -518,11 +508,7 @@ class requestManage(val context: Context) {
             }
 
 
-        } else {
-            val msg: Message = Message()
-            msg.what = 0
-            hand.sendMessage(msg)
-        }
+
     }
 
     //检查超期
@@ -549,10 +535,7 @@ class requestManage(val context: Context) {
             val b_last = i["b_last"].toString().replace("借阅", "")
             val b_next = i["b_next"].toString().replace("限还", "")
             if (parseTime(b_last) > 2) {
-                val msg = Message()
-                msg.what = 0x17
-                hand.sendMessage(msg)
-                Log.d("@@parse:", "剩余：${parseTime(b_next)} 天")
+               Utils.sendMsg(PreData.BOOKS_TIME,hand)
                 return
             }
 
@@ -579,29 +562,24 @@ class requestManage(val context: Context) {
                     .build()
             //构建请求
             val request = Request.Builder().url(this.modifyPassUrl).post(gsinfo).build()
-            val _this = this
-            var response = this.client.newCall(request).enqueue(object : Callback {
+            this.client.newCall(request).enqueue(object : Callback {
                 override fun onResponse(call: Call, response: Response) {
-
                     val resText = response.body()?.string()
                     val temResText: String? = resText
                     val doc = Jsoup.parse(temResText)
                     res = doc.html().toString()
-                    Log.d("&&修改密码：", res)
                     val msg = Message()
                     if (errorInfo.containsMatchIn(res)) {
-                        msg.what = 0x12
+                        msg.what = PreData.DATA_NOT_MATCH
 
                     } else {
-                        msg.what = 0x18
+                        msg.what = PreData.PASSWORD_OK
                     }
                     hand.sendMessage(msg)
                 }
 
                 override fun onFailure(call: Call, e: IOException) {
-                    val msg = Message()
-                    msg.what = 0x19
-                    hand.sendMessage(msg)
+                  Utils.sendMsg(PreData.NET_CODE_DATA_ERROR,hand)
                 }
             })
 
