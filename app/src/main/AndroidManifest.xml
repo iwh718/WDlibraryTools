@@ -20,16 +20,9 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.brow"
-            android:label="我的借阅"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.history"
-            android:label="我的借阅历史"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activity.MainActivity"
-            android:theme="@style/Theme.Design.NoActionBar">
+            android:label="文达学院"
+            android:name=".activity.LoginActivity"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -38,7 +31,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.search_login"
+            android:name=".activity.searchBooks"
             android:label="图书搜索"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -48,16 +41,14 @@
             android:name=".libraryweb.libraryweb"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".libraryweb.libraryQk"
+            android:name=".activity.SearchQK"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".libraryweb.searchOthers" />
-        <activity android:name=".activity.about" />
+        <activity android:name=".activity.About" />
         <activity android:name=".activity.moreOthers" />
-        <activity android:name=".activity.libraryFb"
+        <activity android:name=".activity.LibraryOpenTime"
             android:label="图书馆馆藏分布"
             android:theme="@style/AppTheme.NoActionBar">
-
         </activity>
     </application>
-
 </manifest>

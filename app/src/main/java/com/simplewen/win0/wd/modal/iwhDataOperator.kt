@@ -1,12 +1,15 @@
 package com.simplewen.win0.wd.modal
 
 import android.app.Activity
+import android.support.annotation.NonNull
 import com.simplewen.win0.wd.app.WdTools
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**数据操作类
  @author:iwh
  @time:2019.01.10
  **/
+@ExperimentalCoroutinesApi
 class iwhDataOperator{
 
     companion object {
@@ -16,6 +19,7 @@ class iwhDataOperator{
          * @param shpName 指定文件
          * @return 返回伴生对象
          * **/
+
         fun<T> setSHP(saveKey:String,saveText:T,shpName:String):iwhDataOperator.Companion{
             //打开指定文件
             val SHP_Text =  WdTools.getContext().getSharedPreferences(shpName, Activity.MODE_PRIVATE)
@@ -40,6 +44,7 @@ class iwhDataOperator{
          * @param getKey 获取指定文件指定键
          * @param type 取出指定类型值
          * @param shpName 获取指定文件**/
+        @SuppressWarnings("unchecked")
         fun<T> getSHP(getKey:String,shpName:String,type:T):T{
             val SHP_Text =  WdTools.getContext().getSharedPreferences(shpName, Activity.MODE_PRIVATE)
             when(type){

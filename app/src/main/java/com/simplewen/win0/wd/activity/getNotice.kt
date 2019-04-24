@@ -11,26 +11,33 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import com.simplewen.win0.wd.R
+import com.simplewen.win0.wd.base.BaseActivity
 import kotlinx.android.synthetic.main.activity_get_notice.*
-import request.requestManage
+import com.simplewen.win0.wd.request.RequestManage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.MainScope
+import kotlin.coroutines.CoroutineContext
 
-class getNotice :AppCompatActivity(){
-
+/**
+ * 获取公告
+ */
+@ExperimentalCoroutinesApi
+class getNotice :BaseActivity(),CoroutineScope by MainScope(){
+    override val coroutineContext: CoroutineContext
+        get() = super.coroutineContext
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_get_notice)
         val expandListView = findViewById<ExpandableListView>(R.id.notice_listView)
-        val request = requestManage(this@getNotice)
+        val request = RequestManage(this@getNotice)
         val refresh = findViewById<SwipeRefreshLayout>(R.id.notice_refresh)//下拉刷新
         refresh?.setColorSchemeResources(R.color.colorAccent)
-
         setSupportActionBar(toolbar)
         supportActionBar?.title = "通知公告"
-
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         // 创建一个BaseExpandableListAdapter对象
-
         val adapter = object : BaseExpandableListAdapter()
         {
 
@@ -130,46 +137,13 @@ class getNotice :AppCompatActivity(){
                 return true
             }
         }
-        val handle = object:Handler(Looper.getMainLooper()){
-            override fun handleMessage(msg: Message?) {
-                super.handleMessage(msg)
-                when(msg?.what){
-                    0 ->{
-                            Toast.makeText(this@getNotice,"请求失败",Toast.LENGTH_SHORT).show()
-                    }
-                    0x14->{
-                        //
-                        if(refresh.isRefreshing){
-                            Toast.makeText(this@getNotice,"刷新成功",Toast.LENGTH_SHORT).show()
-                            refresh.isRefreshing = false
-                        }
 
-                        Log.d("request",request.noticeTitle.toString())
-                        adapter.notifyDataSetChanged()
-
-
-                    }
-                    2 ->{
-
-                    }
-                }
-            }
-
-
-        }
-
-
-        refresh?.setOnRefreshListener {
-            request.getNotice(handle)
-
-        }
+        refresh?.setOnRefreshListener { request.getNotice(this@getNotice,adapter) }
         expandListView.setAdapter(adapter)
-        request.getNotice(handle)
+        request.getNotice(this@getNotice,adapter)
     }
 
-
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        //
         when(item?.itemId){
             android.R.id.home ->{
                 finish()

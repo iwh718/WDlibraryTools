@@ -4,30 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="190dp"
     android:id="@+id/nav_header"
-
+    android:background="@color/colorAccent"
     android:gravity="bottom"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-  >
-
-
+    android:orientation="vertical">
     <ImageView
-        android:contentDescription="logo"
-        android:layout_width="60dp"
-        android:src="@drawable/logo"
-        android:layout_margin="5dp"
-        android:layout_gravity="center|center_vertical"
-        android:layout_height="60dp" />
+        android:contentDescription="@string/app_name"
+        android:layout_width="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/slide2"
+        android:layout_gravity="center|top"
+        android:layout_height="160dp" />
     <TextView
+
         android:textAlignment="center"
         android:layout_gravity="center|center_vertical"
-        android:textColor="#a4a4a4"
+        android:textColor="#FFFBFB"
         android:id="@+id/userName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:paddingTop="8dp"
         android:text="@string/userName"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />

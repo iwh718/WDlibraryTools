@@ -4,38 +4,30 @@
     tools:showIn="navigation_view">
 
     <item
-        android:icon="@drawable/nav_opentime_icon"
         android:id="@+id/nav_openTime"
+        android:icon="@drawable/nav_opentime_icon"
         android:title="开放时间与馆藏" />
     <item
-        android:icon="@drawable/ic_action_name_search"
         android:id="@+id/nav_qk"
+        android:icon="@drawable/ic_action_name_search"
         android:title="期刊搜索" />
-   <!-- <item
-        android:icon="@drawable/nav_reader_icon"
-        android:id="@+id/nav_reader"
-        android:title="读者互动" />-->
-    <item android:title="图书证挂失"
-        android:icon="@drawable/nav_sort_icon"
-        android:id="@+id/nav_gs"/>
+
     <item
-        android:icon="@drawable/nav_bookshelf_icon"
-        android:id="@+id/nav_bookshelf"
-        android:title="图书架排列规则" />
+        android:id="@+id/menu_modify"
+        android:icon="@drawable/nav_password"
+        android:title="修改密码" />
+
+
     <item
-        android:icon="@drawable/nav_qusetions_icon"
-        android:id="@+id/nav_questions"
-        android:title="常见问题解答" />
-
-            <item android:id="@+id/nav_updata"
-                android:icon="@drawable/nav_update_icon"
-                android:title="检查更新"/>
-
-            <item
-                android:id="@+id/nav_about"
-                android:icon="@drawable/nav_about_icon"
-                android:title="关于应用" />
-
-
-
+        android:id="@+id/menu_my"
+        android:icon="@drawable/nav_login"
+        android:title="退出登陆" />
+    <item
+        android:id="@+id/nav_updata"
+        android:icon="@drawable/nav_update_icon"
+        android:title="检查更新" />
+    <item
+        android:id="@+id/nav_about"
+        android:icon="@drawable/nav_about_icon"
+        android:title="关于应用" />
 </menu>

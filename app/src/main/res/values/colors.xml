@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#1579fa</color>
-    <color name="colorPrimaryDark">#1579fa</color>
-    <color name="colorAccent">#1579fa</color>
+    <color name="colorPrimary">#4CAF50</color>
+    <color name="colorPrimaryDark">#367C38</color>
+    <color name="colorAccent">#4CAF50</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
-    <color name="darkGray">#a4a4a4</color>
-    <color name="alpha_tips">#8d000000</color>
 </resources>

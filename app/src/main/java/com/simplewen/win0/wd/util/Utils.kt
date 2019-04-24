@@ -8,20 +8,25 @@ import android.net.Uri
 import android.os.Environment
 import android.os.Handler
 import android.os.Message
+import android.support.v7.app.AlertDialog
 
 
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import com.simplewen.win0.wd.R
 import com.simplewen.win0.wd.app.WdTools
-import com.simplewen.win0.wd.modal.PreData
+import com.simplewen.win0.wd.base.BaseActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import okhttp3.*
 import java.io.IOException
 import java.lang.Exception
 import kotlin.concurrent.thread
-
+@ExperimentalCoroutinesApi
 class Utils{
 
 
@@ -41,8 +46,8 @@ class Utils{
             iwhToast.show()
         }
         /**检查版本**/
-        fun requestUpVersion(hand:Handler){
-            var versionOld = 0
+        fun requestUpVersion(coroutines:BaseActivity){
+            var versionOld:Int
             val client = OkHttpClient.Builder().build() //初始化请求
             thread {
 
@@ -54,18 +59,27 @@ class Utils{
                         val resText = response.body()?.string()
                         val temResText: String? = resText
                         versionOld = temResText!!.replace(" ","").toInt()
-                        //Log.d("@@versionWD:",versionOld.toString())
-                        val msg = Message()
-                        msg.what = PreData.CHECK_UPDATE_OK
-                        msg.arg1 = versionOld
-                        hand.sendMessage(msg)
+
+
+                      coroutines.launch(Dispatchers.Main) {
+                          if (versionOld > Utils.getVersion(coroutines)) {
+                              val updateView = coroutines.layoutInflater.inflate(R.layout.update_view, null)
+                              updateView.findViewById<Button>(R.id.updateBtn)
+                                      .setOnClickListener {
+                                          Utils.downNew()//下载更新
+                                          Utils.Tos("请稍后查看通知栏进度！")
+                                      }
+                              AlertDialog.Builder(coroutines).setView(updateView).create().show()
+
+                          } else {
+                              Utils.Tos("当前是最新版本")
+                          }
+                      }
 
                     }
 
                     override fun onFailure(call: Call, e: IOException) {
-                        val msg = Message()
-                        msg.what = PreData.NET_CODE_DATA_ERROR
-                        hand.sendMessage(msg)
+                       NetError().showError(coroutines)
                     }
                 })
 
@@ -110,13 +124,16 @@ class Utils{
             }
             return version!!.toInt()
         }
-        fun joinQQGroup(): Boolean {
-            val intent = Intent()
+        fun joinQQGroup(type:Int = 0): Boolean {
             val key="ylQNSD_I5zOdD7zjgp4iHN0KUN4TKbJx"
-            intent.data = Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D$key")
+            val key2 = "99IgsM7OGJ-jmilzTDR85yR1ERfmLOM"
+            val intent = Intent()
+            when(type){
+                0 ->  intent.data = Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D$key")
+                1 ->  intent.data = Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D$key2")
+            }
             // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面 //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             try {
-
                 WdTools.getContext().startActivity(intent)
                 return true
             } catch (e: Exception) {

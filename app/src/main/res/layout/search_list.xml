@@ -65,7 +65,6 @@
                         android:text="@string/search_b_number" />
                     <TextView
                         android:padding="5dp"
-                        android:id="@+id/search_b_info"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="点击查看简介"/>

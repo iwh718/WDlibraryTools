@@ -6,8 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:navigationBarColor">@color/colorPrimaryDark</item>
-        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
+
 
     </style>
 
@@ -20,7 +19,6 @@
         <item name="popupMenuStyle">@style/menuPop</item>
         <item name="android:actionMenuTextColor">@color/black</item>
         <item name="actionMenuTextColor">@color/black</item>
-       <item name="android:navigationBarColor">@color/colorPrimary</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.ActionBar">
@@ -32,18 +30,9 @@
     </style>
     <style name="menuPop" parent="AppTheme.PopupOverlay">
         <item name="android:textColor">@color/black</item>
-        <item name="android:navigationIcon">@color/black</item>
         <item name="android:actionMenuTextColor">@color/black</item>
 
     </style>
-    <style name="mySearchBox">
-        <item name="android:windowEnterAnimation">@anim/search_box_in</item>
-        <item name="android:windowExitAnimation">@anim/search_box_out</item>
-    </style>
-
-
-
-
 
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

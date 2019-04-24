@@ -1,52 +1,27 @@
 <resources>
-    <string name="author">开发者：IWH</string>
+    <string name="author">开发者：IWH  冬 </string>
     <string name="appV3_time">
-        v1.4 | 2019.01.14 \n\n (1.优化侧边菜单卡顿 \n\n (2,调整UI，轻简，移除多余背景 \n\n (3.知网web页面调整 \n\n (4.移除轮播，至简。\n\n
-        5.图书证挂失移动到侧边
-    v1.3.2 | 2019.01.13 \n  1.调整公告滚动 \n 2.增加自动检测更新 \n 3.其它细节调整 \n 4.修复全面屏设备启动页LOGO扭曲。\n\n
-    v1.3.1 | 2019.01.09 \n  调整时间,web页面支持浏览器打开 \n\n
-    v1.3 | 2019.01.07 \n 增加馆藏分布，开放时间。 \n\n
-    v1.2 | 2019.01.04. 改善侧滑卡顿，调整UI，自动切换公告。 \n\n
-    v1.0 | 2019.01.02 改善UI，实现校内网登录，检索，续借，增加图书馆动态，挂失，密码管理。\n\n
+        v2.1 | 2019.04.24 \n\n 1.重构代码，使用协程替换所有Handler。 \n\n 2.更改页面逻辑，布局更清晰可见 \n\n 4.这是最后一版功能性更新。\n\n
+        5.以后不定期修复Bug。
     </string>
-    <string name="appHelp">帮助：目前由于校内网络限制，图书续借与检索仅提供校园网登录！</string>
+    <string name="QQ_1">开发者QQ群：778399961</string>
+    <string name="appHelp">Tips：目前由于校内网络限制，需要校园网使用本应用！</string>
     <string name="userName">文院图书馆助手（未登录）</string>
     <string name="app_name">文院移动图书馆</string>
     <string name="user_hint">输入账号（图书证号）</string>
     <string name="pw_hint">输入密码（默认同卡号）</string>
     <string name="sign_btn">登录</string>
-    <string name="cancel_btn">取消</string>
-    <string name="info">调试代码区：</string>
-    <string name="info_history">历史借阅</string>
-    <string name="info_like">我的书架</string>
-    <string name="title_activity_wd_main">文院图书助手</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_desc">文院</string>
-    <string name="my">登录管理</string>
     <string name="b_name">书名</string>
     <string name="b_last">借阅时间</string>
     <string name="b_next">限还时间</string>
-    <string name="b_continue">续借</string>
-    <string name="remrmber">：记住密码</string>
     <string name="search_hint">输入书名</string>
-    <string name="search_tips">趁阳光正好,做点有意义的.2018.11.30</string>
-    <string name="about_qq">QQ:2868579699</string>
-    <string name="app_desc">简介：文院校内使用，校外网无法登录。正在内测开发阶段，有问题，随时反馈群里。如果补办过卡，密码依旧是以前的账号。</string>
-    <string name="thank_me">支持或捐赠开发者。</string>
+    <string name="app_desc">关于：文院校内使用，校外网无法登录，如果补办过卡，密码依旧是以前的账号。</string>
     <string name="search_b_name">书名：</string>
     <string name="search_b_number">索取号：</string>
     <string name="search_b_author">作者：</string>
     <string name="search_b_time">出版日期：</string>
-    <string name="search_b_fact">出版社：</string>
-    <string name="update">更新日志</string>
-    <string name="title_activity_index">index</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="action_settings">Settings</string>
-    <string name="nav_menu_" />
-    <string name="upDesc"> v1.4 | 2019.01.14 \n\n (1.优化侧边菜单卡顿 \n\n (2.调整UI，轻简，移除多余背景 \n\n (3.知网web页面调整 \n\n (4.移除轮播，至简。\n\n
-        5.图书证挂失移动到侧边</string>
     <string name="dialog_fb_f1_shkx">社会科学书库\n \n I文学、G文化教育、K历史地理传记、R医药卫生、TS轻工业手工业 、 Z综合类图书</string>
     <string name="dialog_fb_f1_zrkx">自然科学书库\n\n T工业技术，TD矿业工程，TE石油工业，TF冶金工业，TG金属学、金属工艺，TH机械、仪表工业，TK动力工程，TP自动化技术、计算机技术，TQ化学工业，TU建筑科学，TV水利工程，O数理科学,P地球科学，Q生物科学，S农业，V航空航天，X环境科学类图书</string>
     <string name="dialog_fb_f2_ys">艺术书库\n\n J艺术类图书</string>
@@ -79,7 +54,7 @@
 14:00---16:50
 </string>
     <!--首页功能-->
-    <string name="index_item_library_dt">图书馆动态</string>
-    <string name="index_item_library_mw">读者美文</string>
-    <string name="index_item_library_my">我的图书馆</string>
+    <string name="login_version">文达学院图书馆工具：v2.1 | 2019.04.23</string>
+    <string name="quote">梅花香自苦寒来</string>
+    <string name="github">项目已经开源，GitHub：记得给我个Star哦 \n妙四文献图书管理系统第三方android端（Kotlin）</string>
 </resources>
