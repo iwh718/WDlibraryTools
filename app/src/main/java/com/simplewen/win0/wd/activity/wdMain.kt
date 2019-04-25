@@ -19,6 +19,7 @@ import android.support.v4.view.ViewPager
 import android.widget.*
 import com.simplewen.win0.wd.*
 import com.simplewen.win0.wd.Adapter.ViewPageAdapter
+import com.simplewen.win0.wd.Fragment.ChinaZhiWang
 import com.simplewen.win0.wd.Fragment.LibraryIndex
 import com.simplewen.win0.wd.Fragment.MyBrow
 import com.simplewen.win0.wd.Fragment.MyHistory
@@ -77,8 +78,10 @@ class WDMain : BaseActivity(), CoroutineScope by MainScope(), NavigationView.OnN
             setSelectedTabIndicatorColor(ContextCompat.getColor(this@WDMain, R.color.colorPrimaryDark))
             setTabTextColors(Color.WHITE, Color.WHITE)
             addTab(this.newTab().setText("图书馆动态"))
+            addTab(this.newTab().setText("知网"))
             addTab(this.newTab().setText("当前借阅"))
             addTab(this.newTab().setText("历史借阅"))
+
             addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabReselected(tab: TabLayout.Tab?) = Unit
                 override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -93,9 +96,9 @@ class WDMain : BaseActivity(), CoroutineScope by MainScope(), NavigationView.OnN
 
         //设置ViewPage
         main_viewPage.apply {
-            offscreenPageLimit = 2
+            offscreenPageLimit = 3
             libraryWeb = LibraryIndex()
-            this.adapter = ViewPageAdapter(supportFragmentManager, arrayListOf(libraryWeb, MyBrow(), MyHistory()))
+            this.adapter = ViewPageAdapter(supportFragmentManager, arrayListOf(libraryWeb,ChinaZhiWang(), MyBrow(), MyHistory()))
             this.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageScrollStateChanged(state: Int) = Unit
                 override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) = Unit
