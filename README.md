@@ -1,4 +1,13 @@
 # wendaLibraryTools
+
+###更新日志：2019.04.25 v2.2
+
+
+####使用数据类简化部分数据
+
+---
+
+
 ##CloudLibrary图书馆安卓版
 
 ###应用采用kotlin1.3 开发。
@@ -17,8 +26,8 @@
 
 ##by：iwh  2019.04
 ###预览图
-[预览](./exampleImgs/1.png)
-[预览](./exampleImgs/2.png)
-[预览](./exampleImgs/3.png)
-[预览](./exampleImgs/4.png)
-[预览](./exampleImgs/5.png)
+![预览](./exampleImgs/1.png)
+![预览](./exampleImgs/2.png)
+![预览](./exampleImgs/3.png)
+![预览](./exampleImgs/4.png)
+![预览](./exampleImgs/5.png)

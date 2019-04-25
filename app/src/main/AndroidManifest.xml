@@ -41,7 +41,7 @@
             android:name=".libraryweb.libraryweb"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.SearchQK"
+            android:name=".activity.SearchJournal"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".libraryweb.searchOthers" />
         <activity android:name=".activity.About" />

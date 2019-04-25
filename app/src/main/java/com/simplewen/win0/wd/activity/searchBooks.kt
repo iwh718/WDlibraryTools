@@ -33,7 +33,7 @@ class searchBooks : BaseActivity(), CoroutineScope by MainScope() {
         toolbar.setTitleTextColor(Color.WHITE)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         val requset = WdTools.MainRequest
-        val s_books = requset.s_books
+        val s_books = requset.allSearchBooks
 
         val search_list = findViewById<ListView>(R.id.search_list)//搜索
         val listadapter3 = SimpleAdapter(this@searchBooks, s_books, R.layout.search_list, b_info, b_id)

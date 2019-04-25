@@ -70,7 +70,7 @@ class WDMain : BaseActivity(), CoroutineScope by MainScope(), NavigationView.OnN
                 .getHeaderView(0)//获取头部
                 .findViewById<LinearLayout>(R.id.nav_header)//获取头部布局
                 .findViewById(R.id.userName)
-        userNameText!!.text = "已登录，${WdTools.MainRequest?.userName}"
+        userNameText!!.text = "已登录，${WdTools.MainRequest.userName}"
 
         //设置Tab面板
         main_tab.apply {
@@ -246,7 +246,7 @@ class WDMain : BaseActivity(), CoroutineScope by MainScope(), NavigationView.OnN
             }
             //期刊检索
             R.id.nav_qk -> {
-                startActivity(Intent(this@WDMain, SearchQK::class.java))
+                startActivity(Intent(this@WDMain, SearchJournal::class.java))
             }
             //开放时间
             R.id.nav_openTime -> {
@@ -279,7 +279,7 @@ class WDMain : BaseActivity(), CoroutineScope by MainScope(), NavigationView.OnN
                             modifyLayout.findViewById<EditText>(R.id.menu_modify_oldPass).text.toString())
                     if (user.isNotEmpty() && pwNew.isNotEmpty() && pwOld.isNotEmpty()) {
                         iwhDataOperator.setSHP("flag", "", "wd")
-                        WdTools.MainRequest?.modifyPass(user, pwNew, pwOld, this@WDMain)//提交修改
+                        WdTools.MainRequest.modifyPass(user, pwNew, pwOld, this@WDMain)//提交修改
                     } else {
                         Toast.makeText(this@WDMain, "请完善信息", Toast.LENGTH_SHORT).show()
                     }

@@ -24,7 +24,7 @@ import kotlin.coroutines.CoroutineContext
  * 期刊搜索
  */
 @ExperimentalCoroutinesApi
-class SearchQK : BaseActivity(),CoroutineScope by MainScope() {
+class SearchJournal : BaseActivity(),CoroutineScope by MainScope() {
     override val coroutineContext: CoroutineContext
         get() = super.coroutineContext
     lateinit var  temLoadView: AlertDialog
@@ -47,7 +47,7 @@ class SearchQK : BaseActivity(),CoroutineScope by MainScope() {
                 .create()
 
         val search_list = findViewById<ListView>(R.id.qk_list)//期刊列表
-        val listadapter = SimpleAdapter(this@SearchQK, requset.qkBooks, R.layout.qk_list, b_info, b_id)
+        val listadapter = SimpleAdapter(this@SearchJournal, requset.allJournalBooks, R.layout.qk_list, b_info, b_id)
         search_list.adapter = listadapter//listview适配器
 
         qkSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -56,7 +56,7 @@ class SearchQK : BaseActivity(),CoroutineScope by MainScope() {
                 if (query!!.isNotEmpty()) {
                     temLoadView = loadView.show()
                     searchTips.visibility = View.GONE
-                    requset.getQk(this@SearchQK, query,listadapter)
+                    requset.getJournal(this@SearchJournal, query,listadapter)
                 } else {
                     Utils.Tos("请输入信息！")
                 }

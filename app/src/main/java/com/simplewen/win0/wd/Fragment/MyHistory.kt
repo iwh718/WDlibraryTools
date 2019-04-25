@@ -25,7 +25,7 @@ class MyHistory : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val ly = inflater!!.inflate(R.layout.activity_history, null)
         val historyListView=ly.findViewById<ListView>(R.id.history_list)//借阅历史列表
-        val historyListViewAdapter = SimpleAdapter(activity, WdTools.MainRequest.h_books, R.layout.history_list, b_info, b_id)
+        val historyListViewAdapter = SimpleAdapter(activity, WdTools.MainRequest.allHistoryBooks, R.layout.history_list, b_info, b_id)
         historyListView.adapter = historyListViewAdapter //listview适配器
         WdTools.MainRequest.myHisory(historyListViewAdapter,coroutines)
         return ly
