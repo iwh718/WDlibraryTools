@@ -12,7 +12,9 @@ import android.widget.SimpleAdapter
 import com.simplewen.win0.wd.R
 import com.simplewen.win0.wd.app.WdTools
 import com.simplewen.win0.wd.base.BaseActivity
+import com.simplewen.win0.wd.request.WorkWd
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 
 /**
  * 我的借阅历史
@@ -25,9 +27,12 @@ class MyHistory : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val ly = inflater!!.inflate(R.layout.activity_history, null)
         val historyListView=ly.findViewById<ListView>(R.id.history_list)//借阅历史列表
-        val historyListViewAdapter = SimpleAdapter(activity, WdTools.MainRequest.allHistoryBooks, R.layout.history_list, b_info, b_id)
+        val historyListViewAdapter = SimpleAdapter(activity, WorkWd.allHistoryBooks, R.layout.history_list, b_info, b_id)
         historyListView.adapter = historyListViewAdapter //listview适配器
-        WdTools.MainRequest.myHisory(historyListViewAdapter,coroutines)
+
+          WorkWd.myHisory(historyListViewAdapter,coroutines)
+
+
         return ly
     }
     override fun onAttach(context: Context?) {

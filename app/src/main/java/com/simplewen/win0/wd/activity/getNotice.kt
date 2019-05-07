@@ -1,37 +1,29 @@
 package com.simplewen.win0.wd.activity
 
 import android.graphics.Color
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.os.Message
 import android.support.v4.widget.SwipeRefreshLayout
 import android.util.Log
 import android.view.*
 import android.widget.*
 import com.simplewen.win0.wd.R
 import com.simplewen.win0.wd.base.BaseActivity
+import com.simplewen.win0.wd.request.WorkWd
 import kotlinx.android.synthetic.main.activity_get_notice.*
-import com.simplewen.win0.wd.request.RequestManage
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.MainScope
-import kotlin.coroutines.CoroutineContext
 
 /**
  * 获取公告
  */
 @ExperimentalCoroutinesApi
-class getNotice :BaseActivity(),CoroutineScope by MainScope(){
-    override val coroutineContext: CoroutineContext
-        get() = super.coroutineContext
+class getNotice :BaseActivity(){
+
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_get_notice)
         val expandListView = findViewById<ExpandableListView>(R.id.notice_listView)
-        val request = RequestManage(this@getNotice)
+
         val refresh = findViewById<SwipeRefreshLayout>(R.id.notice_refresh)//下拉刷新
         refresh?.setColorSchemeResources(R.color.colorAccent)
         setSupportActionBar(toolbar)
@@ -59,8 +51,8 @@ class getNotice :BaseActivity(),CoroutineScope by MainScope(){
             // 获取指定组位置、指定子列表项处的子列表项数据
             override fun getChild(groupPosition: Int, childPosition: Int): Any
             {
-                Log.d("@@getChild:",request.notices[groupPosition][childPosition])
-                return request.notices[groupPosition][childPosition]
+                Log.d("@@getChild:", WorkWd.notices[groupPosition][childPosition])
+                return WorkWd.notices[groupPosition][childPosition]
             }
 
             override fun getChildId(groupPosition: Int, childPosition: Int): Long
@@ -69,8 +61,8 @@ class getNotice :BaseActivity(),CoroutineScope by MainScope(){
             }
 
             override fun getChildrenCount(groupPosition: Int): Int
-            {     Log.d("@@getChildCount:",request.notices[groupPosition].size.toString())
-                return request.notices[groupPosition].size
+            {     Log.d("@@getChildCount:",WorkWd.notices[groupPosition].size.toString())
+                return WorkWd.notices[groupPosition].size
             }
 
             // 该方法决定每个子选项的外观
@@ -88,13 +80,13 @@ class getNotice :BaseActivity(),CoroutineScope by MainScope(){
 
             // 获取指定组位置处的组数据
             override fun getGroup(groupPosition: Int): Any
-            {        Log.d("@@getGroup:",request.noticeTitle[groupPosition])
-                return request.noticeTitle[groupPosition]
+            {     //   Log.d("@@getGroup:",WorkWd.noticeTitle[groupPosition])
+                return WorkWd.noticeTitle[groupPosition]
             }
 
             override fun getGroupCount(): Int
-            {     Log.d("@@getGroupCount:",request.noticeTitle.size.toString())
-                return request.noticeTitle.size
+            {     Log.d("@@getGroupCount:",WorkWd.noticeTitle.size.toString())
+                return WorkWd.noticeTitle.size
             }
 
             override fun getGroupId(groupPosition: Int): Long
@@ -117,7 +109,7 @@ class getNotice :BaseActivity(),CoroutineScope by MainScope(){
                     textView.setTextColor(Color.BLACK)
                     textView.setSingleLine(true)
                     textView.maxEms = 20
-                    textView.text = getGroup(groupPosition).toString()
+                    textView.text = "${groupPosition + 1}.${getGroup(groupPosition).toString()}"
                     ll.addView(textView)
                 }
                 else
@@ -138,9 +130,9 @@ class getNotice :BaseActivity(),CoroutineScope by MainScope(){
             }
         }
 
-        refresh?.setOnRefreshListener { request.getNotice(this@getNotice,adapter) }
+        refresh?.setOnRefreshListener { WorkWd.getNotice(this@getNotice,adapter) }
         expandListView.setAdapter(adapter)
-        request.getNotice(this@getNotice,adapter)
+        WorkWd.getNotice(this@getNotice,adapter)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {

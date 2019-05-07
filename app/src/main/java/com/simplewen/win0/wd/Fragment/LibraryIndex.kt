@@ -27,10 +27,8 @@ class LibraryIndex: Fragment(){
             libraryWebView.loadUrl("http://wendaedu.com.cn/tsg/m/info_102.html")
         }
 
-        webView.libraryWebViewRefresh.setOnRefreshListener {
-            libraryWebView!!.reload()
-        }
-        webView.libraryWebViewRefresh.setColorSchemeResources(R.color.colorAccent)
+
+
         val webSet = webView.libraryWebView!!.settings
         webSet.javaScriptEnabled = true
         webView.visibility = View.INVISIBLE
@@ -43,7 +41,7 @@ class LibraryIndex: Fragment(){
                 webView.libraryWebView!!.loadUrl("javascript: document.querySelector('.m-copy').setAttribute('style','display:none');" +
                         "document.querySelector('.u-tt .hd .col').setAttribute('style','display:none');document.querySelector('#header').setAttribute('style','display:none');" +
                         "document.querySelector('.swiper-container').setAttribute('style','display:none');")
-                webView.libraryWebViewRefresh.isRefreshing = false
+
                 webView.webViewProgressbar.visibility = View.GONE
                 webView.visibility = View.VISIBLE
 

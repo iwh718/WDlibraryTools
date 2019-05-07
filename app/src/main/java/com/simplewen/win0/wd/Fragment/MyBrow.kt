@@ -15,6 +15,7 @@ import android.widget.SimpleAdapter
 import com.simplewen.win0.wd.R
 import com.simplewen.win0.wd.app.WdTools
 import com.simplewen.win0.wd.base.BaseActivity
+import com.simplewen.win0.wd.request.WorkWd
 import com.simplewen.win0.wd.util.Utils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
@@ -36,9 +37,9 @@ class MyBrow : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val ly = inflater!!.inflate(R.layout.activity_brow, null)
         val tv_booklist = ly.findViewById<ListView>(R.id.brow_list)//引用listview的书列表
-        val listadapter = SimpleAdapter(activity, WdTools.MainRequest.books, R.layout.booklist, b_info, b_id)
+        val listadapter = SimpleAdapter(activity,WorkWd.books, R.layout.booklist, b_info, b_id)
         tv_booklist.adapter = listadapter //listview适配器
-        if (WdTools.MainRequest.books.size <= 0) {
+        if (WorkWd.books.size <= 0) {
             Utils.Tos("你现在没有借书哦！")
         }
         //弹出续借对话框
@@ -47,7 +48,7 @@ class MyBrow : Fragment() {
                     .setPositiveButton("确认") { _, _ ->
                         Coroutines.launch {
                             //Log.d("@@开始续借", "---------")
-                            WdTools.MainRequest.myContinue(WdTools.MainRequest.books[position]["b_id"].toString(), Coroutines)
+                            WorkWd.myContinue(WorkWd.books[position]["b_id"].toString(), Coroutines)
                         }
                     }.create().show()
         }
@@ -58,11 +59,11 @@ class MyBrow : Fragment() {
         refresh.setOnRefreshListener {
             //启动刷新协程
             Coroutines.launch {
-                WdTools.MainRequest.myBrow(true, Coroutines, refresh, listadapter)
+                WorkWd.myBrow( Coroutines, refresh, listadapter)
             }
         }
         Coroutines.launch {
-            WdTools.MainRequest.myBrow(true, Coroutines, refresh, listadapter)
+            WorkWd.myBrow( Coroutines, refresh, listadapter)
         }
         return ly
     }

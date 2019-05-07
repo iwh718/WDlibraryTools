@@ -1,20 +1,20 @@
 package com.simplewen.win0.wd.request
 
-
 import android.content.Intent
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.View
-import android.widget.*
+import android.widget.BaseExpandableListAdapter
+import android.widget.SimpleAdapter
 import com.simplewen.win0.Utils.PersistentCookieStore
 import com.simplewen.win0.wd.activity.LoginActivity
 import com.simplewen.win0.wd.activity.SearchJournal
-import com.simplewen.win0.wd.util.NetError
 import com.simplewen.win0.wd.activity.WDMain
 import com.simplewen.win0.wd.app.WdTools
 import com.simplewen.win0.wd.base.BaseActivity
 import com.simplewen.win0.wd.modal.*
+import com.simplewen.win0.wd.util.NetError
 import com.simplewen.win0.wd.util.Utils
 import kotlinx.android.synthetic.main.activity_brow.*
 import kotlinx.android.synthetic.main.activity_get_notice.*
@@ -25,20 +25,17 @@ import okhttp3.*
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import java.io.IOException
-import java.util.*
+import java.util.LinkedHashMap
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 
-/**
- * 网络请求类，妙思文献图书管理系统一般通用
- * @author IWH
- * time：2018 09
- */
 @ExperimentalCoroutinesApi
-class RequestManage(private val LoginContext: BaseActivity) {
-    //cookie
+/**
+ * 网络操作
+ */
+object WorkWd{
+
     private val cookieJar: CookieJar = object : CookieJar {
-        private val map = PersistentCookieStore(LoginContext)
+        private val map = PersistentCookieStore(WdTools.getContext())
         override fun saveFromResponse(url: HttpUrl, cookies: MutableList<Cookie>) {
             map[url.host()] = cookies
         }
@@ -47,16 +44,17 @@ class RequestManage(private val LoginContext: BaseActivity) {
             return map[url.host()] ?: ArrayList()
         }
     }//自定义cookieJar
-    private val logUrl = "http://172.16.1.43/dzjs/login.asp"//登录url
-    private val myBrowUrl = "http://172.16.1.43/dzjs/jhcx.asp"//我的借阅
-    private val myContinueUrl = "http://172.16.1.43/dzxj/dzxj.asp"//我的图书续借
-    private val myHiStoryUrl = "http://172.16.1.43/dzjs/dztj.asp"//我的借阅历史
-    private val bookInfoUrl = "http://172.16.1.43/showmarc/table.asp?nTmpKzh="//图书详情信息
-    private val noticeUrl = "http://172.16.1.43/ggtz/xiaoxi.asp"//通知链接
-    private val modifyPassUrl = "http://172.16.1.43/dzjs/modifyPw.asp"//修改密码
-    private val getQkUrl = "http://172.16.1.43/wxjs/chqkjs.asp"//期刊链接
-    // private val gs_url = "http://172.16.1.43/dzjs/card_guashi.asp"//挂失图书证
-    private val bookSearchUrl = "http://172.16.1.43/wxjs/tmjs.asp"//搜索地址
+
+    private const val logUrl = "http://172.16.1.43/dzjs/login.asp"//登录url
+    private const val myBrowUrl = "http://172.16.1.43/dzjs/jhcx.asp"//我的借阅
+    private const val myContinueUrl = "http://172.16.1.43/dzxj/dzxj.asp"//我的图书续借
+    private const val myHiStoryUrl = "http://172.16.1.43/dzjs/dztj.asp"//我的借阅历史
+    private const val bookInfoUrl = "http://172.16.1.43/showmarc/table.asp?nTmpKzh="//图书详情信息
+    private const val noticeUrl = "http://172.16.1.43/ggtz/xiaoxi.asp"//通知链接
+    private const val modifyPassUrl = "http://172.16.1.43/dzjs/modifyPw.asp"//修改密码
+    private const val getQkUrl = "http://172.16.1.43/wxjs/chqkjs.asp"//期刊链接
+    private const val bookSearchUrl = "http://172.16.1.43/wxjs/tmjs.asp"//搜索地址
+
     private val client = OkHttpClient.Builder().cookieJar(cookieJar).connectTimeout(8, TimeUnit.SECONDS).build() //初始化请求
     var books = ArrayList<Map<String, Any>>()//借阅
     var allJournalBooks = ArrayList<Map<String, Any>>()//期刊
@@ -67,7 +65,6 @@ class RequestManage(private val LoginContext: BaseActivity) {
     var userName = ""
     var notices = ArrayList<ArrayList<String>>()//公告内容+时间
     var noticeTitle = ArrayList<String>()//公告标题
-
     /**
      * 我的借阅图书
      * @param isUpdate 是否刷新
@@ -75,14 +72,14 @@ class RequestManage(private val LoginContext: BaseActivity) {
      * @param refresh 刷新zujian
      * @param adapter 适配器
      */
-    fun myBrow(isUpdate: Boolean = false, coroutines: BaseActivity, refresh: SwipeRefreshLayout? = null, adapter: SimpleAdapter? = null) = coroutines.launch {
+    fun myBrow( coroutines: BaseActivity, refresh: SwipeRefreshLayout? = null, adapter: SimpleAdapter? = null) = coroutines.launch {
         var res: String?
 
         var tem_res: String?
-        val request = Request.Builder().url(this@RequestManage.myBrowUrl).build()
-        this@RequestManage.client.newCall(request).enqueue(object : Callback {
+        val request = Request.Builder().url(this@WorkWd.myBrowUrl).build()
+        this@WorkWd.client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
-                this@RequestManage.books.clear()
+                this@WorkWd.books.clear()
                 res = response.body()?.string()
                 tem_res = res//临时存放string
                 val doc2 = Jsoup.parse(tem_res)
@@ -101,27 +98,15 @@ class RequestManage(private val LoginContext: BaseActivity) {
                         put("b_next", "限还:${browData.browNextTime}")
                         put("b_continue", "续借")
                         put("b_id", browData.browNumber)
-                        this@RequestManage.books.add(this)
+                        this@WorkWd.books.add(this)
                     }
                 }
-                Log.d("@@init_brow", this@RequestManage.books.toString())
-                WdTools.setRequest(this@RequestManage)
-                //是否为刷新
-                if (!isUpdate) {
-                    //跳转主页面
-                    coroutines.startActivity(Intent(LoginContext, WDMain::class.java))
-                    coroutines.finish()
-                } else {
-                    coroutines.launch {
-                        withContext(Dispatchers.Main) {
+                Log.d("@@init_brow",this@WorkWd.books.toString())
+                    coroutines.launch (Dispatchers.Main){
                             refresh!!.isRefreshing = false
-                            adapter!!.notifyDataSetChanged()
+                            adapter?.notifyDataSetChanged()
                             Utils.Tos("刷新完成！")
-                        }
                     }
-                }
-
-
             }
 
             override fun onFailure(call: Call, e: IOException) {
@@ -140,11 +125,11 @@ class RequestManage(private val LoginContext: BaseActivity) {
     fun myHisory(adapter: SimpleAdapter, coroutines: BaseActivity) = coroutines.launch {
         var res: String?
         var tem_res: String?
-        this@RequestManage.allHistoryBooks.clear()
-        val request = Request.Builder().url(this@RequestManage.myHiStoryUrl).build()
-        this@RequestManage.client.newCall(request).enqueue(object : Callback {
+        this@WorkWd.allHistoryBooks.clear()
+        val request = Request.Builder().url(this@WorkWd.myHiStoryUrl).build()
+        this@WorkWd.client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
-                this@RequestManage.books.clear()
+                this@WorkWd.books.clear()
                 res = response.body()?.string()
                 tem_res = res
                 val doc = Jsoup.parse(tem_res)
@@ -154,14 +139,14 @@ class RequestManage(private val LoginContext: BaseActivity) {
                     val tem = LinkedHashMap<String, Any>()
                     tem["h_name"] = historyData.historyName
                     tem["h_number"] = "索取号:${historyData.historyNumber}"
-                    this@RequestManage.allHistoryBooks.add(tem)
+                    this@WorkWd.allHistoryBooks.add(tem)
                 }
-                this@RequestManage.allHistoryBooks.removeAt(0)
-                this@RequestManage.allHistoryBooks.removeAt(allHistoryBooks.size - 1)
+                this@WorkWd.allHistoryBooks.removeAt(0)
+                this@WorkWd.allHistoryBooks.removeAt(allHistoryBooks.size - 1)
                 //切换到UI线程
-                coroutines.launch(Dispatchers.Main) {
-                    adapter.notifyDataSetChanged()
-                }
+               coroutines.launch(Dispatchers.Main) {
+                   adapter.notifyDataSetChanged()
+               }
 
             }
 
@@ -178,7 +163,7 @@ class RequestManage(private val LoginContext: BaseActivity) {
      * @param user 用户名
      * @param pw 密码
      */
-    fun myLogin(user: String, pw: String, coroutines: BaseActivity) {
+    fun myLogin(user: String, pw: String, coroutines: BaseActivity) = coroutines.launch{
 
         val isFailLogin = Regex(".*window.history.back.*")//判断是否失败
         val isSuccessLogin = Regex(".*dzjs.login_form.*")//判断是否成功
@@ -192,149 +177,89 @@ class RequestManage(private val LoginContext: BaseActivity) {
                 .add("imageField.Y", "0")
                 .add("imageField.X", "0")
                 .build()
-        //构建请求协程
-        coroutines.launch {
-            val request = Request.Builder().url(this@RequestManage.logUrl).post(myinfo).build()
-            this@RequestManage.client.newCall(request).enqueue(object : Callback {
-                override fun onResponse(call: Call, response: Response) {
-                    val resText = response.body()?.string()
-                    val temResText: String? = resText
-                    val doc = Jsoup.parse(temResText)
-                    res = doc.getElementsByTag("script").html().toString()
-                    Log.d("@@loginres:", res)
-                    when {
-                        isSuccessLogin.containsMatchIn(res) -> {
-                            res = res.replace("，欢迎您登录！\\n离开时,不要忘记安全退出！\");", "")
-                                    .replace("window.alert(\"", "")
-                                    .replace("window.location=\"../dzjs/login_form.asp\";", "")
-                                    .replace("\$nbsp;", "")
-                                    .replace(" ", "")
-                            //保留用户名
-                            this@RequestManage.userName = res
-                            this@RequestManage.loginFlag = 1
-                            coroutines.launch {
-                                withContext(Dispatchers.Main) {
-                                    //Utils.Tos("登陆成功！")
-                                    //存储登录信息到本地私有目录
-                                    iwhDataOperator
-                                            .setSHP("user", user, "wd")
-                                            .setSHP("pw", pw, "wd")
-                                            .setSHP("flag", "true", "wd")
-                                    //设置单例网络管理
-
-                                    this@RequestManage.myBrow(false, coroutines)
-
-
-                                }
-                            }
-                        }
-                        isFailLogin.containsMatchIn(res) -> {
-                            //切换到UI协程
-                            LoginContext.launch {
-                                LoginContext.login_sign.visibility = View.VISIBLE
-                                LoginContext.login_progressbar.visibility = View.GONE
-                                withContext(Dispatchers.Main) {
-                                    Utils.Tos("登陆失败，账号或密码错误！")
-                                    LoginContext.login_sign.visibility = View.VISIBLE
-                                    LoginContext.login_progressbar.visibility = View.GONE
-                                    LoginContext.user.visibility = View.VISIBLE
-                                    LoginContext.pw.visibility = View.VISIBLE
+        val request = Request.Builder().url(this@WorkWd.logUrl).post(myinfo).build()
+        this@WorkWd.client.newCall(request).enqueue(object : Callback {
+            override fun onResponse(call: Call, response: Response) {
+                val resText = response.body()?.string()
+                val temResText: String? = resText
+                val doc = Jsoup.parse(temResText)
+                res = doc.getElementsByTag("script").html().toString()
+                Log.d("@@loginres:", res)
+                when {
+                    isSuccessLogin.containsMatchIn(res) -> {
+                        res = res.replace("，欢迎您登录！\\n离开时,不要忘记安全退出！\");", "")
+                                .replace("window.alert(\"", "")
+                                .replace("window.location=\"../dzjs/login_form.asp\";", "")
+                                .replace("\$nbsp;", "")
+                                .replace(" ", "")
+                        //保留用户名
+                        this@WorkWd.userName = res
+                        this@WorkWd.loginFlag = 1
+                        coroutines.launch {
+                            withContext(Dispatchers.Main) {
+                                //Utils.Tos("登陆成功！")
+                                //存储登录信息到本地私有目录
+                                iwhDataOperator
+                                        .setSHP("user", user, "wd")
+                                        .setSHP("pw", pw, "wd")
+                                        .setSHP("flag", "true", "wd")
+                                //设置单例网络管理
+                                coroutines.launch (Dispatchers.Main){
+                                    coroutines.startActivity(Intent(coroutines, WDMain::class.java))
+                                    coroutines.finish()
                                 }
 
                             }
-
                         }
                     }
+                    isFailLogin.containsMatchIn(res) -> {
 
-                }
-
-                override fun onFailure(call: Call, e: IOException) {
-                    Log.d("@@timeout", "----------")
-                    LoginContext.launch {
-                        withContext(Dispatchers.Main) {
-                            Utils.Tos("网络连接失败！")
-                            LoginContext.login_sign.visibility = View.VISIBLE
-                            LoginContext.login_progressbar.visibility = View.GONE
-                            LoginContext.user.visibility = View.VISIBLE
-                            LoginContext.pw.visibility = View.VISIBLE
+                        //切换到UI协程
+                        coroutines.launch {
+                            coroutines.login_sign.visibility = View.VISIBLE
+                            coroutines.login_progressbar.visibility = View.GONE
+                            withContext(Dispatchers.Main) {
+                                Utils.Tos("登陆失败，账号或密码错误！")
+                                coroutines.login_sign.visibility = View.VISIBLE
+                                coroutines.login_progressbar.visibility = View.GONE
+                                coroutines.user.visibility = View.VISIBLE
+                                coroutines.pw.visibility = View.VISIBLE
+                            }
 
                         }
 
                     }
+                }
 
+            }
+
+            override fun onFailure(call: Call, e: IOException) {
+                Log.d("@@timeout", "----------")
+                coroutines.launch (Dispatchers.Main){
+                    Utils.Tos("网络连接失败！")
+                    coroutines.login_sign.visibility = View.VISIBLE
+                    coroutines.login_progressbar.visibility = View.GONE
+                    coroutines.user.visibility = View.VISIBLE
+                    coroutines.pw.visibility = View.VISIBLE
 
                 }
-            })
-        }
-
+            }
+        })
     }
-
-
-    /**user：账号，pw：密码，name：姓名
-    fun gsCard(user: String, pw: String, name: String, hand: Handler) {
-    val hasGs = Regex(".*?\\u5df2\\u7ecf\\u6302\\u5931\\u8fc7.*?")//已经挂失
-    val noMatch = Regex(".*\\u4fe1\\u606f\\u4e0d\\u5339\\u914d.*")//信息不匹配
-    val isOk = Regex(".*\\u6302\\u5931\\u6210\\u529f.*")//挂失完成
-    var res: String
-    thread {
-    //发送参数
-    val gsInfo = FormBody.Builder()
-    .add("user", user)
-    .add("dzxm", name)
-    .add("dzkl", pw)
-    .add("cert_mode", "dzzh")
-    .add("submit1", "确认挂失登记")
-    .build()
-    //构建请求
-    val request = Request.Builder().url(this.gs_url).post(gsInfo).build()
-    this.client.newCall(request).enqueue(object : Callback {
-    override fun onResponse(call: Call, response: Response) {
-
-    val resText = response.body()?.string()
-    val temResText: String? = resText
-    val doc = Jsoup.parse(temResText)
-    res = doc.getElementsByTag("script").html().toString()
-    val msg = Message()
-    when {
-    hasGs.containsMatchIn(res) -> {
-    msg.arg1 = 0
-    }
-    noMatch.containsMatchIn(res) -> {
-    msg.arg1 = 1
-    }
-    isOk.containsMatchIn(res) -> {
-    msg.arg1 = 2
-    }
-    }
-    msg.what = PreData.LOST_OK
-    hand.sendMessage(msg)
-
-    }
-
-    override fun onFailure(call: Call, e: IOException) {
-    Utils.sendMsg(PreData.NET_CODE_DATA_ERROR, hand)
-    }
-    })
-
-
-    }
-
-
-    }**/
 
     /**@param mySearch 搜索**/
     /**@param bname 书名**/
     /**@param mode 搜索模式**/
     /**@param sort 搜索方式**/
 
-    fun mySearch(bname: String, mode: String, sort: String, coroutines: BaseActivity, adapter: SimpleAdapter) = coroutines.launch {
+    fun mySearch(bname: String, mode: String = "1", sort: String = "正题名", coroutines: BaseActivity, adapter: SimpleAdapter) = coroutines.launch {
 
         //发送参数
         val search_info = FormBody.Builder().add("txtWxlx", "CN").add("hidWxlx", "spanCNLx").add("txtPY:", "HZ")
                 .add("txtTm", bname).add("txtLx", "%").add("txtSearchType", mode).add("nMaxCount", "5000").add("nSetPageSize", "50").add("cSortFld", sort).add("B1", "检索")
                 .build()
         //构建请求
-        this@RequestManage.client.newCall(Request.Builder().url(this@RequestManage.bookSearchUrl).post(search_info).build()).enqueue(object : Callback {
+        this@WorkWd.client.newCall(Request.Builder().url(this@WorkWd.bookSearchUrl).post(search_info).build()).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 coroutines.launch(Dispatchers.Main) {
                     Utils.Tos("网络连接出错！")
@@ -342,7 +267,7 @@ class RequestManage(private val LoginContext: BaseActivity) {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                this@RequestManage.allSearchBooks.clear()
+                this@WorkWd.allSearchBooks.clear()
                 val resText = response.body()?.string()
                 val temResText: String? = resText?.replace("&nbsp;", "", false)
                 val doc3 = Jsoup.parse(temResText)
@@ -360,13 +285,13 @@ class RequestManage(private val LoginContext: BaseActivity) {
                         put("search_b_time", "出版:" + searchBooks.booksTime)
                         put("search_b_author", "作者：" + searchBooks.booksAuthor)
                         put("search_b_number", "索取号：" + searchBooks.booksNumber)
-                        this@RequestManage.allSearchBooks.add(this)
+                        this@WorkWd.allSearchBooks.add(this)
                     }
 
                 }
                 //切换到UI线程
                 coroutines.launch(Dispatchers.Main) {
-                    if (this@RequestManage.allSearchBooks.size < 1) {
+                    if (this@WorkWd.allSearchBooks.size < 1) {
                         Utils.Tos("没有找到，换个搜索词？")
                     }
                     adapter.notifyDataSetChanged()
@@ -386,7 +311,7 @@ class RequestManage(private val LoginContext: BaseActivity) {
         val isNot = Regex(".*?\\u6700\\u9ad8\\u7eed\\u501f.*?")//判断是否校园网
         Log.d("@@continue_init", "----------$b_id")
 
-        this@RequestManage.client.newCall(Request.Builder().url("${this@RequestManage.myContinueUrl}?nbsl=${b_id}").build()).enqueue(object : Callback {
+        this@WorkWd.client.newCall(Request.Builder().url("${this@WorkWd.myContinueUrl}?nbsl=${b_id}").build()).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 coroutines.launch {
                     withContext(Dispatchers.Main) {
@@ -419,9 +344,9 @@ class RequestManage(private val LoginContext: BaseActivity) {
      * @param coroutines 协程上下文
      */
     fun bookInfo(id: String, coroutines: BaseActivity) = coroutines.launch {
-        val _this = this@RequestManage
+        val _this = this@WorkWd
         val request = Request.Builder().url("$bookInfoUrl$id").build()
-        this@RequestManage.client.newCall(request).enqueue(object : Callback {
+        this@WorkWd.client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 val res = response.body()?.string()
                 Log.d("res", res)
@@ -462,12 +387,12 @@ class RequestManage(private val LoginContext: BaseActivity) {
     fun getNotice(coroutines: BaseActivity, adapter: BaseExpandableListAdapter? = null) = coroutines.launch outer@{
 
 
-        val request = Request.Builder().url(this@RequestManage.noticeUrl).build()//获取公告
-        this@RequestManage.client.newCall(request).enqueue(object : Callback {
+        val request = Request.Builder().url(this@WorkWd.noticeUrl).build()//获取公告
+        this@WorkWd.client.newCall(request).enqueue(object : Callback {
 
             override fun onResponse(call: Call, response: Response) {
-                this@RequestManage.noticeTitle.clear()
-                this@RequestManage.notices.clear()
+                this@WorkWd.noticeTitle.clear()
+                this@WorkWd.notices.clear()
                 val res = response.body()?.string()
                 val tem_res = res?.replace("&nbsp;", "", false)//临时存放string
                 val doc2 = Jsoup.parse(tem_res)
@@ -482,8 +407,8 @@ class RequestManage(private val LoginContext: BaseActivity) {
                     val tem = arrayListOf<String>()
                     tem.add(0, noticeData.noticeContent)
                     tem.add(noticeData.noticeTime)
-                    this@RequestManage.noticeTitle.add(noticeData.noticeTitle)//添加公告
-                    this@RequestManage.notices.add(tem)
+                    this@WorkWd.noticeTitle.add(noticeData.noticeTitle)//添加公告
+                    this@WorkWd.notices.add(tem)
                 }
                 coroutines.launch(Dispatchers.Main) {
                     adapter?.let {
@@ -491,7 +416,7 @@ class RequestManage(private val LoginContext: BaseActivity) {
                         coroutines.notice_refresh.isRefreshing = false
                         return@launch
                     }
-                    coroutines.noticeTextSwitcher.text = this@RequestManage.notices[0][0]
+                    coroutines.noticeTextSwitcher.text = this@WorkWd.notices[0][0]
 
                 }
             }
@@ -505,7 +430,7 @@ class RequestManage(private val LoginContext: BaseActivity) {
 
     //搜搜期刊
     fun getJournal(coroutines: BaseActivity, title: String, adapter: SimpleAdapter) = coroutines.launch {
-        this@RequestManage.allJournalBooks.clear()
+        this@WorkWd.allJournalBooks.clear()
         //发送参数
         val gsinfo = FormBody.Builder().add("txttiming", title)
                 .add("mnuzhengtiming", "").add("txtzuoze", "").add("mnuzuozhe", "XXX")
@@ -515,10 +440,10 @@ class RequestManage(private val LoginContext: BaseActivity) {
                 .add("QKLX", "现刊").add("txtxiankanyear", "2018")
                 .add("btnsubmit", "检索").build()
         //构建请求
-        val request = Request.Builder().url(this@RequestManage.getQkUrl).post(gsinfo).build()
+        val request = Request.Builder().url(this@WorkWd.getQkUrl).post(gsinfo).build()
 
-        val mThis = this@RequestManage
-        this@RequestManage.client.newCall(request).enqueue(object : Callback {
+        val mThis = this@WorkWd
+        this@WorkWd.client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
 
                 val resText = response.body()?.string()
@@ -541,7 +466,7 @@ class RequestManage(private val LoginContext: BaseActivity) {
                 }
 
                 coroutines.launch(Dispatchers.Main) {
-                    if (this@RequestManage.allJournalBooks.size < 1) {
+                    if (this@WorkWd.allJournalBooks.size < 1) {
                         Utils.Tos("没有找到哦！")
                     }
                     (coroutines as SearchJournal).apply {
@@ -582,8 +507,8 @@ class RequestManage(private val LoginContext: BaseActivity) {
                 .add("submit1", "提 交")
                 .build()
         //构建请求
-        val request = Request.Builder().url(this@RequestManage.modifyPassUrl).post(gsInfo).build()
-        this@RequestManage.client.newCall(request).enqueue(object : Callback {
+        val request = Request.Builder().url(this@WorkWd.modifyPassUrl).post(gsInfo).build()
+        this@WorkWd.client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 val resText = response.body()?.string()
                 val temResText: String? = resText
@@ -609,6 +534,5 @@ class RequestManage(private val LoginContext: BaseActivity) {
 
 
     }
-
 
 }

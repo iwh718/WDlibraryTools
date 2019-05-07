@@ -6,10 +6,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-   <ImageView
-      android:contentDescription="@string/app_name"
-       android:layout_width="20dp"
-       android:src="@drawable/noticeicon"
-       android:layout_height="20dp" />
+
 
 </LinearLayout>

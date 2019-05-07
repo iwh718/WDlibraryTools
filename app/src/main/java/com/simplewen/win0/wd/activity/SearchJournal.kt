@@ -11,6 +11,7 @@ import android.widget.*
 import com.simplewen.win0.wd.R
 import com.simplewen.win0.wd.app.WdTools
 import com.simplewen.win0.wd.base.BaseActivity
+import com.simplewen.win0.wd.request.WorkWd
 
 import kotlinx.android.synthetic.main.activity_library_qk.*
 
@@ -24,9 +25,8 @@ import kotlin.coroutines.CoroutineContext
  * 期刊搜索
  */
 @ExperimentalCoroutinesApi
-class SearchJournal : BaseActivity(),CoroutineScope by MainScope() {
-    override val coroutineContext: CoroutineContext
-        get() = super.coroutineContext
+class SearchJournal : BaseActivity(){
+
     lateinit var  temLoadView: AlertDialog
     val b_info = arrayOf("search_b_name", "search_b_company", "search_b_author", "search_b_number")
     val b_id = intArrayOf(R.id.qk_b_name, R.id.qk_b_company, R.id.qk_b_author, R.id.qk_b_number)
@@ -38,7 +38,7 @@ class SearchJournal : BaseActivity(),CoroutineScope by MainScope() {
         setSupportActionBar(toolbar)
         toolbar.setTitleTextColor(Color.WHITE)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        val requset = WdTools.MainRequest
+        val requset = WorkWd
         val qkSearch = findViewById<SearchView>(R.id.qk_search)
         val searchTips = findViewById<TextView>(R.id.searchTips)
 

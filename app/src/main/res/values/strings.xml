@@ -2,7 +2,11 @@
     <string name="author">开发者：IWH  冬 </string>
     <string name="appV3_time">
         v2.1 | 2019.04.24 \n\n 1.重构代码，使用协程替换所有Handler。 \n\n 2.更改页面逻辑，布局更清晰可见 \n\n 4.这是最后一版功能性更新。\n\n
-        5.以后不定期修复Bug。
+        5.以后不定期修复Bug。\n\n
+         v2.2 | 2019.05.07 \n\n
+        1.修复一直存在的内存泄漏bug，导致滑动卡顿严重。\n\n
+        2.应用开始停更。
+        3.本版本不再支持android6.0以下设备。
     </string>
     <string name="QQ_1">开发者QQ群：778399961</string>
     <string name="appHelp">Tips：目前由于校内网络限制，需要校园网使用本应用！</string>
@@ -54,7 +58,7 @@
 14:00---16:50
 </string>
     <!--首页功能-->
-    <string name="login_version">文达学院图书馆工具：v2.1 | 2019.04.23</string>
+    <string name="login_version">文达学院图书馆工具：v2.2 | 2019.05.07</string>
     <string name="quote">梅花香自苦寒来</string>
     <string name="github">项目已经开源，GitHub：记得给我个Star哦 \n妙四文献图书管理系统第三方android端（Kotlin）</string>
 </resources>

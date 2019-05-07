@@ -17,6 +17,8 @@
             android:iconifiedByDefault="true"
             android:focusable="false"
             android:id="@+id/search_btn"
+            android:layout_margin="0dp"
+            android:padding="0dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:queryHint="@string/search_hint">

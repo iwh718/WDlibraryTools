@@ -3,23 +3,19 @@
     android:background="#fff"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
     <ProgressBar
         android:layout_width="match_parent"
         android:id="@+id/webViewProgressbar"
         android:layout_height="wrap_content" />
-   <android.support.v4.widget.SwipeRefreshLayout
-       android:layout_width="match_parent"
-       android:id="@+id/libraryWebViewRefresh"
-       android:layout_height="match_parent">
+
 
        <WebView
-
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
            android:id="@+id/libraryWebView">
 
        </WebView>
-   </android.support.v4.widget.SwipeRefreshLayout>
+
 
 </LinearLayout>

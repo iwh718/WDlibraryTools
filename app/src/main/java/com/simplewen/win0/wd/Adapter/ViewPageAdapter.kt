@@ -5,17 +5,16 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 
 //继承fragmentPageAdapter，实现两个方法
-class ViewPageAdapter(fm: FragmentManager, fg_list:ArrayList<Fragment>): FragmentPagerAdapter(fm){
-    private var listFg = arrayListOf<Fragment>()
-    init {listFg = fg_list}
+class ViewPageAdapter(fm: FragmentManager,private  val fg_list:ArrayList<Fragment>): FragmentPagerAdapter(fm){
+
     override fun getCount(): Int {
-        return listFg.size
+        return fg_list.size
 
     }
 
     override fun getItem(position: Int): Fragment {
         //返回当前页面的fragment页面
-        return listFg[position]
+        return fg_list[position]
     }
 
 }
