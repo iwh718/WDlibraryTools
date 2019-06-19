@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,9 +40,7 @@ class MyBrow : Fragment() {
         val tv_booklist = ly.findViewById<ListView>(R.id.brow_list)//引用listview的书列表
         val listadapter = SimpleAdapter(activity,WorkWd.books, R.layout.booklist, b_info, b_id)
         tv_booklist.adapter = listadapter //listview适配器
-        if (WorkWd.books.size <= 0) {
-            Utils.Tos("你现在没有借书哦！")
-        }
+
         //弹出续借对话框
         tv_booklist.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             AlertDialog.Builder(activity).setTitle("你最多只能续借一次（30天）哦！").setNegativeButton("取消", null).setCancelable(true)
@@ -63,8 +62,14 @@ class MyBrow : Fragment() {
             }
         }
         Coroutines.launch {
-            WorkWd.myBrow( Coroutines, refresh, listadapter)
+            Log.d("@@brow001","------")
+          val browC =   WorkWd.myBrow( Coroutines, refresh, listadapter)
+            Log.d("@@brow002","------")
+            browC.join()
+            Log.d("@@brow003","------")
         }
+        Log.d("@@brow004","------")
+
         return ly
     }
 

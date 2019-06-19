@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.os.Build
 import android.support.design.widget.TextInputEditText
+import android.util.Log
 
 import com.simplewen.win0.wd.R
 
@@ -15,6 +16,7 @@ import com.simplewen.win0.wd.util.Utils
 
 import kotlinx.android.synthetic.main.login_main.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import java.lang.Exception
 
 
 /**
@@ -47,14 +49,20 @@ class LoginActivity : BaseActivity() {
 
 
         }
-        if (iwhDataOperator.getSHP("flag", "wd", "") !== "") {
-            //自动登录
-            login_sign.visibility = View.GONE
-            user.visibility = View.GONE
-            pw.visibility = View.GONE
-            login_progressbar.visibility = View.VISIBLE
-            WorkWd.myLogin(iwhDataOperator.getSHP("user", "wd", ""), iwhDataOperator.getSHP("pw", "wd", ""), this@LoginActivity)
-        }
+       try {
+           if (iwhDataOperator.getSHP("flag", "wd", "") !== "") {
+               //自动登录
+               Log.d("@@here1","---------")
+               login_sign.visibility = View.GONE
+               user.visibility = View.GONE
+               pw.visibility = View.GONE
+               login_progressbar.visibility = View.VISIBLE
+               Log.d("@@here2","---------")
+               WorkWd.myLogin(iwhDataOperator.getSHP("user", "wd", ""), iwhDataOperator.getSHP("pw", "wd", ""), this@LoginActivity)
+           }
+       }catch (e:Exception){
+           Log.d("@@loginError:",e.stackTrace.toString())
+       }
 
     }
 

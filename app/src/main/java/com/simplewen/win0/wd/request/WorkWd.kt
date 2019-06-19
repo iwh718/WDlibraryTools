@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit
 
 @ExperimentalCoroutinesApi
 /**
- * 网络操作
+ * 网络操作单例模式
  */
 object WorkWd{
 
@@ -74,7 +74,7 @@ object WorkWd{
      */
     fun myBrow( coroutines: BaseActivity, refresh: SwipeRefreshLayout? = null, adapter: SimpleAdapter? = null) = coroutines.launch {
         var res: String?
-
+        Log.d("@@brow005","------")
         var tem_res: String?
         val request = Request.Builder().url(this@WorkWd.myBrowUrl).build()
         this@WorkWd.client.newCall(request).enqueue(object : Callback {
@@ -103,6 +103,9 @@ object WorkWd{
                 }
                 Log.d("@@init_brow",this@WorkWd.books.toString())
                     coroutines.launch (Dispatchers.Main){
+                        if (WorkWd.books.size <= 0) {
+                            Utils.Tos("你现在没有借书哦！")
+                        }
                             refresh!!.isRefreshing = false
                             adapter?.notifyDataSetChanged()
                             Utils.Tos("刷新完成！")

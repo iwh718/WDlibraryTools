@@ -10,6 +10,7 @@ import android.support.v7.app.AlertDialog
 import android.view.*
 import kotlinx.android.synthetic.main.activity_wd_main.*
 import android.graphics.Color
+import android.net.Uri
 import android.os.*
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
@@ -41,6 +42,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * 协程1.0
  * first time：18.09.02
  * last time： 19.04.24
+ * 交流群：594869854
+ * tips：项目可以自行编译修改适配：禁止商业相关使用，本项目仅为文达学院使用（分支版本为安徽信息工程学院，由于一些原因，项目暂停！）
  * @author IWH
  * 文达学院：17 软件2
  */
@@ -48,10 +51,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 class WDMain : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
 
-   private var temDialog: AlertDialog? = null//临时dialog对象，用来调用dismiss
+    private var temDialog: AlertDialog? = null//临时dialog对象，用来调用dismiss
     private var userNameText: TextView? = null
-    private lateinit var libraryWeb: Fragment
-
+    private lateinit var libraryWeb: LibraryIndex
+    private val zw = "http://wap.cnki.net/touch/web/guide"
+    private val wf = "http://www.wanfangdata.com.cn/index.html"
+    private val dx = "http://www.duxiu.com/"
+    private val cx ="https://m.cxstar.com/"
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -80,6 +86,7 @@ class WDMain : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     main_viewPage.currentItem = tab!!.position
                 }
+
                 override fun onTabUnselected(tab: TabLayout.Tab?) = Unit
             })
         }
@@ -112,7 +119,7 @@ class WDMain : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
         }
         //绑定搜索按钮
         search_btn.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            var s_key: String?  = null
+            var s_key: String? = null
             override fun onQueryTextSubmit(query: String?): Boolean {
                 with(Intent(this@WDMain, searchBooks::class.java)) {
                     putExtra("search_key", s_key)
@@ -132,13 +139,36 @@ class WDMain : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
         fab.setOnClickListener {
             AlertDialog.Builder(this@WDMain)
                     .setTitle("加入图书馆交流群")
-                    .setMessage("期待你的到来！")
+                    .setMessage("可以查看图书馆最近的状态与管理员交流！")
                     .setPositiveButton("确认") { _, _ ->
                         Utils.joinQQGroup()
                     }
-                    .setNegativeButton("算了", null)
+                    .setNegativeButton("取消", null)
                     .create().show()
         }
+
+
+        //设置顶层的webView
+        val tv_listener = View.OnClickListener {
+            val url = when (it.id) {
+                R.id.tv_zw ->  zw
+                R.id.tv_dx ->  dx
+                R.id.tv_wf ->  wf
+                R.id.tv_cx -> cx
+                else ->{
+                    Toast.makeText(this@WDMain,"参数有误！",Toast.LENGTH_SHORT).show()
+                    ""
+                }
+            }
+            Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+                startActivity(this)
+            }
+
+        }
+        tv_zw.setOnClickListener(tv_listener)
+        tv_dx.setOnClickListener(tv_listener)
+        tv_wf.setOnClickListener(tv_listener)
+        tv_cx.setOnClickListener(tv_listener)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -201,7 +231,9 @@ class WDMain : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
                         .setNegativeButton("取消", null)
                         .setPositiveButton("确认") { _, _ ->
                             iwhDataOperator.setSHP("flag", "", "wd")
-                            startActivity(Intent(this@WDMain, LoginActivity::class.java))
+                            startActivity(Intent(this@WDMain, LoginActivity::class.java).apply {
+                                this.flags  = Intent.FLAG_ACTIVITY_CLEAR_TOP
+                            })
                             finish()
                         }
                         .create()
@@ -238,10 +270,12 @@ class WDMain : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     //监听webview的返回事件
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK && libraryWeb.libraryWebView.canGoBack()) {
-            libraryWeb.libraryWebView!!.goBack()//返回上个页面
+        if (keyCode == KeyEvent.KEYCODE_BACK && libraryWeb.webView.canGoBack()) {
+            libraryWeb.webView.goBack()//返回上个页面
             return true
         }
         return super.onKeyDown(keyCode, event)//退出整个应用程序
     }
+
+
 }

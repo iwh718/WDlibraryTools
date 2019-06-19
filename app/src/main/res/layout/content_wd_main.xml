@@ -41,6 +41,58 @@
 
                 </TextView>
             </LinearLayout>
+            <LinearLayout
+
+                android:layout_margin="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tv_zw"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/btn_mini"
+                    android:padding="4dp"
+                    android:textColor="#fff"
+                    android:textAlignment="center"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="知网"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/tv_dx"
+                    android:textColor="#fff"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/btn_mini"
+                    android:padding="4dp"
+                    android:textAlignment="center"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="读秀"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/tv_wf"
+                    android:textColor="#fff"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/btn_mini"
+                    android:padding="4dp"
+                    android:textAlignment="center"
+                    android:text="万方"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:id="@+id/tv_cx"
+                    android:textColor="#fff"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/btn_mini"
+                    android:padding="4dp"
+                    android:textAlignment="center"
+                    android:text="畅想之星"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
 
             <android.support.v4.view.ViewPager
 

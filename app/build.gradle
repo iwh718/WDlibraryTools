@@ -10,8 +10,8 @@ android {
         applicationId "com.simplewen.win0.wd"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 32
-        versionName "2.2"
+        versionCode 33
+        versionName "2.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -23,8 +23,8 @@ android {
 }
 
 dependencies {
-   // debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.3'
-   // releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.3'
+    // debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.3'
+    // releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.3'
 
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
